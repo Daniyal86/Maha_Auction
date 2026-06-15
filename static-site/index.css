@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glassmorphism custom classes */
+.glass {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.glass-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Leaflet Overrides */
+.leaflet-container {
+  font-family: 'Inter', sans-serif;
+  z-index: 10;
+}
+
+.custom-leaflet-marker {
+  background: transparent;
+  border: none;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-tooltip {
+  border-radius: 1rem !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  background-color: white !important;
+  border: none !important;
+  padding: 8px !important;
+}
+
+.leaflet-popup-tip {
+  background: white;
+}
+
+.leaflet-tooltip-top:before {
+  border-top-color: white !important;
+}
+
+/* Tooltip styling override */
+.premium-tooltip {
+  border: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Traditional news clipping paper frames */
+.newspaper-clip {
+  border: 4px double #94a3b8;
+  background-color: #ffffff;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.05);
+}
