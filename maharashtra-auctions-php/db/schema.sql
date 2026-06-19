@@ -13,9 +13,11 @@ CREATE TABLE `users` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(100) NOT NULL,
   `email` VARCHAR(150) NOT NULL UNIQUE,
+  `phone` VARCHAR(20) DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,
-  `role` ENUM('buyer', 'seller', 'agent', 'admin') DEFAULT 'buyer',
+  `role` ENUM('buyer', 'seller', 'agent', 'admin', 'lawyer') DEFAULT 'buyer',
   `avatar` VARCHAR(255) DEFAULT NULL,
+  `subscription_ends_at` TIMESTAMP NULL DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

@@ -1,5 +1,5 @@
 <?php
-// php-site/logout.php
+// logout.php
 
 session_start();
 session_unset();

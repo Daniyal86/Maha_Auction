@@ -1,5 +1,5 @@
 <?php
-// php-site/api/book_consultation.php
+// api/book_consultation.php
 
 header('Content-Type: application/json');
 require_once '../config/db.php';

@@ -1,5 +1,5 @@
 <?php
-// php-site/api/connect_agent.php
+// api/connect_agent.php
 
 header('Content-Type: application/json');
 require_once '../config/db.php';

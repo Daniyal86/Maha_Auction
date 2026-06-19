@@ -1,5 +1,5 @@
 <?php
-// php-site/agents.php
+// agents.php
 require_once 'config/db.php';
 
 // Fetch agents from database

@@ -1,5 +1,5 @@
 <?php
-// php-site/admin_dashboard.php
+// admin_dashboard.php
 require_once 'config/db.php';
 
 // Check if user is logged in and has admin role
@@ -132,6 +132,50 @@ if ($is_admin) {
                 $error_msg = "Please fill in all agent fields.";
             }
         }
+        
+        // 8. Admin Post Property
+        if (isset($_POST['submit_property'])) {
+            $title = trim($_POST['title']);
+            $address = trim($_POST['address']);
+            $city_id = trim($_POST['city_id']);
+            $type = trim($_POST['type']);
+            $category = trim($_POST['category']);
+            $price = trim($_POST['price']);
+            $emd = trim($_POST['emd']);
+            $gov_val = trim($_POST['gov_val']);
+            $details = trim($_POST['details']);
+
+            if (empty($title) || empty($address) || empty($city_id) || empty($price) || empty($details)) {
+                $error_msg = 'Please complete all required fields.';
+            } else {
+                try {
+                    $listing_id = 'MAHA-' . rand(100000, 999999);
+                    $numeric_price = (int)preg_replace('/[^0-9]/', '', $price) ?: 1000000;
+                    $numeric_gov_val = (int)preg_replace('/[^0-9]/', '', $gov_val) ?: ($numeric_price * 1.2);
+
+                    $stmt = $pdo->prepare("
+                        INSERT INTO properties (
+                            listing_id, seller_id, title, address, city_id, type, category, 
+                            reserve_price, numeric_price, emd, government_valuation, 
+                            numeric_gov_valuation, details
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ");
+                    $stmt->execute([
+                        $listing_id, $_SESSION['user']['id'], $title, $address, $city_id, $type, $category, 
+                        $price, $numeric_price, $emd ?: 'N/A', 
+                        $gov_val ? "₹ {$gov_val}" : "₹ " . ($numeric_gov_val / 10000000) . " Cr", 
+                        $numeric_gov_val, $details
+                    ]);
+
+                    // Update city property count
+                    $pdo->prepare("UPDATE cities SET property_count = property_count + 1 WHERE id = ?")->execute([$city_id]);
+
+                    $success_msg = 'Property successfully posted to the platform!';
+                } catch (PDOException $e) {
+                    $error_msg = 'Database error: ' . $e->getMessage();
+                }
+            }
+        }
     }
 
     // Fetch Stats
@@ -215,12 +259,13 @@ require_once 'includes/header.php';
       
       <!-- Quick tab state toggle buttons -->
       <div class="flex flex-wrap gap-2">
-        <button onclick="switchAdminTab('stats')" class="admin-nav-btn px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm transition-all">Overview</button>
-        <button onclick="switchAdminTab('users')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all">Users</button>
-        <button onclick="switchAdminTab('listings')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all">Properties</button>
-        <button onclick="switchAdminTab('leads')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all">Leads Board</button>
-        <button onclick="switchAdminTab('consults')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all">Consultations</button>
-        <button onclick="switchAdminTab('agents')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all">Agents & Cities</button>
+        <button onclick="switchAdminTab('stats')" class="admin-nav-btn px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm transition-all" data-tab="stats">Overview</button>
+        <button onclick="switchAdminTab('users')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="users">Users</button>
+        <button onclick="switchAdminTab('listings')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="listings">Properties</button>
+        <button onclick="switchAdminTab('add_property')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="add_property">Post Property</button>
+        <button onclick="switchAdminTab('leads')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="leads">Leads Board</button>
+        <button onclick="switchAdminTab('consults')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="consults">Consultations</button>
+        <button onclick="switchAdminTab('agents')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="agents">Agents & Cities</button>
       </div>
     </div>
 
@@ -370,6 +415,7 @@ require_once 'includes/header.php';
               <th class="px-6 py-3">User Profile</th>
               <th class="px-6 py-3">Email Address</th>
               <th class="px-6 py-3">Current Role</th>
+              <th class="px-6 py-3">Subscription / KYC</th>
               <th class="px-6 py-3">Registered At</th>
               <th class="px-6 py-3 text-right">Actions</th>
             </tr>
@@ -389,10 +435,23 @@ require_once 'includes/header.php';
                     <select name="role" onchange="this.form.submit()" class="bg-slate-50 border border-slate-200 rounded px-2 py-1 text-[11px] font-bold text-slate-600 focus:outline-none">
                       <option value="buyer" <?php echo $u['role'] === 'buyer' ? 'selected' : ''; ?>>Buyer</option>
                       <option value="seller" <?php echo $u['role'] === 'seller' ? 'selected' : ''; ?>>Seller</option>
+                      <option value="lawyer" <?php echo $u['role'] === 'lawyer' ? 'selected' : ''; ?>>Lawyer</option>
                       <option value="agent" <?php echo $u['role'] === 'agent' ? 'selected' : ''; ?>>Agent</option>
                       <option value="admin" <?php echo $u['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
                     </select>
                   </form>
+                </td>
+                <td class="px-6 py-3">
+                  <?php if ($u['role'] === 'seller'): ?>
+                    <div class="flex items-center space-x-2">
+                      <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-amber-50 text-amber-600">Pending KYC</span>
+                      <button class="text-[10px] text-premium-emerald hover:underline font-bold" onclick="alert('Subscription approval logic would execute here for seller KYC.')">Approve</button>
+                    </div>
+                  <?php elseif ($u['role'] === 'lawyer'): ?>
+                    <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-emerald-50 text-premium-emerald">Verified</span>
+                  <?php else: ?>
+                    <span class="text-[10px] text-slate-400 font-semibold">N/A</span>
+                  <?php endif; ?>
                 </td>
                 <td class="px-6 py-3 text-slate-400 text-[10px]"><?php echo date('d M Y H:i', strtotime($u['created_at'])); ?></td>
                 <td class="px-6 py-3 text-right">
@@ -750,6 +809,90 @@ require_once 'includes/header.php';
       </div>
     </div>
 
+    <!-- TAB 7: POST PROPERTY -->
+    <div id="tab-add_property" class="admin-tab-content hidden grid grid-cols-1 gap-8 items-start">
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-sm max-w-3xl mx-auto w-full">
+        <div class="space-y-1">
+          <h3 class="text-lg font-black text-slate-800 flex items-center space-x-2">
+            <i data-lucide="plus-circle" class="h-5.5 w-5.5 text-premium-emerald"></i>
+            <span>Post Bank Foreclosure Property (Admin override)</span>
+          </h3>
+          <p class="text-xs text-slate-400 font-semibold">Post official foreclosure listings directly to the global directory.</p>
+        </div>
+        
+        <form method="POST" action="admin_dashboard.php" class="space-y-4">
+          <input type="hidden" name="submit_property" value="1">
+          
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Property Title</label>
+            <input type="text" name="title" required placeholder="e.g. 2 BHK Modern Flat in Thane" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Address Details</label>
+            <input type="text" name="address" required placeholder="e.g. Flat 302, Sector 12, Ghodbunder Road" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">City Location</label>
+              <select name="city_id" required class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
+                <?php foreach ($cities as $c): ?>
+                  <option value="<?php echo htmlspecialchars($c['id']); ?>"><?php echo htmlspecialchars($c['name']); ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Property Type</label>
+              <select name="type" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
+                <option value="Residential">Residential</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Land">Land / Plot</option>
+                <option value="Industrial">Industrial</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Listing Category</label>
+              <select name="category" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
+                <option value="Bank Auction">Bank Auction</option>
+                <option value="Heavy Deposit">Heavy Deposit</option>
+                <option value="Direct Sale">Direct Sale</option>
+                <option value="Premium Rental">Premium Rental</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Reserve Price (₹)</label>
+              <input type="text" name="price" required placeholder="e.g. ₹ 45,00,000" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">EMD Amount</label>
+              <input type="text" name="emd" placeholder="e.g. 10%" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Government Valuation (Optional)</label>
+              <input type="text" name="gov_val" placeholder="e.g. 52,00,000" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Description & Key Features</label>
+            <textarea name="details" rows="3" required placeholder="Describe the property condition, area, nearby amenities..." class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800 leading-relaxed"></textarea>
+          </div>
+
+          <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl text-xs font-extrabold shadow-md transition-all flex items-center justify-center space-x-1.5 active:scale-[0.98]">
+            <i data-lucide="check-circle" class="h-4 w-4"></i>
+            <span>Publish Admin Listing</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
     <!-- Tab switcher JS script -->
     <script>
       function switchAdminTab(tabName) {
@@ -763,7 +906,7 @@ require_once 'includes/header.php';
         // Reset button active styles
         const btns = document.querySelectorAll('.admin-nav-btn');
         btns.forEach(btn => {
-          if (btn.textContent.toLowerCase().includes(tabName === 'stats' ? 'overview' : (tabName === 'consults' ? 'consultations' : (tabName === 'agents' ? 'agents' : tabName)))) {
+          if (btn.dataset.tab === tabName) {
             btn.className = "admin-nav-btn px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm transition-all";
           } else {
             btn.className = "admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all";

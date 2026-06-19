@@ -1,5 +1,5 @@
 <?php
-// php-site/includes/footer.php
+// includes/footer.php
 ?>
   <!-- Global Footer -->
   <footer class="bg-slate-900 border-t border-slate-800 py-8 text-center text-slate-400 mt-auto">

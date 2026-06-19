@@ -1,5 +1,5 @@
 <?php
-// php-site/config/db.php
+// config/db.php
 
 // Database configuration constants (modify for production server as needed)
 define('DB_HOST', 'localhost');
@@ -20,7 +20,7 @@ try {
     );
 } catch (PDOException $e) {
     // If the database does not exist or cannot connect, fail gracefully or explain setup
-    die("Database connection failed: " . $e->getMessage() . ". Make sure to import php-site/db/schema.sql into MySQL and create database 'maharashtra_auctions'.");
+    die("Database connection failed: " . $e->getMessage() . ". Make sure to import db/schema.sql into MySQL and create database 'maharashtra_auctions'.");
 }
 
 // Initialize session globally

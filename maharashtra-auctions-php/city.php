@@ -1,5 +1,5 @@
 <?php
-// php-site/city.php
+// city.php
 require_once 'config/db.php';
 
 $city_id = isset($_GET['id']) ? trim($_GET['id']) : '';

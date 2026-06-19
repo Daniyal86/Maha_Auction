@@ -1,5 +1,5 @@
 <?php
-// php-site/includes/modals.php
+// includes/modals.php
 ?>
 <!-- 1. 7-Day Free Trial Lead Modal -->
 <div id="trial-modal-wrapper" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">

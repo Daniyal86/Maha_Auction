@@ -1,5 +1,5 @@
 <?php
-// php-site/api/submit_lead.php
+// api/submit_lead.php
 
 header('Content-Type: application/json');
 require_once '../config/db.php';

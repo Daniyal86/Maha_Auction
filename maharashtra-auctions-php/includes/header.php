@@ -1,8 +1,11 @@
 <?php
-// php-site/includes/header.php
+// includes/header.php
 
 // Determine active page
 $current_page = basename($_SERVER['PHP_SELF']);
+
+// Load Google Config
+require_once __DIR__ . '/../config/google.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,6 +51,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
   <!-- Lucide Icons Library -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <style>
     @keyframes scanEffect {
       0% { top: 10%; }
@@ -82,6 +88,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
           <a href="advisory.php" class="<?php echo $current_page == 'advisory.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Legal Guidance (Adv)</a>
           <a href="agents.php" class="<?php echo $current_page == 'agents.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Verified Agents</a>
           
+          <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'buyer'): ?>
+            <a href="buyer_dashboard.php" class="<?php echo $current_page == 'buyer_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Buyer Dashboard</a>
+          <?php endif; ?>
+
           <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'seller'): ?>
             <a href="seller_dashboard.php" class="<?php echo $current_page == 'seller_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Seller Dashboard</a>
           <?php endif; ?>
@@ -126,6 +136,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
       <a href="advisory.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'advisory.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Legal Guidance (Adv)</a>
       <a href="agents.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'agents.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Verified Agents</a>
       
+      <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'buyer'): ?>
+        <a href="buyer_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'buyer_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Buyer Dashboard</a>
+      <?php endif; ?>
+
       <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'seller'): ?>
         <a href="seller_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'seller_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Seller Dashboard</a>
       <?php endif; ?>

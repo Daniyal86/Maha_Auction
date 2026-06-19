@@ -1,5 +1,5 @@
 <?php
-// php-site/index.php
+// index.php
 require_once 'config/db.php';
 
 // Fetch cities for map marker initialization

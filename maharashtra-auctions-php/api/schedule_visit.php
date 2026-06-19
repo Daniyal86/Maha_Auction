@@ -1,5 +1,5 @@
 <?php
-// php-site/api/schedule_visit.php
+// api/schedule_visit.php
 
 header('Content-Type: application/json');
 require_once '../config/db.php';

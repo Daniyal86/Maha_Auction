@@ -1,5 +1,5 @@
 <?php
-// php-site/search.php
+// search.php
 require_once 'config/db.php';
 
 // Fetch cities for filters
