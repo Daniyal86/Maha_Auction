@@ -4,6 +4,13 @@
 // Determine active page
 $current_page = basename($_SERVER['PHP_SELF']);
 
+$is_dashboard = in_array($current_page, [
+  'admin_dashboard.php',
+  'buyer_dashboard.php',
+  'seller_dashboard.php',
+  'lawyer_dashboard.php'
+]);
+
 // Load Google Config
 require_once __DIR__ . '/../config/google.php';
 ?>
@@ -83,21 +90,41 @@ require_once __DIR__ . '/../config/google.php';
 
         <!-- Desktop Navigation Items -->
         <div class="hidden md:flex items-center space-x-8">
-          <a href="index.php" class="<?php echo $current_page == 'index.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Home</a>
-          <a href="search.php" class="<?php echo $current_page == 'search.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Data Surfing</a>
-          <a href="advisory.php" class="<?php echo $current_page == 'advisory.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Legal Guidance (Adv)</a>
-          <a href="agents.php" class="<?php echo $current_page == 'agents.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Verified Agents</a>
-          
-          <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'buyer'): ?>
-            <a href="buyer_dashboard.php" class="<?php echo $current_page == 'buyer_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Buyer Dashboard</a>
-          <?php endif; ?>
+          <?php if (!$is_dashboard): ?>
+            <a href="index.php" class="<?php echo $current_page == 'index.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Home</a>
+            <a href="search.php" class="<?php echo $current_page == 'search.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Data Surfing</a>
+            <a href="advisory.php" class="<?php echo $current_page == 'advisory.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Legal Guidance (Adv)</a>
+            <a href="agents.php" class="<?php echo $current_page == 'agents.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Verified Agents</a>
+            <a href="about.php" class="<?php echo $current_page == 'about.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">About</a>
+            
+            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'buyer'): ?>
+              <a href="buyer_dashboard.php" class="<?php echo $current_page == 'buyer_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Buyer Dashboard</a>
+            <?php endif; ?>
 
-          <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'seller'): ?>
-            <a href="seller_dashboard.php" class="<?php echo $current_page == 'seller_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Seller Dashboard</a>
-          <?php endif; ?>
+            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'seller'): ?>
+              <a href="seller_dashboard.php" class="<?php echo $current_page == 'seller_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Seller Dashboard</a>
+            <?php endif; ?>
 
-          <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
-            <a href="admin_dashboard.php" class="<?php echo $current_page == 'admin_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Admin Dashboard</a>
+            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'lawyer'): ?>
+              <a href="lawyer_dashboard.php" class="<?php echo $current_page == 'lawyer_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Lawyer Dashboard</a>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
+              <a href="admin_dashboard.php" class="<?php echo $current_page == 'admin_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Admin Dashboard</a>
+            <?php endif; ?>
+          <?php else: ?>
+            <a href="index.php" class="text-slate-650 hover:text-slate-900 border-b-2 border-transparent hover:border-slate-300 py-2 text-sm font-bold transition-all flex items-center space-x-1.5">
+              <i data-lucide="arrow-left" class="h-4 w-4"></i>
+              <span>Back to Main Site</span>
+            </a>
+            <span class="text-premium-emerald border-premium-emerald border-b-2 py-2 text-sm font-extrabold uppercase tracking-wider transition-all">
+              <?php 
+                if ($current_page === 'admin_dashboard.php') echo 'Admin Portal';
+                elseif ($current_page === 'buyer_dashboard.php') echo 'Buyer Portal';
+                elseif ($current_page === 'seller_dashboard.php') echo 'Seller Portal';
+                elseif ($current_page === 'lawyer_dashboard.php') echo 'Lawyer Portal';
+              ?>
+            </span>
           <?php endif; ?>
         </div>
 
@@ -131,21 +158,41 @@ require_once __DIR__ . '/../config/google.php';
 
     <!-- Mobile Drawer -->
     <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-2 shadow-inner">
-      <a href="index.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'index.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Home</a>
-      <a href="search.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'search.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Data Surfing</a>
-      <a href="advisory.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'advisory.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Legal Guidance (Adv)</a>
-      <a href="agents.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'agents.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Verified Agents</a>
-      
-      <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'buyer'): ?>
-        <a href="buyer_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'buyer_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Buyer Dashboard</a>
-      <?php endif; ?>
+      <?php if (!$is_dashboard): ?>
+        <a href="index.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'index.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Home</a>
+        <a href="search.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'search.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Data Surfing</a>
+        <a href="advisory.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'advisory.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Legal Guidance (Adv)</a>
+        <a href="agents.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'agents.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Verified Agents</a>
+        <a href="about.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'about.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">About</a>
+        
+        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'buyer'): ?>
+          <a href="buyer_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'buyer_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Buyer Dashboard</a>
+        <?php endif; ?>
 
-      <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'seller'): ?>
-        <a href="seller_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'seller_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Seller Dashboard</a>
-      <?php endif; ?>
+        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'seller'): ?>
+          <a href="seller_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'seller_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Seller Dashboard</a>
+        <?php endif; ?>
 
-      <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
-        <a href="admin_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'admin_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Admin Dashboard</a>
+        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'lawyer'): ?>
+          <a href="lawyer_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'lawyer_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Lawyer Dashboard</a>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
+          <a href="admin_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'admin_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Admin Dashboard</a>
+        <?php endif; ?>
+      <?php else: ?>
+        <a href="index.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold text-slate-700 hover:bg-slate-50">
+          <i data-lucide="arrow-left" class="inline-block h-4 w-4 mr-1.5 align-middle"></i>
+          <span class="align-middle">Back to Main Site</span>
+        </a>
+        <div class="block px-3 py-2.5 rounded-lg text-base font-bold text-premium-emerald bg-emerald-50">
+          <?php 
+            if ($current_page === 'admin_dashboard.php') echo 'Admin Portal';
+            elseif ($current_page === 'buyer_dashboard.php') echo 'Buyer Portal';
+            elseif ($current_page === 'seller_dashboard.php') echo 'Seller Portal';
+            elseif ($current_page === 'lawyer_dashboard.php') echo 'Lawyer Portal';
+          ?>
+        </div>
       <?php endif; ?>
 
       <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
