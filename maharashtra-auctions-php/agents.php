@@ -50,7 +50,7 @@ require_once 'includes/header.php';
           </div>
         </div>
 
-        <button onclick="openAgentModal('<?php echo htmlspecialchars($agent['id']); ?>', '<?php echo htmlspecialchars($agent['name']); ?>')" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl text-sm font-bold shadow-md transition-all flex items-center justify-center space-x-1.5">
+        <button onclick="openAgentModal('<?php echo htmlspecialchars($agent['id']); ?>', '<?php echo htmlspecialchars($agent['name']); ?>')" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl text-sm font-bold shadow-md transition-all flex items-center justify-center space-x-1.5 touch-target">
           <i data-lucide="message-square" class="h-4 w-4"></i>
           <span>Connect with Agent</span>
         </button>

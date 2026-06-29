@@ -246,26 +246,28 @@ require_once 'includes/header.php';
   <?php else: ?>
     
     <!-- Admin Header Banner -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="flex flex-col gap-4">
       <div>
-        <h1 class="text-3xl font-black text-slate-800 tracking-tight flex items-center space-x-2">
-          <i data-lucide="shield-check" class="h-8 w-8 text-premium-emerald animate-pulse"></i>
-          <span>Global Administration command center</span>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight flex items-center space-x-2">
+          <i data-lucide="shield-check" class="h-7 w-7 sm:h-8 sm:w-8 text-premium-emerald animate-pulse shrink-0"></i>
+          <span>Global Administration Command Center</span>
         </h1>
         <p class="text-xs text-slate-500 font-semibold mt-1">
           Authorized Admin: <?php echo htmlspecialchars($_SESSION['user']['name']); ?> (<?php echo htmlspecialchars($_SESSION['user']['email']); ?>)
         </p>
       </div>
       
-      <!-- Quick tab state toggle buttons -->
-      <div class="flex flex-wrap gap-2">
-        <button onclick="switchAdminTab('stats')" class="admin-nav-btn px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm transition-all" data-tab="stats">Overview</button>
-        <button onclick="switchAdminTab('users')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="users">Users</button>
-        <button onclick="switchAdminTab('listings')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="listings">Properties</button>
-        <button onclick="switchAdminTab('add_property')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="add_property">Post Property</button>
-        <button onclick="switchAdminTab('leads')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="leads">Leads Board</button>
-        <button onclick="switchAdminTab('consults')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="consults">Consultations</button>
-        <button onclick="switchAdminTab('agents')" class="admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all" data-tab="agents">Agents & Cities</button>
+      <!-- Mobile-friendly horizontally scrollable tab navigation -->
+      <div class="-mx-4 sm:mx-0">
+        <div class="flex overflow-x-auto scrollbar-hide gap-2 px-4 sm:px-0 pb-1">
+          <button onclick="switchAdminTab('stats')" class="admin-nav-btn shrink-0 px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm transition-all whitespace-nowrap" data-tab="stats">Overview</button>
+          <button onclick="switchAdminTab('users')" class="admin-nav-btn shrink-0 px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all whitespace-nowrap" data-tab="users">Users</button>
+          <button onclick="switchAdminTab('listings')" class="admin-nav-btn shrink-0 px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all whitespace-nowrap" data-tab="listings">Properties</button>
+          <button onclick="switchAdminTab('add_property')" class="admin-nav-btn shrink-0 px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all whitespace-nowrap" data-tab="add_property">Post Property</button>
+          <button onclick="switchAdminTab('leads')" class="admin-nav-btn shrink-0 px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all whitespace-nowrap" data-tab="leads">Leads Board</button>
+          <button onclick="switchAdminTab('consults')" class="admin-nav-btn shrink-0 px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all whitespace-nowrap" data-tab="consults">Consultations</button>
+          <button onclick="switchAdminTab('agents')" class="admin-nav-btn shrink-0 px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all whitespace-nowrap" data-tab="agents">Agents & Cities</button>
+        </div>
       </div>
     </div>
 
@@ -287,7 +289,7 @@ require_once 'includes/header.php';
     
     <!-- TAB 1: OVERVIEW STATS -->
     <div id="tab-stats" class="admin-tab-content space-y-8">
-      <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         <!-- Card 1 -->
         <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm space-y-3">
           <div class="h-9 w-9 bg-emerald-50 text-premium-emerald rounded-xl flex items-center justify-center">
@@ -408,7 +410,7 @@ require_once 'includes/header.php';
       <div class="px-6 py-4 bg-slate-50 border-b border-slate-100">
         <h3 class="text-sm font-black text-slate-800">User Accounts Management</h3>
       </div>
-      <div class="overflow-x-auto">
+      <div class="responsive-table-wrapper">
         <table class="w-full text-left border-collapse min-w-[700px]">
           <thead>
             <tr class="bg-slate-50/50 border-b border-slate-200 text-slate-400 text-[9px] font-extrabold uppercase tracking-wider">
@@ -458,7 +460,7 @@ require_once 'includes/header.php';
                   <form method="POST" action="admin_dashboard.php" onsubmit="return confirm('Are you sure you want to permanently delete this user?');">
                     <input type="hidden" name="delete_user" value="1">
                     <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
-                    <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline <?php echo $u['id'] === $_SESSION['user']['id'] ? 'opacity-30 cursor-not-allowed' : ''; ?>" <?php echo $u['id'] === $_SESSION['user']['id'] ? 'disabled' : ''; ?>>
+                    <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline p-1 <?php echo $u['id'] === $_SESSION['user']['id'] ? 'opacity-30 cursor-not-allowed' : ''; ?>" <?php echo $u['id'] === $_SESSION['user']['id'] ? 'disabled' : ''; ?>>
                       Delete
                     </button>
                   </form>
@@ -475,7 +477,7 @@ require_once 'includes/header.php';
       <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
         <h3 class="text-sm font-black text-slate-800">Global Property Directory</h3>
       </div>
-      <div class="overflow-x-auto">
+      <div class="responsive-table-wrapper">
         <table class="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr class="bg-slate-50/50 border-b border-slate-200 text-slate-400 text-[9px] font-extrabold uppercase tracking-wider">
@@ -523,11 +525,11 @@ require_once 'includes/header.php';
                 </td>
                 <td class="px-6 py-3 text-right">
                   <div class="flex items-center justify-end space-x-3">
-                    <a href="property.php?id=<?php echo htmlspecialchars($l['id']); ?>" target="_blank" class="text-premium-emerald hover:underline font-bold">View</a>
+                    <a href="property.php?id=<?php echo htmlspecialchars($l['id']); ?>" target="_blank" class="text-premium-emerald hover:underline font-bold p-1">View</a>
                     <form method="POST" action="admin_dashboard.php" onsubmit="return confirm('Are you sure you want to delete this property listing? This cannot be undone.');">
                       <input type="hidden" name="delete_property" value="1">
                       <input type="hidden" name="property_id" value="<?php echo $l['id']; ?>">
-                      <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline">Delete</button>
+                      <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline p-1">Delete</button>
                     </form>
                   </div>
                 </td>
@@ -546,8 +548,8 @@ require_once 'includes/header.php';
         <div class="px-6 py-4 bg-slate-50 border-b border-slate-100">
           <h3 class="text-sm font-black text-slate-800">Physical & Symbolic Site Inspection Schedules</h3>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
+        <div class="responsive-table-wrapper">
+          <table class="w-full text-left border-collapse min-w-[600px]">
             <thead>
               <tr class="bg-slate-50/50 border-b border-slate-200 text-slate-400 text-[9px] font-extrabold uppercase tracking-wider">
                 <th class="px-6 py-3">Property</th>
@@ -587,7 +589,7 @@ require_once 'includes/header.php';
                       <input type="hidden" name="delete_lead" value="1">
                       <input type="hidden" name="lead_type" value="site_visit">
                       <input type="hidden" name="lead_id" value="<?php echo $v['id']; ?>">
-                      <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline">Delete</button>
+                      <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline p-1">Delete</button>
                     </form>
                   </td>
                 </tr>
@@ -605,7 +607,7 @@ require_once 'includes/header.php';
           <div class="px-6 py-4 bg-slate-50 border-b border-slate-100">
             <h3 class="text-xs font-black uppercase text-slate-800 tracking-wider">Partner Agent Message Inquiries</h3>
           </div>
-          <div class="overflow-x-auto">
+          <div class="responsive-table-wrapper">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 text-[9px] font-extrabold uppercase tracking-wider">
@@ -629,7 +631,7 @@ require_once 'includes/header.php';
                         <input type="hidden" name="delete_lead" value="1">
                         <input type="hidden" name="lead_type" value="agent_connect">
                         <input type="hidden" name="lead_id" value="<?php echo $c['id']; ?>">
-                        <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline">Delete</button>
+                        <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline p-1">Delete</button>
                       </form>
                     </td>
                   </tr>
@@ -644,7 +646,7 @@ require_once 'includes/header.php';
           <div class="px-6 py-4 bg-slate-50 border-b border-slate-100">
             <h3 class="text-xs font-black uppercase text-slate-800 tracking-wider">Free Trials & Brochure Download Submissions</h3>
           </div>
-          <div class="overflow-x-auto">
+          <div class="responsive-table-wrapper">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 text-[9px] font-extrabold uppercase tracking-wider">
@@ -668,7 +670,7 @@ require_once 'includes/header.php';
                         <input type="hidden" name="delete_lead" value="1">
                         <input type="hidden" name="lead_type" value="general">
                         <input type="hidden" name="lead_id" value="<?php echo $gl['id']; ?>">
-                        <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline">Delete</button>
+                        <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline p-1">Delete</button>
                       </form>
                     </td>
                   </tr>
@@ -685,7 +687,7 @@ require_once 'includes/header.php';
       <div class="px-6 py-4 bg-slate-50 border-b border-slate-100">
         <h3 class="text-sm font-black text-slate-800">Legal Advocates Consulting Bookings</h3>
       </div>
-      <div class="overflow-x-auto">
+      <div class="responsive-table-wrapper">
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 text-[9px] font-extrabold uppercase tracking-wider">
@@ -718,7 +720,7 @@ require_once 'includes/header.php';
                     <input type="hidden" name="delete_lead" value="1">
                     <input type="hidden" name="lead_type" value="consultation">
                     <input type="hidden" name="lead_id" value="<?php echo $cs['id']; ?>">
-                    <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline">Delete</button>
+                    <button type="submit" class="text-red-500 hover:text-red-700 font-bold hover:underline p-1">Delete</button>
                   </form>
                 </td>
               </tr>
@@ -729,7 +731,8 @@ require_once 'includes/header.php';
     </div>
 
     <!-- TAB 6: AGENTS & CITIES CONFIG -->
-    <div id="tab-agents" class="admin-tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <div id="tab-agents" class="admin-tab-content hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       
       <!-- List & Add Agents Form -->
       <div class="bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-sm">
@@ -807,10 +810,12 @@ require_once 'includes/header.php';
           <?php endforeach; ?>
         </div>
       </div>
+      </div><!-- End inner grid (tab-agents) -->
     </div>
 
     <!-- TAB 7: POST PROPERTY -->
-    <div id="tab-add_property" class="admin-tab-content hidden grid grid-cols-1 gap-8 items-start">
+    <div id="tab-add_property" class="admin-tab-content hidden">
+      <div class="grid grid-cols-1 gap-8 items-start">
       <div class="bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-sm max-w-3xl mx-auto w-full">
         <div class="space-y-1">
           <h3 class="text-lg font-black text-slate-800 flex items-center space-x-2">
@@ -891,6 +896,7 @@ require_once 'includes/header.php';
           </button>
         </form>
       </div>
+      </div><!-- End inner grid (tab-add_property) -->
     </div>
 
     <!-- Tab switcher JS script -->
@@ -909,10 +915,18 @@ require_once 'includes/header.php';
           if (btn.dataset.tab === tabName) {
             btn.className = "admin-nav-btn px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm transition-all";
           } else {
-            btn.className = "admin-nav-btn px-4 py-2 bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all";
+            btn.className = "admin-nav-btn px-4 py-2 bg-white text-slate-655 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all";
           }
         });
       }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+        if (tab && ['stats', 'users', 'listings', 'add_property', 'leads', 'consults', 'agents'].includes(tab)) {
+          switchAdminTab(tab);
+        }
+      });
     </script>
   <?php endif; ?>
 </div>

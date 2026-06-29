@@ -26,11 +26,11 @@ require_once 'includes/header.php';
           Maharashtra's first dedicated portal for SARFAESI & DRT statutory auctions, heavy-deposit lease opportunities, and NPA asset liquidations — built for buyers, banks, and legal professionals.
         </p>
         <div class="flex flex-wrap gap-3 pt-2">
-          <a href="search.php" class="inline-flex items-center space-x-2 bg-premium-emerald hover:bg-premium-emeraldHover text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-emerald-900/40 transition-all hover:-translate-y-0.5">
+          <a href="search.php" class="inline-flex items-center space-x-2 bg-premium-emerald hover:bg-premium-emeraldHover text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-emerald-900/40 transition-all hover:-translate-y-0.5 touch-target">
             <i data-lucide="search" class="h-4 w-4"></i>
             <span>Browse Auctions</span>
           </a>
-          <a href="advisory.php" class="inline-flex items-center space-x-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5">
+          <a href="advisory.php" class="inline-flex items-center space-x-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 touch-target">
             <i data-lucide="shield-check" class="h-4 w-4"></i>
             <span>Legal Advisory</span>
           </a>
@@ -190,11 +190,11 @@ require_once 'includes/header.php';
       <h2 class="text-3xl font-black tracking-tight">Ready to Find Your Next Property?</h2>
       <p class="text-emerald-100 text-sm font-medium mt-2 max-w-lg mx-auto">Browse thousands of verified statutory auction listings across all 36 districts of Maharashtra — with complete legal transparency.</p>
       <div class="flex flex-wrap items-center justify-center gap-3 mt-6">
-        <a href="search.php" class="inline-flex items-center space-x-2 bg-white text-emerald-700 hover:bg-emerald-50 px-6 py-3 rounded-xl text-sm font-black shadow-lg transition-all hover:-translate-y-0.5">
+        <a href="search.php" class="inline-flex items-center space-x-2 bg-white text-emerald-700 hover:bg-emerald-50 px-6 py-3 rounded-xl text-sm font-black shadow-lg transition-all hover:-translate-y-0.5 touch-target">
           <i data-lucide="search" class="h-4 w-4"></i>
           <span>Search Auctions</span>
         </a>
-        <a href="advisory.php" class="inline-flex items-center space-x-2 bg-white/15 border border-white/30 hover:bg-white/25 text-white px-6 py-3 rounded-xl text-sm font-black transition-all hover:-translate-y-0.5">
+        <a href="advisory.php" class="inline-flex items-center space-x-2 bg-white/15 border border-white/30 hover:bg-white/25 text-white px-6 py-3 rounded-xl text-sm font-black transition-all hover:-translate-y-0.5 touch-target">
           <i data-lucide="user-check" class="h-4 w-4"></i>
           <span>Consult an Advocate</span>
         </a>

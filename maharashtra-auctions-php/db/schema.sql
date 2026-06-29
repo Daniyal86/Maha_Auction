@@ -18,6 +18,7 @@ CREATE TABLE `users` (
   `role` ENUM('buyer', 'seller', 'agent', 'admin', 'lawyer') DEFAULT 'buyer',
   `avatar` VARCHAR(255) DEFAULT NULL,
   `subscription_ends_at` TIMESTAMP NULL DEFAULT NULL,
+  `enrollment_id` VARCHAR(100) DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

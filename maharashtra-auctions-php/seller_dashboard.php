@@ -257,24 +257,24 @@ require_once 'includes/header.php';
 
   <?php else: ?>
     <!-- Authorized Dashboard Layout -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white/40 backdrop-blur-md p-6 rounded-3xl border border-slate-200/60 shadow-sm">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6 bg-white/40 backdrop-blur-md p-4 sm:p-6 rounded-3xl border border-slate-200/60 shadow-sm">
       <div class="space-y-1">
         <div class="flex items-center space-x-2.5">
-          <div class="h-10 w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-premium-emerald shadow-inner">
-            <i data-lucide="store" class="h-6 w-6"></i>
+          <div class="h-9 w-9 sm:h-10 sm:w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-premium-emerald shadow-inner">
+            <i data-lucide="store" class="h-5 w-5 sm:h-6 sm:w-6"></i>
           </div>
           <div>
-            <h1 class="text-2xl font-black text-slate-800 tracking-tight">Seller Command Center</h1>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Seller Command Center</h1>
             <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Dashboard for <?php echo htmlspecialchars($_SESSION['user']['name']); ?></p>
           </div>
         </div>
       </div>
       
       <!-- Stats Summary -->
-      <div class="flex space-x-4 w-full md:w-auto">
-        <div class="bg-white flex-1 md:flex-none px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3.5 hover:shadow transition-shadow">
-          <div class="h-10 w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-premium-emerald shrink-0">
-            <i data-lucide="home" class="h-5 w-5"></i>
+      <div class="flex flex-wrap gap-3 w-full md:w-auto">
+        <div class="bg-white flex-1 min-w-[120px] md:flex-none px-4 sm:px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3 sm:space-x-3.5 hover:shadow transition-shadow">
+          <div class="h-9 w-9 sm:h-10 sm:w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-premium-emerald shrink-0">
+            <i data-lucide="home" class="h-4 w-4 sm:h-5 sm:w-5"></i>
           </div>
           <div>
             <span class="block text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">My Listings</span>
@@ -282,9 +282,9 @@ require_once 'includes/header.php';
           </div>
         </div>
         
-        <div class="bg-white flex-1 md:flex-none px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3.5 hover:shadow transition-shadow">
-          <div class="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 shrink-0">
-            <i data-lucide="calendar" class="h-5 w-5"></i>
+        <div class="bg-white flex-1 min-w-[120px] md:flex-none px-4 sm:px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3 sm:space-x-3.5 hover:shadow transition-shadow">
+          <div class="h-9 w-9 sm:h-10 sm:w-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 shrink-0">
+            <i data-lucide="calendar" class="h-4 w-4 sm:h-5 sm:w-5"></i>
           </div>
           <div>
             <span class="block text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">Site Leads</span>
@@ -295,10 +295,12 @@ require_once 'includes/header.php';
     </div>
 
     <!-- Tab Navigation -->
-    <div class="flex space-x-1 border-b border-slate-200">
-      <button onclick="switchSellerTab('overview')" id="btn-overview" class="px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all">Command Center</button>
-      <button onclick="switchSellerTab('analytics')" id="btn-analytics" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all">Property Analytics</button>
-      <button onclick="switchSellerTab('kyc')" id="btn-kyc" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all">Account & KYC Verification</button>
+    <div class="-mx-4 sm:mx-0">
+      <div class="flex overflow-x-auto scrollbar-hide border-b border-slate-200 px-4 sm:px-0">
+        <button onclick="switchSellerTab('overview')" id="btn-overview" class="shrink-0 px-5 sm:px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all whitespace-nowrap">Command Center</button>
+        <button onclick="switchSellerTab('analytics')" id="btn-analytics" class="shrink-0 px-5 sm:px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all whitespace-nowrap">Property Analytics</button>
+        <button onclick="switchSellerTab('kyc')" id="btn-kyc" class="shrink-0 px-5 sm:px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all whitespace-nowrap">Account & KYC</button>
+      </div>
     </div>
 
     <div id="tab-overview" class="block space-y-10">
@@ -466,7 +468,7 @@ require_once 'includes/header.php';
             <span class="text-[9px] bg-white/10 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider text-slate-300"><?php echo count($visits); ?> Active</span>
           </div>
           
-          <div class="overflow-x-auto">
+          <div class="responsive-table-wrapper">
             <?php if (count($visits) === 0): ?>
               <div class="p-12 text-center space-y-2">
                 <i data-lucide="calendar-off" class="h-8 w-8 text-slate-300 mx-auto"></i>
@@ -601,7 +603,9 @@ require_once 'includes/header.php';
           </div>
         </div>
 
-    </div> <!-- End overview tab -->
+      </div> <!-- End lg:col-span-2 right column -->
+    </div> <!-- End grid -->
+    </div> <!-- End tab-overview -->
 
     <!-- Property Analytics Tab -->
     <div id="tab-analytics" class="hidden space-y-8 mt-10">
@@ -693,9 +697,9 @@ require_once 'includes/header.php';
 <!-- ==================== PROPERTY EDIT MODAL ==================== -->
 <div id="edit-property-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden transition-all duration-300">
   <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" onclick="closeEditPropertyModal()"></div>
-  <div class="relative bg-white/95 backdrop-blur rounded-[32px] w-full max-w-lg overflow-hidden shadow-2xl border border-slate-100 z-10 flex flex-col text-left transform scale-95 transition-transform duration-300">
+  <div class="relative bg-white/95 backdrop-blur rounded-[32px] w-full max-w-lg max-h-[90vh] overflow-hidden shadow-2xl border border-slate-100 z-10 flex flex-col text-left transform scale-95 transition-transform duration-300">
     
-    <div class="bg-gradient-to-br from-emerald-600 to-teal-800 px-6 py-6 text-white relative overflow-hidden">
+    <div class="bg-gradient-to-br from-emerald-600 to-teal-800 px-6 py-6 text-white relative overflow-hidden shrink-0">
       <div class="absolute -right-8 -top-8 w-24 h-24 bg-teal-400/20 rounded-full blur-xl"></div>
       <button onclick="closeEditPropertyModal()" class="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all hover:rotate-90">
         <i data-lucide="x" class="h-4.5 w-4.5"></i>
@@ -704,7 +708,7 @@ require_once 'includes/header.php';
       <p class="text-emerald-100/80 text-xs mt-1.5 font-medium">Modify listed pricing structures, categories, or details.</p>
     </div>
     
-    <form method="POST" action="seller_dashboard.php" class="p-6 space-y-4 max-h-[500px] overflow-y-auto bg-white">
+    <form method="POST" action="seller_dashboard.php" class="p-6 space-y-4 overflow-y-auto bg-white">
       <input type="hidden" name="edit_property" value="1">
       <input type="hidden" id="edit-prop-id" name="property_id">
       
@@ -775,7 +779,7 @@ require_once 'includes/header.php';
         <textarea id="edit-details" name="details" rows="3" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold"></textarea>
       </div>
 
-      <button type="submit" class="w-full bg-gradient-to-r from-premium-emerald to-teal-600 hover:from-premium-emeraldHover hover:to-teal-700 text-white py-3.5 rounded-xl text-xs font-extrabold transition-all hover:shadow-lg hover:shadow-emerald-500/10 flex items-center justify-center space-x-1.5 active:scale-[0.98]">
+      <button type="submit" class="w-full bg-gradient-to-r from-premium-emerald to-teal-600 hover:from-premium-emeraldHover hover:to-teal-700 text-white py-3.5 rounded-xl text-xs font-extrabold transition-all hover:shadow-lg hover:shadow-emerald-500/10 flex items-center justify-center space-x-1.5 active:scale-[0.98] touch-target">
         <i data-lucide="save" class="h-4.5 w-4.5"></i>
         <span>Save Asset Changes</span>
       </button>
@@ -808,6 +812,7 @@ require_once 'includes/header.php';
     const modal = document.getElementById('edit-property-modal');
     const modalContent = modal.querySelector('.relative.bg-white\\/95');
     modal.classList.remove('hidden');
+    document.body.classList.add('modal-open');
     setTimeout(() => {
       modalContent.classList.remove('scale-95');
       modalContent.classList.add('scale-100');
@@ -822,6 +827,7 @@ require_once 'includes/header.php';
     modalContent.classList.add('scale-95');
     setTimeout(() => {
       modal.classList.add('hidden');
+      document.body.classList.remove('modal-open');
     }, 150);
   }
 </script>
@@ -835,17 +841,25 @@ require_once 'includes/header.php';
       if (!btn || !content) return;
 
       if (t === tab) {
-        btn.className = "px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all";
+        btn.className = "shrink-0 px-5 sm:px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all whitespace-nowrap";
         content.classList.remove('hidden');
         content.classList.add('block');
       } else {
-        btn.className = "px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all";
+        btn.className = "shrink-0 px-5 sm:px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all whitespace-nowrap";
         content.classList.add('hidden');
         content.classList.remove('block');
       }
     });
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab && ['overview', 'analytics', 'kyc'].includes(tab)) {
+      switchSellerTab(tab);
+    }
+  });
 </script>
 
 <?php

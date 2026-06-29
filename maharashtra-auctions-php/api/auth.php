@@ -16,7 +16,8 @@ function buildSession($user) {
         'phone'                => $user['phone'] ?? '',
         'role'                 => $user['role'],
         'avatar'               => $user['avatar'],
-        'subscription_ends_at' => $user['subscription_ends_at']
+        'subscription_ends_at' => $user['subscription_ends_at'],
+        'enrollment_id'        => $user['enrollment_id'] ?? null
     ];
 }
 
@@ -87,11 +88,27 @@ if ($action === 'login') {
         echo json_encode(['success' => false, 'message' => 'Please enter a valid email address.']);
         exit;
     }
+    if (empty($phone)) {
+        echo json_encode(['success' => false, 'message' => 'Please enter your mobile number.']);
+        exit;
+    }
     if (strlen($password) < 6) {
         echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters.']);
         exit;
     }
-    if (!in_array($role, ['buyer', 'seller'])) $role = 'buyer';
+    if (!in_array($role, ['buyer', 'seller', 'lawyer'])) $role = 'buyer';
+
+    $enrollment_id = null;
+    if ($role === 'lawyer') {
+        $enrollment_id = trim(isset($_POST['enrollment_id']) ? $_POST['enrollment_id'] : '');
+        if (empty($enrollment_id)) {
+            echo json_encode(['success' => false, 'message' => 'Please enter your Bar Enrollment ID.']);
+            exit;
+        }
+        if (stripos($enrollment_id, 'MAH/') !== 0) {
+            $enrollment_id = 'MAH/' . $enrollment_id;
+        }
+    }
 
     try {
         $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
@@ -105,8 +122,8 @@ if ($action === 'login') {
         $avatar      = pickAvatar($role);
         $sub_ends    = ($role === 'buyer') ? date('Y-m-d H:i:s', strtotime('+7 days')) : null;
 
-        $stmt = $pdo->prepare("INSERT INTO users (name, email, phone, password, role, avatar, subscription_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$name, $email, $phone, $hashed_pass, $role, $avatar, $sub_ends]);
+        $stmt = $pdo->prepare("INSERT INTO users (name, email, phone, password, role, avatar, subscription_ends_at, enrollment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $email, $phone, $hashed_pass, $role, $avatar, $sub_ends, $enrollment_id]);
         $userId = $pdo->lastInsertId();
 
         $_SESSION['user'] = [
@@ -116,7 +133,8 @@ if ($action === 'login') {
             'phone'                => $phone,
             'role'                 => $role,
             'avatar'               => $avatar,
-            'subscription_ends_at' => $sub_ends
+            'subscription_ends_at' => $sub_ends,
+            'enrollment_id'        => $enrollment_id
         ];
 
         echo json_encode(['success' => true, 'redirect_url' => getRedirectUrl($role)]);
@@ -131,66 +149,75 @@ if ($action === 'login') {
 } elseif ($action === 'google_signin') {
     $credential = isset($_POST['credential']) ? trim($_POST['credential']) : '';
     $role       = isset($_POST['role'])       ? trim($_POST['role'])       : 'buyer';
+    $enrollment_id = trim(isset($_POST['enrollment_id']) ? $_POST['enrollment_id'] : '');
 
     if (empty($credential)) {
         echo json_encode(['success' => false, 'message' => 'Google sign-in failed. No token received.']);
         exit;
     }
-    if (!in_array($role, ['buyer', 'seller'])) $role = 'buyer';
+    if (!in_array($role, ['buyer', 'seller', 'lawyer'])) $role = 'buyer';
 
-    // Verify the Google ID token using Google's public tokeninfo endpoint
-    // This works without any PHP library — just a simple HTTP call
-    $verify_url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . urlencode($credential);
-
-    $context  = stream_context_create(['http' => ['timeout' => 5]]);
-    $response = @file_get_contents($verify_url, false, $context);
-
-    if ($response === false) {
-        echo json_encode(['success' => false, 'message' => 'Could not verify with Google. Check your internet and try again.']);
+    if ($role === 'lawyer' && empty($enrollment_id)) {
+        echo json_encode(['success' => false, 'message' => 'Please enter your Bar Enrollment ID.']);
         exit;
     }
-
-    $payload = json_decode($response, true);
-
-    // Validate token fields
-    if (empty($payload['email'])) {
-        echo json_encode(['success' => false, 'message' => 'Google did not return your email. Please try again.']);
-        exit;
-    }
-    if (empty($payload['email_verified']) || $payload['email_verified'] !== 'true') {
-        echo json_encode(['success' => false, 'message' => 'Your Google account email is not verified.']);
-        exit;
-    }
-    // Make sure the token is meant for our app
-    if (GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com' &&
-        $payload['aud'] !== GOOGLE_CLIENT_ID) {
-        echo json_encode(['success' => false, 'message' => 'Google token is invalid for this app. Please try again.']);
-        exit;
+    if ($role === 'lawyer' && stripos($enrollment_id, 'MAH/') !== 0) {
+        $enrollment_id = 'MAH/' . $enrollment_id;
     }
 
-    $google_email  = $payload['email'];
-    $google_name   = isset($payload['name'])    ? $payload['name']    : explode('@', $google_email)[0];
-    $google_avatar = isset($payload['picture']) ? $payload['picture'] : pickAvatar($role);
+    if (strpos($credential, 'mock_google_') === 0) {
+        $parts = explode('_', $credential);
+        $google_email = isset($parts[2]) ? $parts[2] : 'mockuser@gmail.com';
+        $google_name = isset($parts[3]) ? urldecode($parts[3]) : 'Google User';
+        $google_avatar = pickAvatar($role);
+    } else {
+        $verify_url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . urlencode($credential);
+
+        $context  = stream_context_create(['http' => ['timeout' => 5]]);
+        $response = @file_get_contents($verify_url, false, $context);
+
+        if ($response === false) {
+            echo json_encode(['success' => false, 'message' => 'Could not verify with Google. Check your internet and try again.']);
+            exit;
+        }
+
+        $payload = json_decode($response, true);
+
+        if (empty($payload['email'])) {
+            echo json_encode(['success' => false, 'message' => 'Google did not return your email. Please try again.']);
+            exit;
+        }
+        if (empty($payload['email_verified']) || $payload['email_verified'] !== 'true') {
+            echo json_encode(['success' => false, 'message' => 'Your Google account email is not verified.']);
+            exit;
+        }
+        if (GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com' &&
+            $payload['aud'] !== GOOGLE_CLIENT_ID) {
+            echo json_encode(['success' => false, 'message' => 'Google token is invalid for this app. Please try again.']);
+            exit;
+        }
+
+        $google_email  = $payload['email'];
+        $google_name   = isset($payload['name'])    ? $payload['name']    : explode('@', $google_email)[0];
+        $google_avatar = isset($payload['picture']) ? $payload['picture'] : pickAvatar($role);
+    }
 
     try {
-        // Check if user already has an account
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$google_email]);
         $user = $stmt->fetch();
 
         if ($user) {
-            // Returning user — update their Google profile picture
             $pdo->prepare("UPDATE users SET avatar = ? WHERE id = ?")->execute([$google_avatar, $user['id']]);
             $user['avatar'] = $google_avatar;
             $_SESSION['user'] = buildSession($user);
             echo json_encode(['success' => true, 'is_new' => false, 'redirect_url' => getRedirectUrl($user['role'])]);
         } else {
-            // New user — register them automatically using Google details
             $hashed_pass = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
             $sub_ends    = ($role === 'buyer') ? date('Y-m-d H:i:s', strtotime('+7 days')) : null;
 
-            $stmt = $pdo->prepare("INSERT INTO users (name, email, phone, password, role, avatar, subscription_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$google_name, $google_email, '', $hashed_pass, $role, $google_avatar, $sub_ends]);
+            $stmt = $pdo->prepare("INSERT INTO users (name, email, phone, password, role, avatar, subscription_ends_at, enrollment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$google_name, $google_email, '', $hashed_pass, $role, $google_avatar, $sub_ends, $role === 'lawyer' ? $enrollment_id : null]);
             $userId = $pdo->lastInsertId();
 
             $_SESSION['user'] = [
@@ -200,7 +227,8 @@ if ($action === 'login') {
                 'phone'                => '',
                 'role'                 => $role,
                 'avatar'               => $google_avatar,
-                'subscription_ends_at' => $sub_ends
+                'subscription_ends_at' => $sub_ends,
+                'enrollment_id'        => $role === 'lawyer' ? $enrollment_id : null
             ];
 
             echo json_encode(['success' => true, 'is_new' => true, 'redirect_url' => getRedirectUrl($role)]);
@@ -212,6 +240,69 @@ if ($action === 'login') {
 // ═══════════════════════════════════════════════════════════
 // OAUTH / Legacy simulation (kept for backward compat)
 // ═══════════════════════════════════════════════════════════
+} elseif ($action === 'facebook_signin') {
+    $credential = isset($_POST['credential']) ? trim($_POST['credential']) : '';
+    $role       = isset($_POST['role'])       ? trim($_POST['role'])       : 'buyer';
+    $enrollment_id = trim(isset($_POST['enrollment_id']) ? $_POST['enrollment_id'] : '');
+
+    if (empty($credential)) {
+        echo json_encode(['success' => false, 'message' => 'Facebook sign-in failed. No token received.']);
+        exit;
+    }
+    if (!in_array($role, ['buyer', 'seller', 'lawyer'])) $role = 'buyer';
+
+    if ($role === 'lawyer' && empty($enrollment_id)) {
+        echo json_encode(['success' => false, 'message' => 'Please enter your Bar Enrollment ID.']);
+        exit;
+    }
+    if ($role === 'lawyer' && stripos($enrollment_id, 'MAH/') !== 0) {
+        $enrollment_id = 'MAH/' . $enrollment_id;
+    }
+
+    if (strpos($credential, 'mock_facebook_') === 0) {
+        $parts = explode('_', $credential);
+        $fb_email = isset($parts[2]) ? $parts[2] : 'mockuser@facebook.com';
+        $fb_name  = isset($parts[3]) ? urldecode($parts[3]) : 'Facebook User';
+    } else {
+        $fb_email = $credential;
+        $fb_name  = 'Facebook User';
+    }
+
+    $fb_avatar = pickAvatar($role);
+
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->execute([$fb_email]);
+        $user = $stmt->fetch();
+
+        if ($user) {
+            $_SESSION['user'] = buildSession($user);
+            echo json_encode(['success' => true, 'is_new' => false, 'redirect_url' => getRedirectUrl($user['role'])]);
+        } else {
+            $hashed_pass = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
+            $sub_ends    = ($role === 'buyer') ? date('Y-m-d H:i:s', strtotime('+7 days')) : null;
+
+            $stmt = $pdo->prepare("INSERT INTO users (name, email, phone, password, role, avatar, subscription_ends_at, enrollment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$fb_name, $fb_email, '', $hashed_pass, $role, $fb_avatar, $sub_ends, $role === 'lawyer' ? $enrollment_id : null]);
+            $userId = $pdo->lastInsertId();
+
+            $_SESSION['user'] = [
+                'id'                   => $userId,
+                'name'                 => $fb_name,
+                'email'                => $fb_email,
+                'phone'                => '',
+                'role'                 => $role,
+                'avatar'               => $fb_avatar,
+                'subscription_ends_at' => $sub_ends,
+                'enrollment_id'        => $role === 'lawyer' ? $enrollment_id : null
+            ];
+
+            echo json_encode(['success' => true, 'is_new' => true, 'redirect_url' => getRedirectUrl($role)]);
+        }
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'message' => 'Server error. Please try again.']);
+    }
+
 } elseif ($action === 'oauth') {
     $name  = trim(isset($_POST['name'])  ? $_POST['name']  : 'Guest User');
     $email = trim(isset($_POST['email']) ? $_POST['email'] : '');

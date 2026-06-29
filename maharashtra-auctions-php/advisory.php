@@ -84,7 +84,7 @@ require_once 'includes/header.php';
             </div>
             
             <div class="mt-4 pt-3 border-t border-slate-100 flex justify-center sm:justify-start">
-              <a href="advocate.php?id=<?php echo urlencode($adv['id']); ?>" class="inline-flex items-center space-x-1.5 text-[11px] font-extrabold uppercase tracking-wider text-premium-emerald group-hover:text-emerald-700 transition-colors">
+              <a href="advocate.php?id=<?php echo urlencode($adv['id']); ?>" class="inline-flex items-center space-x-1.5 text-[11px] font-extrabold uppercase tracking-wider text-premium-emerald group-hover:text-emerald-700 transition-colors touch-target">
                 <span>View Full Profile & Case History</span>
                 <i data-lucide="arrow-right" class="h-3.5 w-3.5 transform group-hover:translate-x-1 transition-transform"></i>
               </a>
@@ -147,7 +147,7 @@ require_once 'includes/header.php';
             </select>
           </div>
 
-          <button type="submit" class="w-full bg-premium-emerald hover:bg-premium-emeraldHover text-white py-3 rounded-xl text-sm font-extrabold shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center space-x-2">
+          <button type="submit" class="w-full bg-premium-emerald hover:bg-premium-emeraldHover text-white py-3 rounded-xl text-sm font-extrabold shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center space-x-2 touch-target">
             <span>Schedule Appointment</span>
             <i data-lucide="calendar" class="h-4 w-4"></i>
           </button>

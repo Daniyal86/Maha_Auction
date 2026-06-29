@@ -53,25 +53,58 @@ $properties = $stmt->fetchAll();
 require_once 'includes/header.php';
 ?>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-4 sm:space-y-6">
   
-  <!-- Page Header Title -->
-  <div>
-    <h1 class="text-3xl font-black text-slate-800 tracking-tight flex items-center space-x-2">
-      <i data-lucide="search" class="h-8 w-8 text-premium-emerald"></i>
-      <span>Foreclosure Data Surfing Portal</span>
-    </h1>
-    <p class="text-xs text-slate-500 font-semibold mt-1">Refine and query our secure databases. Toggle Grid or Sheet comparators.</p>
+  <!-- Page Header Title (Reduced height top section by 25-35% + sticky toolbar) -->
+  <div class="sticky top-0 z-30 bg-slate-50/95 backdrop-blur-md py-3 border-b border-slate-200/80 -mx-4 px-4 sm:mx-0 sm:px-0 sm:static sm:bg-transparent sm:backdrop-none sm:py-0 sm:border-b-0">
+    <div class="flex justify-between items-center gap-2">
+      <div>
+        <h1 class="text-xl sm:text-3xl font-black text-slate-800 tracking-tight flex items-center space-x-2">
+          <i data-lucide="search" class="h-6 w-6 sm:h-8 sm:w-8 text-premium-emerald"></i>
+          <span>Foreclosure Portal</span>
+        </h1>
+        <div class="flex items-center space-x-2 mt-0.5">
+          <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+            <?php echo count($properties); ?> SECURED ASSETS
+          </span>
+          <?php if (!empty($q) || !empty($city_filter) || !empty($category_filter) || !empty($type_filter)): ?>
+            <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md truncate max-w-[150px] sm:max-w-xs">
+              Filtered
+            </span>
+          <?php endif; ?>
+        </div>
+      </div>
+      
+      <!-- Compact Right-Aligned View Toggle -->
+      <div class="flex items-center space-x-1 bg-white p-1 rounded-xl border border-slate-200 shadow-sm shrink-0">
+        <button id="btn-grid-view" onclick="toggleViewMode('grid')" title="Grid View" aria-label="Grid View" class="p-2 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 bg-slate-900 text-white shadow-sm transition-all touch-target justify-center min-w-[40px] sm:min-w-0">
+          <i data-lucide="layout-grid" class="h-4 w-4"></i>
+          <span class="hidden sm:inline">Grid</span>
+        </button>
+        <button id="btn-sheet-view" onclick="toggleViewMode('sheet')" title="Compare Sheet" aria-label="Compare Sheet" class="p-2 sm:px-3 sm:py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 text-slate-600 hover:text-slate-900 transition-all touch-target justify-center min-w-[40px] sm:min-w-0">
+          <i data-lucide="table" class="h-4 w-4"></i>
+          <span class="hidden sm:inline">Sheet</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Main Search Panel Layout -->
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
     
     <!-- Sidebar Filters -->
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-md p-6 space-y-6">
-      <h3 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider">Search Filters</h3>
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-md p-4 sm:p-6 space-y-4 sm:space-y-6">
+      <div class="flex items-center justify-between cursor-pointer md:cursor-default" onclick="document.getElementById('mobile-filter-body').classList.toggle('hidden'); document.getElementById('filter-chevron')?.classList.toggle('rotate-180')">
+        <h3 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider flex items-center space-x-2">
+          <i data-lucide="filter" class="h-4 w-4 text-premium-emerald md:hidden"></i>
+          <span>Search Filters</span>
+        </h3>
+        <button type="button" class="text-slate-400 hover:text-slate-600 md:hidden p-1 transition-transform" id="filter-chevron">
+          <i data-lucide="chevron-down" class="h-4 w-4"></i>
+        </button>
+      </div>
       
-      <form method="GET" action="search.php" class="space-y-4">
+      <form id="mobile-filter-body" method="GET" action="search.php" class="space-y-4 hidden md:block">
         <!-- Keyword -->
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Keyword</label>
@@ -131,10 +164,10 @@ require_once 'includes/header.php';
 
         <!-- Submit and Reset Buttons -->
         <div class="grid grid-cols-2 gap-2 pt-2">
-          <button type="submit" class="bg-premium-emerald hover:bg-premium-emeraldHover text-white py-2 rounded-xl text-xs font-extrabold transition-all shadow-md">
+          <button type="submit" class="bg-premium-emerald hover:bg-premium-emeraldHover text-white py-2.5 rounded-xl text-xs font-extrabold transition-all shadow-md touch-target">
             Apply Filters
           </button>
-          <a href="search.php" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center">
+          <a href="search.php" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center touch-target">
             Reset All
           </a>
         </div>
@@ -143,22 +176,6 @@ require_once 'includes/header.php';
 
     <!-- Listings Board (Grid & Compare views) -->
     <div class="lg:col-span-3 space-y-6">
-      <!-- Toolbar -->
-      <div class="flex justify-between items-center bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-        <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-          <?php echo count($properties); ?> SECURED ASSETS FOUND
-        </span>
-        <div class="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-xl">
-          <button id="btn-grid-view" onclick="toggleViewMode('grid')" class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 bg-white text-slate-800 shadow-sm transition-all">
-            <i data-lucide="layout-grid" class="h-3.5 w-3.5"></i>
-            <span class="hidden sm:inline">Grid View</span>
-          </button>
-          <button id="btn-sheet-view" onclick="toggleViewMode('sheet')" class="px-3 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 text-slate-600 hover:text-slate-800 transition-all">
-            <i data-lucide="table" class="h-3.5 w-3.5"></i>
-            <span class="hidden sm:inline">Compare Sheet</span>
-          </button>
-        </div>
-      </div>
 
       <!-- No Results State -->
       <?php if (count($properties) === 0): ?>
@@ -173,60 +190,77 @@ require_once 'includes/header.php';
         </div>
       <?php endif; ?>
 
-      <!-- 1. Grid View Mount -->
-      <div id="grid-view-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- 1. Grid View Mount (2 Cards per row on mobile 320px-767px, 2-3 on desktop) -->
+      <div id="grid-view-container" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-2.5 sm:gap-6">
         <?php foreach ($properties as $prop): ?>
-          <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-lg hover:shadow-xl transition-shadow flex flex-col justify-between">
-            <div class="relative h-48 bg-slate-100 overflow-hidden">
-              <img src="<?php echo htmlspecialchars($prop['image']); ?>" alt="Property Image" class="w-full h-full object-cover">
-              <div class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                <?php echo htmlspecialchars($prop['type']); ?>
+          <div class="bg-white rounded-xl sm:rounded-3xl overflow-hidden border border-slate-200 shadow-sm sm:shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.99] flex flex-col justify-between h-full">
+            
+            <!-- Property Image (110-130px height on mobile, full-width, aspect ratio) -->
+            <div class="relative h-28 sm:h-52 bg-slate-100 overflow-hidden rounded-t-xl sm:rounded-t-3xl">
+              <img src="<?php echo htmlspecialchars($prop['image']); ?>" alt="<?php echo htmlspecialchars($prop['title']); ?>" loading="lazy" class="w-full h-full object-cover">
+              
+              <!-- Status Badges (compact, non-overlapping) -->
+              <div class="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-slate-900/85 backdrop-blur-md text-white text-[9px] sm:text-xs font-bold px-2 py-0.5 sm:px-3 sm:py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center space-x-1 max-w-[46%]">
+                <span class="truncate"><?php echo htmlspecialchars($prop['type']); ?></span>
               </div>
-              <div class="absolute top-4 right-4 bg-emerald-500 text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">
-                <?php echo htmlspecialchars($prop['category']); ?>
+              <div class="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-emerald-500/90 backdrop-blur-md text-white text-[9px] sm:text-xs font-black px-2 py-0.5 sm:px-3 sm:py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center space-x-1 max-w-[46%]">
+                <span class="truncate"><?php echo htmlspecialchars($prop['category']); ?></span>
               </div>
             </div>
             
-            <div class="p-6 space-y-4 flex-grow flex flex-col justify-between">
+            <!-- Card Content Body (Compact internal padding, clean spacing) -->
+            <div class="p-2.5 sm:p-6 space-y-2.5 sm:space-y-4 flex-grow flex flex-col justify-between">
+              
               <div class="space-y-2">
-                <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100 mb-2">
-                  <label class="flex items-center space-x-1.5 cursor-pointer">
-                    <input type="checkbox" class="compare-checkbox text-premium-emerald focus:ring-premium-emerald h-3.5 w-3.5 rounded" data-id="<?php echo htmlspecialchars($prop['id']); ?>" data-title="<?php echo htmlspecialchars($prop['title']); ?>" data-price="<?php echo htmlspecialchars($prop['reserve_price']); ?>" data-emd="<?php echo htmlspecialchars($prop['emd']); ?>" data-gov="<?php echo htmlspecialchars($prop['government_valuation'] ?: 'N/A'); ?>" data-bank="<?php echo htmlspecialchars($prop['bank']); ?>" data-address="<?php echo htmlspecialchars($prop['address']); ?>" data-type="<?php echo htmlspecialchars($prop['type']); ?>" data-category="<?php echo htmlspecialchars($prop['category']); ?>" data-possession="<?php echo htmlspecialchars($prop['possession'] ?: 'N/A'); ?>" data-image="<?php echo htmlspecialchars($prop['image']); ?>" onchange="updateCompareList(this)">
-                    <span class="text-[10px] font-bold text-slate-600">Compare</span>
+                <!-- Compare Row & Property ID Section (Single row layout) -->
+                <div class="flex items-center justify-between bg-slate-50/90 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-slate-100 gap-1">
+                  <label class="flex items-center space-x-1 cursor-pointer shrink-0 min-h-[32px] sm:min-h-[40px] px-1 touch-target">
+                    <input type="checkbox" class="compare-checkbox text-premium-emerald focus:ring-premium-emerald h-3 w-3 sm:h-4 sm:w-4 rounded border-slate-300" data-id="<?php echo htmlspecialchars($prop['id']); ?>" data-title="<?php echo htmlspecialchars($prop['title']); ?>" data-price="<?php echo htmlspecialchars($prop['reserve_price']); ?>" data-emd="<?php echo htmlspecialchars($prop['emd']); ?>" data-gov="<?php echo htmlspecialchars($prop['government_valuation'] ?: 'N/A'); ?>" data-bank="<?php echo htmlspecialchars($prop['bank']); ?>" data-address="<?php echo htmlspecialchars($prop['address']); ?>" data-type="<?php echo htmlspecialchars($prop['type']); ?>" data-category="<?php echo htmlspecialchars($prop['category']); ?>" data-possession="<?php echo htmlspecialchars($prop['possession'] ?: 'N/A'); ?>" data-image="<?php echo htmlspecialchars($prop['image']); ?>" onchange="updateCompareList(this)">
+                    <span class="text-[9px] sm:text-xs font-bold text-slate-700">Compare</span>
                   </label>
-                  <span class="inline-block bg-white border border-slate-200 text-slate-500 font-extrabold px-2 py-0.5 rounded text-[9px] uppercase tracking-wider">
+                  <span class="bg-white border border-slate-200 text-slate-500 font-extrabold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded text-[8px] sm:text-xs tracking-wider truncate max-w-full">
                     ID: <?php echo htmlspecialchars($prop['listing_id']); ?>
                   </span>
                 </div>
-                <h3 class="text-base font-black text-slate-800 leading-snug line-clamp-1"><?php echo htmlspecialchars($prop['title']); ?></h3>
-                <p class="text-xs text-slate-500 font-bold flex items-center space-x-1">
-                  <i data-lucide="map-pin" class="h-3.5 w-3.5 text-premium-emerald shrink-0"></i>
+
+                <!-- Property Title (2 lines clamp, 14px font size) -->
+                <h3 class="text-xs sm:text-lg font-bold sm:font-black text-slate-800 leading-snug line-clamp-2">
+                  <?php echo htmlspecialchars($prop['title']); ?>
+                </h3>
+
+                <!-- Address (Location icon, 1 line truncate, 11-12px font size) -->
+                <p class="text-[11px] sm:text-sm font-semibold text-slate-500 flex items-center space-x-1 truncate">
+                  <i data-lucide="map-pin" class="h-3 w-3 sm:h-4 sm:w-4 text-premium-emerald shrink-0"></i>
                   <span class="truncate"><?php echo htmlspecialchars($prop['address']); ?></span>
                 </p>
               </div>
 
-              <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 grid grid-cols-2 gap-2 text-xs">
-                <div>
-                  <span class="block text-slate-400 font-semibold uppercase tracking-wider">Reserve Price</span>
-                  <span class="font-extrabold text-slate-800"><?php echo htmlspecialchars($prop['reserve_price']); ?></span>
+              <!-- Price & Institution Section (Reserve Price primary focus, 16-18px) -->
+              <div class="space-y-2 sm:space-y-4 pt-1 sm:pt-2 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-lg sm:rounded-2xl p-2 sm:p-4 border border-slate-100">
+                  <span class="block text-[9px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Reserve Price</span>
+                  <span class="text-sm sm:text-2xl font-black text-slate-900 tracking-tight block mt-0.5 truncate">
+                    <?php echo htmlspecialchars($prop['reserve_price']); ?>
+                  </span>
+                  <span class="block text-[10px] sm:text-xs font-extrabold text-slate-600 truncate mt-1 pt-1 border-t border-slate-200/60" title="<?php echo htmlspecialchars($prop['bank']); ?>">
+                    <?php echo htmlspecialchars($prop['bank']); ?>
+                  </span>
                 </div>
-                <div>
-                  <span class="block text-slate-400 font-semibold uppercase tracking-wider">Institution</span>
-                  <span class="font-extrabold text-slate-800 truncate block"><?php echo htmlspecialchars($prop['bank']); ?></span>
-                </div>
+
+                <!-- CTA Button (Full width, 38-42px height on mobile, rounded 10px) -->
+                <a href="property.php?id=<?php echo htmlspecialchars($prop['id']); ?>" class="w-full h-10 sm:h-12 inline-flex items-center justify-center space-x-1.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-white rounded-lg sm:rounded-xl text-xs sm:text-base font-extrabold shadow-sm sm:shadow-md transition-all touch-target">
+                  <span>View Details</span>
+                  <i data-lucide="arrow-up-right" class="h-3.5 w-3.5 sm:h-4 sm:w-4"></i>
+                </a>
               </div>
 
-              <a href="property.php?id=<?php echo htmlspecialchars($prop['id']); ?>" class="w-full inline-flex items-center justify-center space-x-1.5 bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl text-sm font-bold shadow-md transition-all">
-                <span>View Details</span>
-                <i data-lucide="arrow-up-right" class="h-4 w-4"></i>
-              </a>
             </div>
           </div>
         <?php endforeach; ?>
       </div>
 
       <!-- 2. Compare Sheet Table View Mount (Hidden by default) -->
-      <div id="sheet-view-container" class="hidden bg-white rounded-3xl border border-slate-200 shadow-lg overflow-x-auto">
+      <div id="sheet-view-container" class="hidden bg-white rounded-3xl border border-slate-200 shadow-lg responsive-table-wrapper">
         <table class="w-full text-left border-collapse min-w-[700px]">
           <thead>
             <tr class="bg-slate-50 border-b border-slate-200 text-slate-400 text-[10px] font-extrabold uppercase tracking-wider">
@@ -271,7 +305,7 @@ require_once 'includes/header.php';
                   <?php echo htmlspecialchars($prop['government_valuation'] ?: 'N/A'); ?>
                 </td>
                 <td class="px-6 py-4 text-center">
-                  <a href="property.php?id=<?php echo htmlspecialchars($prop['id']); ?>" class="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow transition-all inline-block">
+                  <a href="property.php?id=<?php echo htmlspecialchars($prop['id']); ?>" class="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow transition-all inline-block touch-target">
                     Open
                   </a>
                 </td>
@@ -370,10 +404,11 @@ require_once 'includes/header.php';
     const body = document.getElementById('compare-modal-body');
     
     let html = `
-      <table class="w-full text-left border-collapse border border-slate-200 rounded-2xl overflow-hidden">
-        <thead>
-          <tr class="bg-slate-50 border-b border-slate-200">
-            <th class="px-4 py-3 text-xs font-bold text-slate-400 uppercase w-1/4">Comparison Fields</th>
+      <div class="responsive-table-wrapper">
+        <table class="w-full text-left border-collapse border border-slate-200 rounded-2xl overflow-hidden min-w-[600px]">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200">
+              <th class="px-4 py-3 text-xs font-bold text-slate-400 uppercase w-1/4">Comparison Fields</th>
     `;
     
     selectedProperties.forEach(p => {
@@ -477,7 +512,7 @@ require_once 'includes/header.php';
     selectedProperties.forEach(p => {
       html += `
         <td class="px-4 py-4">
-          <a href="property.php?id=${p.id}" class="inline-flex items-center justify-center space-x-1 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold shadow transition-all w-full text-center">
+          <a href="property.php?id=${p.id}" class="inline-flex items-center justify-center space-x-1 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold shadow transition-all w-full text-center touch-target">
             <span>Open Directory</span>
             <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
           </a>
@@ -490,35 +525,38 @@ require_once 'includes/header.php';
           </tr>
         </tbody>
       </table>
+      </div>
     `;
     
     body.innerHTML = html;
     document.getElementById('compare-modal').classList.remove('hidden');
+    document.body.classList.add('modal-open');
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
   function closeCompareModal() {
     document.getElementById('compare-modal').classList.add('hidden');
+    document.body.classList.remove('modal-open');
   }
 </script>
 
 <!-- Floating Comparison Bar -->
-<div id="compare-bar" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-800 flex items-center justify-between space-x-6 z-40 hidden transition-all max-w-lg w-full">
-  <div class="flex items-center space-x-3">
-    <div class="bg-premium-emerald p-2 rounded-xl text-white">
-      <i data-lucide="git-compare" class="h-5 w-5"></i>
+<div id="compare-bar" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-800 flex items-center justify-between space-x-3 z-40 hidden transition-all max-w-[92vw] sm:max-w-lg w-full">
+  <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
+    <div class="bg-premium-emerald p-2 rounded-xl text-white shrink-0">
+      <i data-lucide="git-compare" class="h-4 w-4 sm:h-5 sm:w-5"></i>
     </div>
-    <div>
-      <h4 class="text-xs font-black tracking-tight" id="compare-count-text">Compare 0 Properties</h4>
-      <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Select up to 3 assets for analysis.</p>
+    <div class="min-w-0">
+      <h4 class="text-xs font-black tracking-tight truncate" id="compare-count-text">Compare 0 Properties</h4>
+      <p class="text-[9px] sm:text-[10px] text-slate-400 font-semibold truncate">Up to 3 assets</p>
     </div>
   </div>
-  <div class="flex space-x-2">
-    <button onclick="clearCompareSelection()" class="px-3 py-1.5 border border-white/10 hover:bg-white/5 rounded-xl text-xs font-bold transition-all">
+  <div class="flex items-center space-x-1.5 shrink-0">
+    <button onclick="clearCompareSelection()" class="px-2.5 py-1.5 border border-white/10 hover:bg-white/5 rounded-xl text-[11px] font-bold transition-all touch-target">
       Clear
     </button>
-    <button onclick="openCompareModal()" class="px-4 py-1.5 bg-premium-emerald hover:bg-premium-emeraldHover text-white rounded-xl text-xs font-extrabold shadow-lg shadow-emerald-500/25 transition-all flex items-center space-x-1">
-      <span>Analyze Side-by-Side</span>
+    <button onclick="openCompareModal()" class="px-3 py-1.5 bg-premium-emerald hover:bg-premium-emeraldHover text-white rounded-xl text-[11px] font-extrabold shadow-lg shadow-emerald-500/25 transition-all flex items-center space-x-1 touch-target">
+      <span>Analyze</span>
       <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
     </button>
   </div>
@@ -527,7 +565,7 @@ require_once 'includes/header.php';
 <!-- Comparison Modal -->
 <div id="compare-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
   <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeCompareModal()"></div>
-  <div class="relative bg-white rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl border border-slate-200 z-10 flex flex-col text-left">
+  <div class="relative bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 z-10 flex flex-col text-left">
     <!-- Modal Header -->
     <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-6 py-6 text-white relative">
       <button onclick="closeCompareModal()" class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/10 hover:bg-black/20 p-2 rounded-full transition-colors">
@@ -541,7 +579,7 @@ require_once 'includes/header.php';
     </div>
     
     <!-- Modal Body -->
-    <div class="p-6 overflow-x-auto max-h-[500px]" id="compare-modal-body">
+    <div class="p-6 overflow-x-auto" id="compare-modal-body">
       <!-- Render comparative table here -->
     </div>
   </div>

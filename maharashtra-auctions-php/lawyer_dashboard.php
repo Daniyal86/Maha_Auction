@@ -43,24 +43,31 @@ require_once 'includes/header.php';
 
   <?php else: ?>
     <!-- Authorized Dashboard Layout -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white/40 backdrop-blur-md p-6 rounded-3xl border border-slate-200/60 shadow-sm">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6 bg-white/40 backdrop-blur-md p-4 sm:p-6 rounded-3xl border border-slate-200/60 shadow-sm">
       <div class="space-y-1">
         <div class="flex items-center space-x-2.5">
-          <div class="h-10 w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-inner">
-            <i data-lucide="briefcase" class="h-5 w-5"></i>
+          <div class="h-9 w-9 sm:h-10 sm:w-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-inner">
+            <i data-lucide="briefcase" class="h-4 w-4 sm:h-5 sm:w-5"></i>
           </div>
           <div>
-            <h1 class="text-2xl font-black text-slate-800 tracking-tight">Legal Command Center</h1>
-            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Dashboard for <?php echo htmlspecialchars($_SESSION['user']['name']); ?></p>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Legal Command Center</h1>
+            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">
+              Dashboard for <?php echo htmlspecialchars($_SESSION['user']['name']); ?>
+              <?php if (!empty($_SESSION['user']['enrollment_id'])): ?>
+                <span class="ml-2 px-2 py-0.5 bg-emerald-50 text-premium-emerald border border-emerald-100 rounded-md text-[10px] font-extrabold normal-case">
+                  Bar ID: <?php echo htmlspecialchars($_SESSION['user']['enrollment_id']); ?>
+                </span>
+              <?php endif; ?>
+            </p>
           </div>
         </div>
       </div>
       
       <!-- Analytics Summary -->
-      <div class="flex space-x-4 w-full md:w-auto">
-        <div class="bg-white flex-1 md:flex-none px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3.5 hover:shadow transition-shadow">
-          <div class="h-10 w-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500 shrink-0">
-            <i data-lucide="eye" class="h-5 w-5"></i>
+      <div class="flex flex-wrap gap-3 w-full md:w-auto">
+        <div class="bg-white flex-1 min-w-[120px] md:flex-none px-4 sm:px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3 sm:space-x-3.5 hover:shadow transition-shadow">
+          <div class="h-9 w-9 sm:h-10 sm:w-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500 shrink-0">
+            <i data-lucide="eye" class="h-4 w-4 sm:h-5 sm:w-5"></i>
           </div>
           <div>
             <span class="block text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">Profile Clicks</span>
@@ -68,9 +75,9 @@ require_once 'includes/header.php';
           </div>
         </div>
         
-        <div class="bg-white flex-1 md:flex-none px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3.5 hover:shadow transition-shadow">
-          <div class="h-10 w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-premium-emerald shrink-0">
-            <i data-lucide="users" class="h-5 w-5"></i>
+        <div class="bg-white flex-1 min-w-[120px] md:flex-none px-4 sm:px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3 sm:space-x-3.5 hover:shadow transition-shadow">
+          <div class="h-9 w-9 sm:h-10 sm:w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-premium-emerald shrink-0">
+            <i data-lucide="users" class="h-4 w-4 sm:h-5 sm:w-5"></i>
           </div>
           <div>
             <span class="block text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">Service Requests</span>
@@ -81,10 +88,12 @@ require_once 'includes/header.php';
     </div>
 
     <!-- Tab Navigation -->
-    <div class="flex space-x-1 border-b border-slate-200">
-      <button onclick="switchLawyerTab('overview')" id="btn-overview" class="px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all">Command Center</button>
-      <button onclick="switchLawyerTab('profile')" id="btn-profile" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all">Public Profile Editor</button>
-      <button onclick="switchLawyerTab('vault')" id="btn-vault" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all">Document Vault</button>
+    <div class="-mx-4 sm:mx-0">
+      <div class="flex overflow-x-auto scrollbar-hide border-b border-slate-200 px-4 sm:px-0">
+        <button onclick="switchLawyerTab('overview')" id="btn-overview" class="shrink-0 px-5 sm:px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all whitespace-nowrap">Command Center</button>
+        <button onclick="switchLawyerTab('profile')" id="btn-profile" class="shrink-0 px-5 sm:px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all whitespace-nowrap">Public Profile Editor</button>
+        <button onclick="switchLawyerTab('vault')" id="btn-vault" class="shrink-0 px-5 sm:px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all whitespace-nowrap">Document Vault</button>
+      </div>
     </div>
 
     <div id="tab-overview" class="block space-y-10">
@@ -160,7 +169,7 @@ require_once 'includes/header.php';
               <span>Section 13(2) Notice Draftsman</span>
             </h3>
             
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">Financial Institution Name</label>
                 <input type="text" id="draft-bank" value="UNION BANK OF INDIA" oninput="compileDraft()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald font-semibold">
@@ -171,7 +180,7 @@ require_once 'includes/header.php';
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">Total Outstanding (Rs.)</label>
                 <input type="text" id="draft-dues" value="4,12,45,000" oninput="compileDraft()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald font-semibold">
@@ -237,7 +246,7 @@ require_once 'includes/header.php';
         </div>
 
         <form class="space-y-6">
-          <div class="grid grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">Consultation Fee (₹)</label>
               <input type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800" placeholder="e.g. 5000">
@@ -293,17 +302,26 @@ require_once 'includes/header.php';
       if (!btn || !content) return;
 
       if (t === tab) {
-        btn.className = "px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all";
+        btn.className = "shrink-0 px-5 sm:px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all whitespace-nowrap";
         content.classList.remove('hidden');
         content.classList.add('block');
       } else {
-        btn.className = "px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all";
+        btn.className = "shrink-0 px-5 sm:px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all whitespace-nowrap";
         content.classList.add('hidden');
         content.classList.remove('block');
       }
     });
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab && ['overview', 'profile', 'vault'].includes(tab)) {
+      switchLawyerTab(tab);
+    }
+  });
+
 
   let noticeLang = 'en';
 
@@ -393,11 +411,13 @@ ${address}
     const canvasContent = document.getElementById('notice-canvas-sheet').textContent;
     document.getElementById('modal-notice-content').textContent = canvasContent;
     document.getElementById('notice-preview-modal').classList.remove('hidden');
+    document.body.classList.add('modal-open');
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
   function closeNoticePreviewModal() {
     document.getElementById('notice-preview-modal').classList.add('hidden');
+    document.body.classList.remove('modal-open');
   }
 
   function copyNoticeToClipboard() {
@@ -444,9 +464,9 @@ ${address}
 <!-- Notice Preview Modal -->
 <div id="notice-preview-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
   <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeNoticePreviewModal()"></div>
-  <div class="relative bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl border border-slate-200 z-10 flex flex-col text-left">
+  <div class="relative bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl border border-slate-200 z-10 flex flex-col text-left">
     <!-- Modal Header -->
-    <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-6 py-4 text-white flex justify-between items-center">
+    <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-6 py-4 text-white flex justify-between items-center shrink-0">
       <div>
         <h3 class="text-sm font-black uppercase tracking-wider">SARFAESI Section 13(2) Notice Draftsman</h3>
       </div>
@@ -456,7 +476,7 @@ ${address}
     </div>
 
     <!-- A4 Letterhead Preview Container -->
-    <div class="p-6 bg-slate-100 overflow-y-auto max-h-[400px]">
+    <div class="p-4 sm:p-6 bg-slate-100 overflow-y-auto max-h-[60vh] sm:max-h-[400px]">
       <div id="print-letterhead" class="bg-white p-8 shadow-md border border-slate-200 mx-auto max-w-[595px] min-h-[500px] font-serif text-slate-800 text-[11px] leading-relaxed whitespace-pre-line relative">
         <!-- Letterhead Banner -->
         <div class="border-b-2 border-slate-900 pb-4 mb-6 text-center">
@@ -469,17 +489,17 @@ ${address}
     </div>
 
     <!-- Modal Actions -->
-    <div class="bg-slate-50 border-t border-slate-100 px-6 py-4 flex justify-between items-center">
+    <div class="bg-slate-50 border-t border-slate-100 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-3 shrink-0">
       <span class="text-[10px] text-slate-400 font-bold uppercase flex items-center space-x-1">
         <i data-lucide="shield-check" class="h-4 w-4 text-emerald-500"></i>
         <span>Verified SARFAESI Act compliant draft</span>
       </span>
-      <div class="flex space-x-3">
-        <button onclick="copyNoticeToClipboard()" class="px-4 py-2 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all flex items-center space-x-1.5">
+      <div class="flex space-x-3 w-full sm:w-auto justify-end">
+        <button onclick="copyNoticeToClipboard()" class="px-4 py-2 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold text-slate-700 transition-all flex items-center space-x-1.5 touch-target">
           <i data-lucide="copy" class="h-4 w-4"></i>
           <span id="copy-btn-text">Copy Text</span>
         </button>
-        <button onclick="triggerPrintFromModal()" class="px-5 py-2 bg-premium-emerald hover:bg-premium-emeraldHover text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5">
+        <button onclick="triggerPrintFromModal()" class="px-5 py-2 bg-premium-emerald hover:bg-premium-emeraldHover text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 touch-target">
           <i data-lucide="printer" class="h-4 w-4"></i>
           <span>Print / Save PDF</span>
         </button>

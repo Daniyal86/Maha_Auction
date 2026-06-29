@@ -70,6 +70,21 @@ require_once __DIR__ . '/../config/google.php';
     .animate-scan {
       animation: scanEffect 2s infinite ease-in-out;
     }
+    /* Hide scrollbar for clean horizontal tab scroll on mobile */
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    /* Mobile-friendly touch improvements */
+    @media (max-width: 640px) {
+      .dashboard-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col antialiased">
@@ -89,42 +104,102 @@ require_once __DIR__ . '/../config/google.php';
         </div>
 
         <!-- Desktop Navigation Items -->
-        <div class="hidden md:flex items-center space-x-8">
-          <?php if (!$is_dashboard): ?>
-            <a href="index.php" class="<?php echo $current_page == 'index.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Home</a>
-            <a href="search.php" class="<?php echo $current_page == 'search.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Data Surfing</a>
-            <a href="advisory.php" class="<?php echo $current_page == 'advisory.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Legal Guidance (Adv)</a>
-            <a href="agents.php" class="<?php echo $current_page == 'agents.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Verified Agents</a>
-            <a href="about.php" class="<?php echo $current_page == 'about.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">About</a>
-            
-            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'buyer'): ?>
-              <a href="buyer_dashboard.php" class="<?php echo $current_page == 'buyer_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Buyer Dashboard</a>
-            <?php endif; ?>
-
-            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'seller'): ?>
-              <a href="seller_dashboard.php" class="<?php echo $current_page == 'seller_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Seller Dashboard</a>
-            <?php endif; ?>
-
-            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'lawyer'): ?>
-              <a href="lawyer_dashboard.php" class="<?php echo $current_page == 'lawyer_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Lawyer Dashboard</a>
-            <?php endif; ?>
-
-            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
-              <a href="admin_dashboard.php" class="<?php echo $current_page == 'admin_dashboard.php' ? 'text-premium-emerald border-premium-emerald' : 'text-slate-600 border-transparent hover:text-slate-900'; ?> border-b-2 py-2 text-sm font-semibold transition-all">Admin Dashboard</a>
-            <?php endif; ?>
-          <?php else: ?>
-            <a href="index.php" class="text-slate-650 hover:text-slate-900 border-b-2 border-transparent hover:border-slate-300 py-2 text-sm font-bold transition-all flex items-center space-x-1.5">
-              <i data-lucide="arrow-left" class="h-4 w-4"></i>
-              <span>Back to Main Site</span>
-            </a>
-            <span class="text-premium-emerald border-premium-emerald border-b-2 py-2 text-sm font-extrabold uppercase tracking-wider transition-all">
-              <?php 
-                if ($current_page === 'admin_dashboard.php') echo 'Admin Portal';
-                elseif ($current_page === 'buyer_dashboard.php') echo 'Buyer Portal';
-                elseif ($current_page === 'seller_dashboard.php') echo 'Seller Portal';
-                elseif ($current_page === 'lawyer_dashboard.php') echo 'Lawyer Portal';
-              ?>
-            </span>
+        <div class="hidden md:flex items-center space-x-6">
+          <a href="index.php" class="<?php echo $current_page == 'index.php' ? 'text-premium-emerald border-premium-emerald font-bold' : 'text-slate-655 border-transparent hover:text-slate-900 font-semibold'; ?> border-b-2 py-2 text-sm transition-all">Home</a>
+          <a href="search.php" class="<?php echo $current_page == 'search.php' ? 'text-premium-emerald border-premium-emerald font-bold' : 'text-slate-655 border-transparent hover:text-slate-900 font-semibold'; ?> border-b-2 py-2 text-sm transition-all">Data Surfing</a>
+          <a href="advisory.php" class="<?php echo $current_page == 'advisory.php' ? 'text-premium-emerald border-premium-emerald font-bold' : 'text-slate-655 border-transparent hover:text-slate-900 font-semibold'; ?> border-b-2 py-2 text-sm transition-all">Legal Guidance</a>
+          <a href="agents.php" class="<?php echo $current_page == 'agents.php' ? 'text-premium-emerald border-premium-emerald font-bold' : 'text-slate-655 border-transparent hover:text-slate-900 font-semibold'; ?> border-b-2 py-2 text-sm transition-all">Verified Agents</a>
+          <a href="about.php" class="<?php echo $current_page == 'about.php' ? 'text-premium-emerald border-premium-emerald font-bold' : 'text-slate-655 border-transparent hover:text-slate-900 font-semibold'; ?> border-b-2 py-2 text-sm transition-all">About</a>
+          
+          <?php if (isset($_SESSION['user'])): ?>
+            <!-- Dashboard Portal Dropdown -->
+            <div class="relative group py-2">
+              <button class="flex items-center space-x-1 text-slate-700 hover:text-slate-900 font-bold text-sm focus:outline-none transition-all">
+                <i data-lucide="layout-dashboard" class="h-4 w-4 text-premium-emerald"></i>
+                <span>
+                  <?php 
+                    if ($_SESSION['user']['role'] === 'admin') echo 'Admin Portal';
+                    elseif ($_SESSION['user']['role'] === 'buyer') echo 'Buyer Portal';
+                    elseif ($_SESSION['user']['role'] === 'seller') echo 'Seller Portal';
+                    elseif ($_SESSION['user']['role'] === 'lawyer') echo 'Lawyer Portal';
+                  ?>
+                </span>
+                <i data-lucide="chevron-down" class="h-4 w-4 text-slate-400 group-hover:rotate-180 transition-transform duration-200"></i>
+              </button>
+              
+              <!-- Dropdown Menu -->
+              <div class="absolute left-0 mt-2 w-56 rounded-2xl bg-white border border-slate-150 shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform translate-y-1 group-hover:translate-y-0">
+                <?php if ($_SESSION['user']['role'] === 'buyer'): ?>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('buyer_dashboard.php', 'overview', 'switchBuyerTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="layout" class="h-4 w-4 text-slate-400"></i>
+                    <span>Overview</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('buyer_dashboard.php', 'bids', 'switchBuyerTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="gavel" class="h-4 w-4 text-slate-400"></i>
+                    <span>My Bids & Offers</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('buyer_dashboard.php', 'settings', 'switchBuyerTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="settings" class="h-4 w-4 text-slate-400"></i>
+                    <span>Settings & Billing</span>
+                  </a>
+                <?php elseif ($_SESSION['user']['role'] === 'seller'): ?>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('seller_dashboard.php', 'overview', 'switchSellerTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="store" class="h-4 w-4 text-slate-400"></i>
+                    <span>Command Center</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('seller_dashboard.php', 'analytics', 'switchSellerTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="bar-chart-2" class="h-4 w-4 text-slate-400"></i>
+                    <span>Property Analytics</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('seller_dashboard.php', 'kyc', 'switchSellerTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="shield" class="h-4 w-4 text-slate-400"></i>
+                    <span>Account & KYC</span>
+                  </a>
+                <?php elseif ($_SESSION['user']['role'] === 'lawyer'): ?>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('lawyer_dashboard.php', 'overview', 'switchLawyerTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="scale" class="h-4 w-4 text-slate-400"></i>
+                    <span>Command Center</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('lawyer_dashboard.php', 'profile', 'switchLawyerTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="user-check" class="h-4 w-4 text-slate-400"></i>
+                    <span>Profile Editor</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('lawyer_dashboard.php', 'vault', 'switchLawyerTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="folder-lock" class="h-4 w-4 text-slate-400"></i>
+                    <span>Document Vault</span>
+                  </a>
+                <?php elseif ($_SESSION['user']['role'] === 'admin'): ?>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'stats', 'switchAdminTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="pie-chart" class="h-4 w-4 text-slate-400"></i>
+                    <span>Overview Stats</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'users', 'switchAdminTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="users" class="h-4 w-4 text-slate-400"></i>
+                    <span>Users Registry</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'listings', 'switchAdminTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="home" class="h-4 w-4 text-slate-400"></i>
+                    <span>Properties Directory</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'add_property', 'switchAdminTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="plus-circle" class="h-4 w-4 text-slate-400"></i>
+                    <span>Post New Property</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'leads', 'switchAdminTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="calendar" class="h-4 w-4 text-slate-400"></i>
+                    <span>Leads Board</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'consults', 'switchAdminTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="message-square" class="h-4 w-4 text-slate-400"></i>
+                    <span>Consultations</span>
+                  </a>
+                  <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'agents', 'switchAdminTab')" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-premium-emerald rounded-lg mx-2 transition-colors">
+                    <i data-lucide="users-2" class="h-4 w-4 text-slate-400"></i>
+                    <span>Agents & Cities</span>
+                  </a>
+                <?php endif; ?>
+              </div>
+            </div>
           <?php endif; ?>
         </div>
 
@@ -158,40 +233,97 @@ require_once __DIR__ . '/../config/google.php';
 
     <!-- Mobile Drawer -->
     <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-2 shadow-inner">
-      <?php if (!$is_dashboard): ?>
-        <a href="index.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'index.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Home</a>
-        <a href="search.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'search.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Data Surfing</a>
-        <a href="advisory.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'advisory.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Legal Guidance (Adv)</a>
-        <a href="agents.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'agents.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Verified Agents</a>
-        <a href="about.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'about.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">About</a>
-        
-        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'buyer'): ?>
-          <a href="buyer_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'buyer_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Buyer Dashboard</a>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'seller'): ?>
-          <a href="seller_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'seller_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Seller Dashboard</a>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'lawyer'): ?>
-          <a href="lawyer_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'lawyer_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Lawyer Dashboard</a>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
-          <a href="admin_dashboard.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'admin_dashboard.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Admin Dashboard</a>
-        <?php endif; ?>
-      <?php else: ?>
-        <a href="index.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold text-slate-700 hover:bg-slate-50">
-          <i data-lucide="arrow-left" class="inline-block h-4 w-4 mr-1.5 align-middle"></i>
-          <span class="align-middle">Back to Main Site</span>
-        </a>
-        <div class="block px-3 py-2.5 rounded-lg text-base font-bold text-premium-emerald bg-emerald-50">
-          <?php 
-            if ($current_page === 'admin_dashboard.php') echo 'Admin Portal';
-            elseif ($current_page === 'buyer_dashboard.php') echo 'Buyer Portal';
-            elseif ($current_page === 'seller_dashboard.php') echo 'Seller Portal';
-            elseif ($current_page === 'lawyer_dashboard.php') echo 'Lawyer Portal';
-          ?>
+      <a href="index.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'index.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Home</a>
+      <a href="search.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'search.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Data Surfing</a>
+      <a href="advisory.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'advisory.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Legal Guidance</a>
+      <a href="agents.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'agents.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">Verified Agents</a>
+      <a href="about.php" class="block px-3 py-2.5 rounded-lg text-base font-semibold <?php echo $current_page == 'about.php' ? 'text-premium-emerald bg-emerald-50' : 'text-slate-700 hover:bg-slate-50'; ?>">About</a>
+      
+      <?php if (isset($_SESSION['user'])): ?>
+        <!-- Mobile Portal Links -->
+        <div class="border-t border-slate-100 pt-2 mt-2">
+          <div class="px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
+            <i data-lucide="layout-dashboard" class="h-4 w-4 text-premium-emerald"></i>
+            <span>
+              <?php 
+                if ($_SESSION['user']['role'] === 'admin') echo 'Admin Portal';
+                elseif ($_SESSION['user']['role'] === 'buyer') echo 'Buyer Portal';
+                elseif ($_SESSION['user']['role'] === 'seller') echo 'Seller Portal';
+                elseif ($_SESSION['user']['role'] === 'lawyer') echo 'Lawyer Portal';
+              ?>
+            </span>
+          </div>
+          <div class="pl-4 space-y-1 mt-1">
+            <?php if ($_SESSION['user']['role'] === 'buyer'): ?>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('buyer_dashboard.php', 'overview', 'switchBuyerTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="layout" class="h-4 w-4 text-slate-400"></i>
+                <span>Overview</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('buyer_dashboard.php', 'bids', 'switchBuyerTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="gavel" class="h-4 w-4 text-slate-400"></i>
+                <span>My Bids & Offers</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('buyer_dashboard.php', 'settings', 'switchBuyerTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="settings" class="h-4 w-4 text-slate-400"></i>
+                <span>Settings & Billing</span>
+              </a>
+            <?php elseif ($_SESSION['user']['role'] === 'seller'): ?>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('seller_dashboard.php', 'overview', 'switchSellerTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="store" class="h-4 w-4 text-slate-400"></i>
+                <span>Command Center</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('seller_dashboard.php', 'analytics', 'switchSellerTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="bar-chart-2" class="h-4 w-4 text-slate-400"></i>
+                <span>Property Analytics</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('seller_dashboard.php', 'kyc', 'switchSellerTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="shield" class="h-4 w-4 text-slate-400"></i>
+                <span>Account & KYC</span>
+              </a>
+            <?php elseif ($_SESSION['user']['role'] === 'lawyer'): ?>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('lawyer_dashboard.php', 'overview', 'switchLawyerTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="scale" class="h-4 w-4 text-slate-400"></i>
+                <span>Command Center</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('lawyer_dashboard.php', 'profile', 'switchLawyerTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="user-check" class="h-4 w-4 text-slate-400"></i>
+                <span>Profile Editor</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('lawyer_dashboard.php', 'vault', 'switchLawyerTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="folder-lock" class="h-4 w-4 text-slate-400"></i>
+                <span>Document Vault</span>
+              </a>
+            <?php elseif ($_SESSION['user']['role'] === 'admin'): ?>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'stats', 'switchAdminTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="pie-chart" class="h-4 w-4 text-slate-400"></i>
+                <span>Overview Stats</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'users', 'switchAdminTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="users" class="h-4 w-4 text-slate-400"></i>
+                <span>Users Registry</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'listings', 'switchAdminTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="home" class="h-4 w-4 text-slate-400"></i>
+                <span>Properties Directory</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'add_property', 'switchAdminTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="plus-circle" class="h-4 w-4 text-slate-400"></i>
+                <span>Post New Property</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'leads', 'switchAdminTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="calendar" class="h-4 w-4 text-slate-400"></i>
+                <span>Leads Board</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'consults', 'switchAdminTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="message-square" class="h-4 w-4 text-slate-400"></i>
+                <span>Consultations</span>
+              </a>
+              <a href="javascript:void(0)" onclick="navigateToDashboardTab('admin_dashboard.php', 'agents', 'switchAdminTab')" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-premium-emerald">
+                <i data-lucide="users-2" class="h-4 w-4 text-slate-600"></i>
+                <span>Agents & Cities</span>
+              </a>
+            <?php endif; ?>
+          </div>
         </div>
       <?php endif; ?>
 
@@ -219,12 +351,51 @@ require_once __DIR__ . '/../config/google.php';
   </nav>
 
   <script>
-    // Toggle Mobile Navigation Drawer
+    // Tab routing and hot-switching helper
+    function navigateToDashboardTab(page, tabName, switcherFunc) {
+      // Clean path check for current page
+      const currentPath = window.location.pathname;
+      if (currentPath.endsWith(page) || (page === 'index.php' && (currentPath.endsWith('/') || currentPath === ''))) {
+        if (typeof window[switcherFunc] === 'function') {
+          window[switcherFunc](tabName);
+          // Auto close mobile drawer
+          const mobileMenu = document.getElementById('mobile-menu');
+          if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+            document.body.classList.remove('modal-open');
+            const mobileToggle = document.getElementById('mobile-menu-toggle');
+            if (mobileToggle) {
+              const icon = mobileToggle.querySelector('i');
+              if (icon) {
+                icon.setAttribute('data-lucide', 'menu');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+              }
+            }
+          }
+          return;
+        }
+      }
+      window.location.href = page + '?tab=' + tabName;
+    }
+
+    // Toggle Mobile Navigation Drawer with animated icon swap
     const mobileToggle = document.getElementById('mobile-menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     if (mobileToggle && mobileMenu) {
       mobileToggle.addEventListener('click', () => {
+        const isOpen = !mobileMenu.classList.contains('hidden');
         mobileMenu.classList.toggle('hidden');
+        if (isOpen) {
+          document.body.classList.remove('modal-open');
+        } else {
+          document.body.classList.add('modal-open');
+        }
+        // Swap icon
+        const icon = mobileToggle.querySelector('i');
+        if (icon) {
+          icon.setAttribute('data-lucide', isOpen ? 'menu' : 'x');
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
       });
     }
   </script>

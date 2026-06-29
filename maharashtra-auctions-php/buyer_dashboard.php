@@ -135,24 +135,24 @@ require_once 'includes/header.php';
 
   <?php else: ?>
     <!-- Authorized Dashboard Layout -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white/40 backdrop-blur-md p-6 rounded-3xl border border-slate-200/60 shadow-sm">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6 bg-white/40 backdrop-blur-md p-4 sm:p-6 rounded-3xl border border-slate-200/60 shadow-sm">
       <div class="space-y-1">
         <div class="flex items-center space-x-2.5">
-          <div class="h-10 w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-premium-emerald shadow-inner animate-pulse">
-            <i data-lucide="layout-dashboard" class="h-6 w-6"></i>
+          <div class="h-9 w-9 sm:h-10 sm:w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-premium-emerald shadow-inner animate-pulse">
+            <i data-lucide="layout-dashboard" class="h-5 w-5 sm:h-6 sm:w-6"></i>
           </div>
           <div>
-            <h1 class="text-2xl font-black text-slate-800 tracking-tight">Buyer Control Center</h1>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Buyer Control Center</h1>
             <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Bidder Profile for <?php echo htmlspecialchars($user_name); ?></p>
           </div>
         </div>
       </div>
       
       <!-- Stats Summary -->
-      <div class="flex space-x-4 w-full md:w-auto">
-        <div class="bg-white flex-1 md:flex-none px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3.5 hover:shadow transition-shadow">
-          <div class="h-10 w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-premium-emerald shrink-0">
-            <i data-lucide="calendar" class="h-5 w-5"></i>
+      <div class="flex flex-wrap gap-3 w-full md:w-auto">
+        <div class="bg-white flex-1 min-w-[120px] md:flex-none px-4 sm:px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3 sm:space-x-3.5 hover:shadow transition-shadow">
+          <div class="h-9 w-9 sm:h-10 sm:w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-premium-emerald shrink-0">
+            <i data-lucide="calendar" class="h-4 w-4 sm:h-5 sm:w-5"></i>
           </div>
           <div>
             <span class="block text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">Inspections</span>
@@ -160,9 +160,9 @@ require_once 'includes/header.php';
           </div>
         </div>
         
-        <div class="bg-white flex-1 md:flex-none px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3.5 hover:shadow transition-shadow">
-          <div class="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 shrink-0">
-            <i data-lucide="file-text" class="h-5 w-5"></i>
+        <div class="bg-white flex-1 min-w-[120px] md:flex-none px-4 sm:px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3 sm:space-x-3.5 hover:shadow transition-shadow">
+          <div class="h-9 w-9 sm:h-10 sm:w-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 shrink-0">
+            <i data-lucide="file-text" class="h-4 w-4 sm:h-5 sm:w-5"></i>
           </div>
           <div>
             <span class="block text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">Consultations</span>
@@ -173,10 +173,12 @@ require_once 'includes/header.php';
     </div>
 
     <!-- Tab Navigation -->
-    <div class="flex space-x-1 border-b border-slate-200">
-      <button onclick="switchBuyerTab('overview')" id="btn-overview" class="px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all">Overview</button>
-      <button onclick="switchBuyerTab('bids')" id="btn-bids" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all">My Bids & Offers</button>
-      <button onclick="switchBuyerTab('settings')" id="btn-settings" class="px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all">Settings & Billing</button>
+    <div class="-mx-4 sm:mx-0">
+      <div class="flex overflow-x-auto scrollbar-hide border-b border-slate-200 px-4 sm:px-0">
+        <button onclick="switchBuyerTab('overview')" id="btn-overview" class="shrink-0 px-5 sm:px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all whitespace-nowrap">Overview</button>
+        <button onclick="switchBuyerTab('bids')" id="btn-bids" class="shrink-0 px-5 sm:px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all whitespace-nowrap">My Bids & Offers</button>
+        <button onclick="switchBuyerTab('settings')" id="btn-settings" class="shrink-0 px-5 sm:px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all whitespace-nowrap">Settings & Billing</button>
+      </div>
     </div>
 
     <div id="tab-overview" class="block space-y-10">
@@ -226,7 +228,7 @@ require_once 'includes/header.php';
               <p class="text-xs text-slate-400 font-medium">Unlock full access to newspaper notices, ready reckoner valuation audits, and guided inspector site visits.</p>
               <form method="POST" action="buyer_dashboard.php" class="pt-2">
                 <input type="hidden" name="activate_trial" value="1">
-                <button type="submit" class="w-full bg-premium-emerald hover:bg-premium-emeraldHover text-white py-2.5 rounded-xl text-xs font-extrabold shadow-md transition-all flex items-center justify-center space-x-1.5 active:scale-[0.98]">
+                <button type="submit" class="w-full bg-premium-emerald hover:bg-premium-emeraldHover text-white py-2.5 rounded-xl text-xs font-extrabold shadow-md transition-all flex items-center justify-center space-x-1.5 active:scale-[0.98] touch-target">
                   <i data-lucide="zap" class="h-3.5 w-3.5"></i>
                   <span>Activate 7-Day Free Pass</span>
                 </button>
@@ -263,7 +265,7 @@ require_once 'includes/header.php';
               <input type="text" name="phone" placeholder="98XXXXXXXX" value="<?php echo htmlspecialchars($user_phone); ?>" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
             </div>
 
-            <button type="submit" class="w-full bg-gradient-to-r from-premium-emerald to-teal-600 hover:from-premium-emeraldHover hover:to-teal-700 text-white py-3 rounded-xl text-xs font-extrabold transition-all hover:shadow-lg hover:shadow-emerald-500/10 flex items-center justify-center space-x-1.5 active:scale-[0.98]">
+            <button type="submit" class="w-full bg-gradient-to-r from-premium-emerald to-teal-600 hover:from-premium-emeraldHover hover:to-teal-700 text-white py-3 rounded-xl text-xs font-extrabold transition-all hover:shadow-lg hover:shadow-emerald-500/10 flex items-center justify-center space-x-1.5 active:scale-[0.98] touch-target">
               <i data-lucide="save" class="h-4 w-4"></i>
               <span>Save & Sync Inspections</span>
             </button>
@@ -584,16 +586,25 @@ require_once 'includes/header.php';
       if (!btn || !content) return;
 
       if (t === tab) {
-        btn.className = "px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all";
+        btn.className = "shrink-0 px-5 sm:px-6 py-3 text-sm font-black border-b-2 border-premium-emerald text-premium-emerald transition-all whitespace-nowrap";
         content.classList.remove('hidden');
         content.classList.add('block');
       } else {
-        btn.className = "px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all";
+        btn.className = "shrink-0 px-5 sm:px-6 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-all whitespace-nowrap";
         content.classList.add('hidden');
         content.classList.remove('block');
       }
     });
   }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab && ['overview', 'bids', 'settings'].includes(tab)) {
+      switchBuyerTab(tab);
+    }
+  });
+
   // Cost Calculator Calculations
   const calcSlider = document.getElementById('cost-calc-slider');
   const calcPriceLbl = document.getElementById('cost-calc-price-lbl');

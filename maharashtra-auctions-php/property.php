@@ -273,7 +273,7 @@ require_once 'includes/header.php';
             <?php endif; ?>
           </div>
 
-          <button onclick="openTrialModal('Property Detail Alert')" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl text-sm font-bold shadow-md transition-all flex items-center justify-center space-x-1.5">
+          <button onclick="openTrialModal('Property Detail Alert')" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl text-sm font-bold shadow-md transition-all flex items-center justify-center space-x-1.5 touch-target">
             <i data-lucide="bell" class="h-4 w-4"></i>
             <span>Add Foreclosure Tracking Alert</span>
           </button>
@@ -343,7 +343,7 @@ require_once 'includes/header.php';
                 <input type="text" id="sched-phone" required placeholder="9876543210" class="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-400 font-semibold placeholder-slate-500">
               </div>
 
-              <button type="submit" class="w-full bg-premium-emerald hover:bg-premium-emeraldHover text-white py-3 rounded-xl text-sm font-extrabold shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center space-x-1.5">
+              <button type="submit" class="w-full bg-premium-emerald hover:bg-premium-emeraldHover text-white py-3 rounded-xl text-sm font-extrabold shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center space-x-1.5 touch-target">
                 <span>Book Free Inspector Visit</span>
                 <i data-lucide="arrow-right" class="h-4 w-4"></i>
               </button>

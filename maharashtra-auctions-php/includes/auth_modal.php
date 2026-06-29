@@ -7,7 +7,7 @@
   <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeAuthModal()"></div>
 
   <!-- Modal Card -->
-  <div id="auth-modal-card" class="relative bg-white rounded-3xl w-full max-w-sm shadow-2xl border border-slate-100 z-10 overflow-hidden transform scale-95 transition-all duration-300">
+  <div id="auth-modal-card" class="relative bg-white rounded-3xl w-full max-w-sm sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 z-10 transform scale-95 transition-all duration-300">
 
     <!-- Top colored header -->
     <div class="bg-gradient-to-br from-emerald-600 to-teal-700 px-6 py-7 text-white relative overflow-hidden">
@@ -94,25 +94,26 @@
           <span>Login to My Account</span>
         </button>
 
-        <?php if (defined('GOOGLE_CLIENT_ID') && GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com'): ?>
         <div class="relative flex py-2 items-center">
           <div class="flex-grow border-t border-slate-200"></div>
-          <span class="flex-shrink-0 mx-4 text-slate-400 text-[10px] uppercase font-bold tracking-wider">Or</span>
+          <span class="flex-shrink-0 mx-4 text-slate-400 text-[10px] uppercase font-bold tracking-wider">Or continue with</span>
           <div class="flex-grow border-t border-slate-200"></div>
         </div>
 
-        <div class="flex justify-center w-full">
-          <div class="g_id_signin"
-               data-type="standard"
-               data-shape="rectangular"
-               data-theme="outline"
-               data-text="signin_with"
-               data-size="large"
-               data-logo_alignment="left"
-               data-width="300">
-          </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <button type="button" onclick="triggerSocialAuth('google')" class="flex items-center justify-center gap-2 px-3 py-2 border border-slate-200 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm transition-all">
+            <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21.35 11.1H12v2.7h5.38C16.88 15.65 14.77 17 12 17a5 5 0 1 1 0-10 4.86 4.86 0 0 1 3.47 1.43l2-2A7.88 7.88 0 0 0 12 4 8 8 0 1 0 20 12c0-.3-.03-.6-.08-.9z" fill="#4285F4"/>
+            </svg>
+            <span>Google</span>
+          </button>
+          <button type="button" onclick="triggerSocialAuth('facebook')" class="flex items-center justify-center gap-2 px-3 py-2 border border-slate-200 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm transition-all">
+            <svg class="h-5 w-5 text-[#1877F2] shrink-0" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            <span>Facebook</span>
+          </button>
         </div>
-        <?php endif; ?>
 
         <p class="text-center text-xs text-slate-500">
           Don't have an account?
@@ -128,7 +129,7 @@
           <label class="block text-xs font-bold text-slate-600 mb-2">I want to join as a...</label>
           <div class="grid grid-cols-3 gap-2">
             <label class="cursor-pointer">
-              <input type="radio" name="reg-role" value="buyer" checked class="peer sr-only">
+              <input type="radio" name="reg-role" value="buyer" checked onchange="handleRoleChange(this.value)" class="peer sr-only">
               <div class="flex flex-col items-center p-3 border border-slate-200 rounded-2xl transition-all text-slate-500 peer-checked:text-premium-emerald peer-checked:border-premium-emerald peer-checked:bg-emerald-50 hover:bg-slate-50 hover:border-slate-300">
                 <i data-lucide="search" class="h-5 w-5"></i>
                 <span class="text-[11px] font-bold mt-1">Buyer</span>
@@ -136,7 +137,7 @@
               </div>
             </label>
             <label class="cursor-pointer">
-              <input type="radio" name="reg-role" value="seller" class="peer sr-only">
+              <input type="radio" name="reg-role" value="seller" onchange="handleRoleChange(this.value)" class="peer sr-only">
               <div class="flex flex-col items-center p-3 border border-slate-200 rounded-2xl transition-all text-slate-500 peer-checked:text-premium-emerald peer-checked:border-premium-emerald peer-checked:bg-emerald-50 hover:bg-slate-50 hover:border-slate-300">
                 <i data-lucide="home" class="h-5 w-5"></i>
                 <span class="text-[11px] font-bold mt-1">Seller</span>
@@ -144,7 +145,7 @@
               </div>
             </label>
             <label class="cursor-pointer">
-              <input type="radio" name="reg-role" value="lawyer" class="peer sr-only">
+              <input type="radio" name="reg-role" value="lawyer" onchange="handleRoleChange(this.value)" class="peer sr-only">
               <div class="flex flex-col items-center p-3 border border-slate-200 rounded-2xl transition-all text-slate-500 peer-checked:text-premium-emerald peer-checked:border-premium-emerald peer-checked:bg-emerald-50 hover:bg-slate-50 hover:border-slate-300">
                 <i data-lucide="scale" class="h-5 w-5"></i>
                 <span class="text-[11px] font-bold mt-1">Lawyer</span>
@@ -176,8 +177,18 @@
           <label class="block text-xs font-bold text-slate-600 mb-1.5">Mobile Number</label>
           <div class="relative">
             <i data-lucide="phone" class="absolute left-3.5 top-3 h-4 w-4 text-slate-400"></i>
-            <input type="tel" id="reg-phone" placeholder="e.g. 9876543210"
+            <input type="tel" id="reg-phone" required placeholder="e.g. 9876543210"
               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-premium-emerald focus:bg-white transition-all text-slate-800">
+          </div>
+        </div>
+
+        <!-- Bar Enrollment ID field (shown only for lawyer) -->
+        <div id="reg-enrollment-wrapper" class="hidden">
+          <label class="block text-xs font-bold text-slate-600 mb-1.5">Bar Enrollment ID</label>
+          <div class="flex rounded-xl bg-slate-50 border border-slate-200 focus-within:border-premium-emerald focus-within:bg-white transition-all overflow-hidden relative">
+            <span class="bg-slate-100 border-r border-slate-200 px-3.5 py-2.5 text-sm font-bold text-slate-500 flex items-center select-none shrink-0">MAH/</span>
+            <input type="text" id="reg-enrollment" placeholder="12345/2026"
+              class="w-full px-3.5 py-2.5 bg-transparent border-0 focus:outline-none text-sm text-slate-800 font-semibold">
           </div>
         </div>
 
@@ -199,25 +210,26 @@
           <span>Create My Account</span>
         </button>
 
-        <?php if (defined('GOOGLE_CLIENT_ID') && GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com'): ?>
         <div class="relative flex py-2 items-center">
           <div class="flex-grow border-t border-slate-200"></div>
-          <span class="flex-shrink-0 mx-4 text-slate-400 text-[10px] uppercase font-bold tracking-wider">Or</span>
+          <span class="flex-shrink-0 mx-4 text-slate-400 text-[10px] uppercase font-bold tracking-wider">Or continue with</span>
           <div class="flex-grow border-t border-slate-200"></div>
         </div>
 
-        <div class="flex justify-center w-full">
-          <div class="g_id_signin"
-               data-type="standard"
-               data-shape="rectangular"
-               data-theme="outline"
-               data-text="signup_with"
-               data-size="large"
-               data-logo_alignment="left"
-               data-width="300">
-          </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <button type="button" onclick="triggerSocialAuth('google')" class="flex items-center justify-center gap-2 px-3 py-2 border border-slate-200 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm transition-all">
+            <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21.35 11.1H12v2.7h5.38C16.88 15.65 14.77 17 12 17a5 5 0 1 1 0-10 4.86 4.86 0 0 1 3.47 1.43l2-2A7.88 7.88 0 0 0 12 4 8 8 0 1 0 20 12c0-.3-.03-.6-.08-.9z" fill="#4285F4"/>
+            </svg>
+            <span>Google</span>
+          </button>
+          <button type="button" onclick="triggerSocialAuth('facebook')" class="flex items-center justify-center gap-2 px-3 py-2 border border-slate-200 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-sm transition-all">
+            <svg class="h-5 w-5 text-[#1877F2] shrink-0" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            <span>Facebook</span>
+          </button>
         </div>
-        <?php endif; ?>
 
         <p class="text-center text-xs text-slate-500">
           Already have an account?
@@ -243,6 +255,7 @@
     const wrapper = document.getElementById('auth-modal-wrapper');
     const card = document.getElementById('auth-modal-card');
     wrapper.classList.remove('hidden');
+    document.body.classList.add('modal-open');
     setTimeout(() => {
       card.classList.remove('scale-95');
       card.classList.add('scale-100');
@@ -256,6 +269,7 @@
     const card = document.getElementById('auth-modal-card');
     card.classList.remove('scale-100');
     card.classList.add('scale-95');
+    document.body.classList.remove('modal-open');
     setTimeout(() => { wrapper.classList.add('hidden'); }, 200);
   }
 
@@ -289,6 +303,8 @@
         <h2 class="text-xl font-black tracking-tight">Create Your Free Account</h2>
         <p class="text-emerald-100/80 text-xs mt-1">It only takes a few seconds!</p>
       `;
+      const roleEl = document.querySelector('input[name="reg-role"]:checked');
+      if (roleEl) handleRoleChange(roleEl.value);
     }
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -371,6 +387,19 @@
       });
   }
 
+  function handleRoleChange(val) {
+    const wrapper = document.getElementById('reg-enrollment-wrapper');
+    const input = document.getElementById('reg-enrollment');
+    if (!wrapper || !input) return;
+    if (val === 'lawyer') {
+      wrapper.classList.remove('hidden');
+      input.required = true;
+    } else {
+      wrapper.classList.add('hidden');
+      input.required = false;
+    }
+  }
+
   // ---- REGISTER ----
   function handleRegisterSubmit(e) {
     e.preventDefault();
@@ -384,7 +413,14 @@
 
     if (!name)           { showError('Please enter your full name.'); return; }
     if (!email)          { showError('Please enter your email address.'); return; }
+    if (!phone)          { showError('Please enter your mobile number.'); return; }
     if (password.length < 6) { showError('Password must be at least 6 characters long.'); return; }
+
+    let enrollmentId = '';
+    if (role === 'lawyer') {
+      enrollmentId = document.getElementById('reg-enrollment').value.trim();
+      if (!enrollmentId) { showError('Please enter your Bar Enrollment ID.'); return; }
+    }
 
     setButtonLoading('register-btn', true);
 
@@ -394,6 +430,7 @@
     data.append('phone', phone);
     data.append('password', password);
     data.append('role', role);
+    data.append('enrollment_id', enrollmentId);
     data.append('action', 'register');
 
     fetch('api/auth.php', { method: 'POST', body: data })
@@ -415,7 +452,178 @@
       });
   }
 
-  // ---- GOOGLE SIGN-IN ----
+  // ---- GOOGLE SIGN-IN & SOCIAL AUTH ----
+  function triggerSocialAuth(provider) {
+    let enrollmentId = '';
+    let selectedRole = 'buyer';
+    if (authMode === 'register') {
+      const roleEl = document.querySelector('input[name="reg-role"]:checked');
+      if (roleEl) selectedRole = roleEl.value;
+
+      if (selectedRole === 'lawyer') {
+        enrollmentId = document.getElementById('reg-enrollment').value.trim();
+        if (!enrollmentId) {
+          showError('Please enter your Bar Enrollment ID before signing up with social account.');
+          document.getElementById('reg-enrollment').focus();
+          return;
+        }
+      }
+    }
+
+    const mockDialogHtml = `
+      <div id="mock-social-dialog-overlay" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeMockSocialDialog()"></div>
+        <div id="mock-social-dialog-card" class="relative bg-white rounded-3xl w-full max-w-sm shadow-2xl border border-slate-100 p-6 z-10 space-y-6 text-center transform scale-95 transition-all duration-300">
+          <div class="flex flex-col items-center">
+            ${provider === 'google' ? `
+              <div class="h-14 w-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shadow-inner mb-3">
+                <svg class="h-8 w-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21.35 11.1H12v2.7h5.38C16.88 15.65 14.77 17 12 17a5 5 0 1 1 0-10 4.86 4.86 0 0 1 3.47 1.43l2-2A7.88 7.88 0 0 0 12 4 8 8 0 1 0 20 12c0-.3-.03-.6-.08-.9z" fill="#4285F4"/>
+                </svg>
+              </div>
+              <h3 class="text-base font-black text-slate-800">Sign in with Google</h3>
+              <p class="text-xs text-slate-400 font-semibold mt-1">Select a demo profile or enter custom details</p>
+            ` : `
+              <div class="h-14 w-14 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center shadow-inner mb-3">
+                <svg class="h-8 w-8 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </div>
+              <h3 class="text-base font-black text-slate-800">Sign in with Facebook</h3>
+              <p class="text-xs text-slate-400 font-semibold mt-1">Select a demo profile or enter custom details</p>
+            `}
+          </div>
+
+          <div class="space-y-2 text-left">
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Quick Select Profile</label>
+            <div class="grid grid-cols-1 gap-2">
+              <button type="button" onclick="selectMockProfile('Ramesh Patil', 'ramesh@gmail.com', 'buyer', '${provider}', '${selectedRole}', '${enrollmentId}')" class="flex items-center justify-between p-3 border border-slate-150 rounded-2xl hover:bg-slate-50 transition-all text-left w-full">
+                <div>
+                  <div class="text-xs font-black text-slate-800">Ramesh Patil (Buyer)</div>
+                  <div class="text-[10px] text-slate-400 font-semibold">ramesh@gmail.com</div>
+                </div>
+                <span class="text-[9px] bg-emerald-50 text-premium-emerald border border-emerald-100 px-2 py-0.5 rounded-full font-bold uppercase">Buyer</span>
+              </button>
+              <button type="button" onclick="selectMockProfile('Suresh Kumar', 'suresh@gmail.com', 'seller', '${provider}', '${selectedRole}', '${enrollmentId}')" class="flex items-center justify-between p-3 border border-slate-150 rounded-2xl hover:bg-slate-50 transition-all text-left w-full">
+                <div>
+                  <div class="text-xs font-black text-slate-800">Suresh Kumar (Seller)</div>
+                  <div class="text-[10px] text-slate-400 font-semibold">suresh@gmail.com</div>
+                </div>
+                <span class="text-[9px] bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded-full font-bold uppercase">Seller</span>
+              </button>
+              <button type="button" onclick="selectMockProfile('Adv. Sajid Kureshi', 'sajid@mahaauctions.com', 'lawyer', '${provider}', '${selectedRole}', '${enrollmentId}')" class="flex items-center justify-between p-3 border border-slate-150 rounded-2xl hover:bg-slate-50 transition-all text-left w-full">
+                <div>
+                  <div class="text-xs font-black text-slate-800">Adv. Sajid Kureshi (Lawyer)</div>
+                  <div class="text-[10px] text-slate-400 font-semibold">sajid@mahaauctions.com</div>
+                </div>
+                <span class="text-[9px] bg-indigo-50 text-indigo-600 border border-indigo-100 px-2 py-0.5 rounded-full font-bold uppercase">Lawyer</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="relative flex py-1.5 items-center">
+            <div class="flex-grow border-t border-slate-200"></div>
+            <span class="flex-shrink-0 mx-3 text-slate-400 text-[10px] uppercase font-bold tracking-wider">Or custom</span>
+            <div class="flex-grow border-t border-slate-200"></div>
+          </div>
+
+          <div class="space-y-3 text-left">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Full Name</label>
+              <input type="text" id="mock-custom-name" placeholder="e.g. John Doe" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-1">Email Address</label>
+              <input type="email" id="mock-custom-email" placeholder="e.g. john@example.com" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald font-semibold text-slate-800">
+            </div>
+          </div>
+
+          <button type="button" onclick="submitCustomMockSocial('${provider}', '${selectedRole}', '${enrollmentId}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl text-sm font-extrabold shadow transition-all">
+            Proceed to ${provider === 'google' ? 'Google' : 'Facebook'} Sign In
+          </button>
+        </div>
+      </div>
+    `;
+
+    const container = document.createElement('div');
+    container.id = 'mock-social-container';
+    container.innerHTML = mockDialogHtml;
+    document.body.appendChild(container);
+
+    setTimeout(() => {
+      const card = document.getElementById('mock-social-dialog-card');
+      if (card) {
+        card.classList.remove('scale-95');
+        card.classList.add('scale-100');
+      }
+    }, 10);
+  }
+
+  function closeMockSocialDialog() {
+    const container = document.getElementById('mock-social-container');
+    if (!container) return;
+    const card = document.getElementById('mock-social-dialog-card');
+    if (card) {
+      card.classList.remove('scale-100');
+      card.classList.add('scale-95');
+    }
+    setTimeout(() => { container.remove(); }, 200);
+  }
+
+  function selectMockProfile(name, email, role, provider, registerRole, enrollmentId) {
+    let finalRole = role;
+    if (authMode === 'register') {
+      finalRole = registerRole;
+    }
+    submitMockSocialAuth(provider, name, email, finalRole, enrollmentId);
+  }
+
+  function submitCustomMockSocial(provider, role, enrollmentId) {
+    const name = document.getElementById('mock-custom-name').value.trim();
+    const email = document.getElementById('mock-custom-email').value.trim();
+    if (!name || !email) {
+      alert('Please fill out custom name and email address.');
+      return;
+    }
+    submitMockSocialAuth(provider, name, email, role, enrollmentId);
+  }
+
+  function submitMockSocialAuth(provider, name, email, role, enrollmentId) {
+    closeMockSocialDialog();
+    clearMessages();
+    setButtonLoading(authMode === 'login' ? 'login-btn' : 'register-btn', true);
+
+    const action = provider === 'facebook' ? 'facebook_signin' : 'google_signin';
+    const credential = `mock_${provider}_${encodeURIComponent(email)}_${encodeURIComponent(name)}`;
+
+    const data = new FormData();
+    data.append('credential', credential);
+    data.append('role', role);
+    data.append('enrollment_id', enrollmentId);
+    data.append('action', action);
+
+    fetch('api/auth.php', { method: 'POST', body: data })
+      .then(r => r.json())
+      .then(res => {
+        if (res.success) {
+          showSuccess(res.is_new ? 'Social account registered! Logging in...' : 'Social login successful!');
+          setTimeout(() => window.location.href = res.redirect_url, 800);
+        } else {
+          setButtonLoading(authMode === 'login' ? 'login-btn' : 'register-btn', false, 
+            authMode === 'login' ? '<i data-lucide="log-in" class="h-4 w-4"></i><span>Login to My Account</span>' : '<i data-lucide="user-plus" class="h-4 w-4"></i><span>Create My Account</span>');
+          showError(res.message || 'Social sign-in failed. Please try again.');
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+      })
+      .catch(() => {
+        setButtonLoading(authMode === 'login' ? 'login-btn' : 'register-btn', false, 
+          authMode === 'login' ? '<i data-lucide="log-in" class="h-4 w-4"></i><span>Login to My Account</span>' : '<i data-lucide="user-plus" class="h-4 w-4"></i><span>Create My Account</span>');
+        showError('Could not connect. Please check your internet and try again.');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      });
+  }
+
+  // ---- GOOGLE CALLBACK (Real OAuth) ----
   function handleGoogleCallback(response) {
     clearMessages();
     setButtonLoading(authMode === 'login' ? 'login-btn' : 'register-btn', true);
@@ -423,13 +631,18 @@
     const data = new FormData();
     data.append('credential', response.credential);
     
-    // If we're on the register tab, respect the buyer/seller role choice
     let role = 'buyer';
+    let enrollmentId = '';
     if (authMode === 'register') {
       const roleEl = document.querySelector('input[name="reg-role"]:checked');
       if (roleEl) role = roleEl.value;
+
+      if (role === 'lawyer') {
+        enrollmentId = document.getElementById('reg-enrollment').value.trim();
+      }
     }
     data.append('role', role);
+    data.append('enrollment_id', enrollmentId);
     data.append('action', 'google_signin');
 
     fetch('api/auth.php', { method: 'POST', body: data })

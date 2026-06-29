@@ -6,7 +6,7 @@
   <!-- Backdrop overlay -->
   <div id="trial-modal-close" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeTrialModal()"></div>
 
-  <div class="relative bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl border border-slate-200 z-10 p-6 flex flex-col text-left">
+  <div class="relative bg-white rounded-3xl w-full max-w-sm max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 z-10 p-6 flex flex-col text-left">
     <button onclick="closeTrialModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
       <i data-lucide="x" class="h-5 w-5"></i>
     </button>
@@ -41,7 +41,7 @@
   <!-- Backdrop overlay -->
   <div id="agent-modal-close" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeAgentModal()"></div>
 
-  <div class="relative bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl border border-slate-200 z-10 p-6 flex flex-col text-left">
+  <div class="relative bg-white rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 z-10 p-6 flex flex-col text-left">
     <button onclick="closeAgentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
       <i data-lucide="x" class="h-5 w-5"></i>
     </button>
@@ -89,11 +89,13 @@
   function openTrialModal(campaign) {
     document.getElementById('trial-campaign').value = campaign || 'General Portal';
     document.getElementById('trial-modal-wrapper').classList.remove('hidden');
+    document.body.classList.add('modal-open');
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
   function closeTrialModal() {
     document.getElementById('trial-modal-wrapper').classList.add('hidden');
+    document.body.classList.remove('modal-open');
   }
 
   function handleTrialSubmit(e) {
@@ -145,11 +147,13 @@
     document.getElementById('agent-modal-id').value = agentId;
     document.getElementById('agent-modal-title-name').textContent = "Inquiry assigned to: " + agentName;
     document.getElementById('agent-modal-wrapper').classList.remove('hidden');
+    document.body.classList.add('modal-open');
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
   function closeAgentModal() {
     document.getElementById('agent-modal-wrapper').classList.add('hidden');
+    document.body.classList.remove('modal-open');
   }
 
   function handleAgentConnectSubmit(e) {
