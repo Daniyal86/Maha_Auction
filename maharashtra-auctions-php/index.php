@@ -104,7 +104,7 @@ require_once 'includes/header.php';
 
 <!-- Mobile Bottom Sheet for District Selection -->
 <div id="district-bottom-sheet-backdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-[500] hidden transition-opacity duration-300" onclick="closeBottomSheet()"></div>
-<div id="district-bottom-sheet" class="fixed inset-x-0 bottom-0 z-[501] bg-white rounded-t-3xl p-5 border-t border-slate-200 shadow-2xl transition-transform duration-300 transform translate-y-full max-w-lg mx-auto sm:hidden">
+<div id="district-bottom-sheet" class="fixed inset-x-0 bottom-0 z-[501] bg-white rounded-t-3xl p-5 border-t border-slate-200 shadow-2xl transition-transform duration-300 transform translate-y-full max-w-lg mx-auto md:hidden">
   <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mb-3 cursor-pointer" onclick="closeBottomSheet()"></div>
   <div class="flex justify-between items-start mb-3">
     <div>
@@ -315,10 +315,56 @@ require_once 'includes/header.php';
   };
 
   document.addEventListener('DOMContentLoaded', () => {
-    // Map center at Maharashtra average coordinates
+    // Responsive view logic
+    const isMobileView = () => window.innerWidth < 768;
+    const getInitialZoom = () => isMobileView() ? 5.8 : 6.8;
+    const getInitialCenter = () => isMobileView() ? [19.3000, 76.5000] : [19.6000, 75.8000];
+
+    // Initialize Leaflet map with support for fractional zooms and responsive boundaries
     const map = L.map('leaflet-landing-map', {
-      scrollWheelZoom: false
-    }).setView([19.6000, 75.8000], 6.8);
+      scrollWheelZoom: false,
+      zoomSnap: 0.1,
+      zoomDelta: 0.5,
+      minZoom: 5,
+      maxZoom: 10
+    }).setView(getInitialCenter(), getInitialZoom());
+
+    let geoLayer = null;
+    let hoveredFeature = null;
+
+    const fitMapToState = () => {
+      if (geoLayer) {
+        map.fitBounds(geoLayer.getBounds(), {
+          padding: isMobileView() ? [5, 5] : [30, 30],
+          animate: false
+        });
+      }
+    };
+
+    // Invalidate map size to prevent gray zones and rendering glitches
+    setTimeout(() => {
+      map.invalidateSize();
+      fitMapToState();
+    }, 100);
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        map.invalidateSize();
+        fitMapToState();
+      }, 200);
+    });
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        map.invalidateSize();
+        fitMapToState();
+        if (window.innerWidth >= 768) {
+          if (typeof closeBottomSheet === 'function') closeBottomSheet();
+        }
+      }, 250);
+    });
 
     // Clean CartoDB Voyager No-Labels tile layer so GeoJSON polygons and district titles stand out clearly
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
@@ -329,8 +375,6 @@ require_once 'includes/header.php';
     fetch('./assets/maharashtra_districts.geojson')
       .then(res => res.json())
       .then(geojsonData => {
-        let geoLayer;
-
         geoLayer = L.geoJSON(geojsonData, {
           style: (feature) => {
             const distName = feature.properties.district;
@@ -408,20 +452,24 @@ require_once 'includes/header.php';
               </div>
             `;
 
-            if (window.innerWidth >= 768) {
-              layer.bindTooltip(tooltipContent, {
-                sticky: true,
-                direction: 'auto',
-                opacity: 1,
-                className: 'premium-district-tooltip'
-              });
-            }
+            layer.bindTooltip(tooltipContent, {
+              sticky: true,
+              direction: 'auto',
+              opacity: 1,
+              offset: [15, 15],
+              className: 'premium-district-tooltip'
+            });
 
             // Hover & Touch interactions
             layer.on({
               mouseover: (e) => {
                 if (window.innerWidth >= 768) {
                   const l = e.target;
+                  if (hoveredFeature && hoveredFeature !== l) {
+                    geoLayer.resetStyle(hoveredFeature);
+                  }
+                  hoveredFeature = l;
+
                   l.setStyle({
                     weight: 3,
                     color: '#ffffff',
@@ -434,7 +482,11 @@ require_once 'includes/header.php';
               },
               mouseout: (e) => {
                 if (window.innerWidth >= 768) {
-                  geoLayer.resetStyle(e.target);
+                  const l = e.target;
+                  geoLayer.resetStyle(l);
+                  if (hoveredFeature === l) {
+                    hoveredFeature = null;
+                  }
                 }
               },
               click: () => {
@@ -448,6 +500,32 @@ require_once 'includes/header.php';
             });
           }
         }).addTo(map);
+
+        // Auto-fit bounds of GeoJSON to center the state perfectly on all devices
+        fitMapToState();
+
+        // Ensure the hovered styles and tooltips clean up perfectly when mouse leaves the map container
+        const resetHoverState = () => {
+          if (hoveredFeature) {
+            geoLayer.resetStyle(hoveredFeature);
+            hoveredFeature = null;
+          }
+          map.closeTooltip();
+        };
+
+        // 1. Leaflet map-level mouseout event
+        map.on('mouseout', resetHoverState);
+
+        // 2. Native DOM mouseleave and mouseout events on map container
+        const mapContainer = document.getElementById('leaflet-landing-map');
+        if (mapContainer) {
+          mapContainer.addEventListener('mouseleave', resetHoverState);
+          mapContainer.addEventListener('mouseout', (e) => {
+            if (!mapContainer.contains(e.relatedTarget)) {
+              resetHoverState();
+            }
+          });
+        }
 
         // Render permanent high-visibility Marathi text labels for all 35 districts directly from computed centroids
         Object.keys(districtCentroids).forEach(dName => {

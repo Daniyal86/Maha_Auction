@@ -114,3 +114,27 @@ body.modal-open {
   overflow: hidden !important;
 }
 
+/* Premium District Tooltip Customization */
+.premium-district-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+}
+
+.premium-district-tooltip * {
+  pointer-events: none !important;
+}
+
+.premium-district-tooltip::before {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .premium-district-tooltip {
+    display: none !important;
+  }
+}
+
