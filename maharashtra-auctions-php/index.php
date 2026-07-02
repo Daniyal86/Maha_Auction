@@ -49,7 +49,7 @@ require_once 'includes/header.php';
 </div>
 
 <!-- Interactive Leaflet Map Section (Mobile Edge-to-Edge with 12-16px outer padding) -->
-<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 pb-2 sm:py-12">
+<div class="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 pb-2 sm:py-12">
   <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-lg overflow-hidden p-3 sm:p-6 space-y-3 sm:space-y-6">
     
     <!-- Cleaner Header (📍 Maharashtra Command Center) -->
@@ -68,7 +68,7 @@ require_once 'includes/header.php';
     </div>
 
     <!-- Horizontally Scrollable District Statistics Chips -->
-    <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold -mx-1 px-1">
+    <div class="flex items-center space-x-2 overflow-x-auto scrollbar-hide py-1 text-xs font-bold -mx-1 px-1">
       <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider shrink-0 mr-1">Active:</span>
       <?php foreach ($cities as $c): if($c['property_count'] > 0): ?>
         <button type="button" onclick="focusDistrict('<?php echo urlencode($c['name']); ?>')" class="inline-flex items-center space-x-1.5 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 px-2.5 py-1 rounded-full border border-slate-200/80 shrink-0 transition-colors text-[11px] sm:text-xs">
@@ -136,7 +136,7 @@ require_once 'includes/header.php';
     </a>
   </div>
 
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
     <?php foreach ($properties as $prop): ?>
       <div class="bg-white rounded-xl sm:rounded-3xl overflow-hidden border border-slate-200 shadow-sm sm:shadow-md hover:shadow-xl transition-shadow flex flex-col justify-between">
         <div class="relative h-28 sm:h-44 bg-slate-100 overflow-hidden">
@@ -334,8 +334,9 @@ require_once 'includes/header.php';
 
     const fitMapToState = () => {
       if (geoLayer) {
+        map.invalidateSize();
         map.fitBounds(geoLayer.getBounds(), {
-          padding: isMobileView() ? [5, 5] : [30, 30],
+          padding: isMobileView() ? [20, 20] : [30, 30],
           animate: false
         });
       }
