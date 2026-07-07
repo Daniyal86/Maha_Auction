@@ -492,16 +492,19 @@ require_once 'includes/header.php';
 
 <!-- Bank Partners Marquee Section -->
 <?php
-$marquee_banks = [
+$national_banks = [
     ['name' => 'State Bank of India', 'logo' => 'sbi.svg'],
     ['name' => 'Bank of Baroda', 'logo' => 'bob.svg'],
     ['name' => 'Punjab National Bank', 'logo' => 'pnb.svg'],
-    ['name' => 'Axis Bank', 'logo' => 'axis_bank.svg'],
     ['name' => 'Union Bank of India', 'logo' => 'ubi.svg'],
     ['name' => 'Indian Bank', 'logo' => 'indian.svg'],
-    ['name' => 'Saraswat Bank', 'logo' => 'saraswat.png'],
     ['name' => 'Punjab & Sind Bank', 'logo' => 'psb.svg'],
-    ['name' => 'Axis Finance', 'logo' => 'axis_finance.svg'],
+];
+
+$other_banks = [
+    ['name' => 'Axis Bank', 'logo' => 'axis_bank.svg'],
+    ['name' => 'Axis Finance', 'logo' => 'axis-finance-logo-long-2017.png'],
+    ['name' => 'Saraswat Bank', 'logo' => 'saraswat.png'],
     ['name' => 'Ujjivan Small Finance', 'logo' => 'ujjivan.svg'],
 ];
 ?>
@@ -514,17 +517,17 @@ $marquee_banks = [
   </div>
 
   <div class="relative w-full space-y-4">
-    <!-- Row 1: Flowing Left -->
+    <!-- Row 1: National Banks (Flowing Left) -->
     <div class="marquee-container overflow-hidden w-full relative flex">
       <div class="marquee-left-inner flex gap-8 whitespace-nowrap">
-        <!-- Loop 1 -->
-        <?php foreach ($marquee_banks as $mb): ?>
+        <!-- Loop 1 (6 items) -->
+        <?php foreach ($national_banks as $mb): ?>
           <div class="inline-flex items-center justify-center bg-white border border-slate-100/90 px-5 py-3 rounded-2xl shadow-xs shrink-0 select-none h-14 sm:h-16 w-32 sm:w-40">
             <img src="assets/bank-logos/<?php echo $mb['logo']; ?>" alt="<?php echo $mb['name']; ?>" class="h-8 sm:h-9 max-w-full object-contain transition-transform duration-300 hover:scale-105">
           </div>
         <?php endforeach; ?>
-        <!-- Loop 2 (Duplicate for seamless loop) -->
-        <?php foreach ($marquee_banks as $mb): ?>
+        <!-- Loop 2 (Duplicate for seamless loop - 6 items) -->
+        <?php foreach ($national_banks as $mb): ?>
           <div class="inline-flex items-center justify-center bg-white border border-slate-100/90 px-5 py-3 rounded-2xl shadow-xs shrink-0 select-none h-14 sm:h-16 w-32 sm:w-40">
             <img src="assets/bank-logos/<?php echo $mb['logo']; ?>" alt="<?php echo $mb['name']; ?>" class="h-8 sm:h-9 max-w-full object-contain transition-transform duration-300 hover:scale-105">
           </div>
@@ -532,17 +535,23 @@ $marquee_banks = [
       </div>
     </div>
 
-    <!-- Row 2: Flowing Right -->
+    <!-- Row 2: Private & Other Banks (Flowing Right) -->
     <div class="marquee-container overflow-hidden w-full relative flex">
       <div class="marquee-right-inner flex gap-8 whitespace-nowrap">
-        <!-- Loop 1 -->
-        <?php foreach ($marquee_banks as $mb): ?>
+        <!-- Loop 1 (4 items) -->
+        <?php foreach ($other_banks as $mb): ?>
           <div class="inline-flex items-center justify-center bg-white border border-slate-100/90 px-5 py-3 rounded-2xl shadow-xs shrink-0 select-none h-14 sm:h-16 w-32 sm:w-40">
             <img src="assets/bank-logos/<?php echo $mb['logo']; ?>" alt="<?php echo $mb['name']; ?>" class="h-8 sm:h-9 max-w-full object-contain transition-transform duration-300 hover:scale-105">
           </div>
         <?php endforeach; ?>
-        <!-- Loop 2 (Duplicate for seamless loop) -->
-        <?php foreach ($marquee_banks as $mb): ?>
+        <!-- Loop 2 (4 items) -->
+        <?php foreach ($other_banks as $mb): ?>
+          <div class="inline-flex items-center justify-center bg-white border border-slate-100/90 px-5 py-3 rounded-2xl shadow-xs shrink-0 select-none h-14 sm:h-16 w-32 sm:w-40">
+            <img src="assets/bank-logos/<?php echo $mb['logo']; ?>" alt="<?php echo $mb['name']; ?>" class="h-8 sm:h-9 max-w-full object-contain transition-transform duration-300 hover:scale-105">
+          </div>
+        <?php endforeach; ?>
+        <!-- Loop 3 (Duplicate to reach 12 items for balanced scroll width) -->
+        <?php foreach ($other_banks as $mb): ?>
           <div class="inline-flex items-center justify-center bg-white border border-slate-100/90 px-5 py-3 rounded-2xl shadow-xs shrink-0 select-none h-14 sm:h-16 w-32 sm:w-40">
             <img src="assets/bank-logos/<?php echo $mb['logo']; ?>" alt="<?php echo $mb['name']; ?>" class="h-8 sm:h-9 max-w-full object-contain transition-transform duration-300 hover:scale-105">
           </div>
