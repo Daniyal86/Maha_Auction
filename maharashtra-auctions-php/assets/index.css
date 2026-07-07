@@ -138,3 +138,217 @@ body.modal-open {
   }
 }
 
+/* Centroid labels pointer-events override */
+.district-centroid-label {
+  pointer-events: none !important;
+}
+
+/* Responsive aspect-ratio for landing map */
+#leaflet-landing-map {
+  width: 100%;
+  height: auto !important;
+  aspect-ratio: 1.38 / 1;
+}
+
+@media (min-width: 768px) {
+  #leaflet-landing-map {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (min-width: 1024px) {
+  #leaflet-landing-map {
+    aspect-ratio: 2 / 1;
+    max-height: 580px;
+  }
+}
+
+/* Premium 3D Hero Section Styles */
+.hero-3d-scene {
+  perspective: 1600px;
+  transform-style: preserve-3d;
+}
+
+.hero-track-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.card-track {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 270px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.card-track-left {
+  left: 30%;
+  transform: translate3d(-50%, 0, 0) rotateY(calc(16deg + var(--mouse-x, 0) * 10deg)) rotateX(calc(8deg - var(--mouse-y, 0) * 8deg)) rotateZ(-3deg);
+  animation: scroll-up 45s linear infinite;
+}
+
+.card-track-right {
+  left: 70%;
+  transform: translate3d(-50%, 0, 0) rotateY(calc(-16deg + var(--mouse-x, 0) * 10deg)) rotateX(calc(8deg - var(--mouse-y, 0) * 8deg)) rotateZ(3deg);
+  animation: scroll-down 45s linear infinite;
+}
+
+.card-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-up {
+  0% { transform: translate3d(-50%, 0px, 0) rotateY(calc(16deg + var(--mouse-x, 0) * 10deg)) rotateX(calc(8deg - var(--mouse-y, 0) * 8deg)) rotateZ(-3deg); }
+  100% { transform: translate3d(-50%, -50%, 0) rotateY(calc(16deg + var(--mouse-x, 0) * 10deg)) rotateX(calc(8deg - var(--mouse-y, 0) * 8deg)) rotateZ(-3deg); }
+}
+
+@keyframes scroll-down {
+  0% { transform: translate3d(-50%, -50%, 0) rotateY(calc(-16deg + var(--mouse-x, 0) * 10deg)) rotateX(calc(8deg - var(--mouse-y, 0) * 8deg)) rotateZ(3deg); }
+  100% { transform: translate3d(-50%, 0px, 0) rotateY(calc(-16deg + var(--mouse-x, 0) * 10deg)) rotateX(calc(8deg - var(--mouse-y, 0) * 8deg)) rotateZ(3deg); }
+}
+
+.hero-3d-card {
+  position: relative;
+  width: 270px;
+  height: 200px;
+  margin-bottom: 32px; /* Space out cards to prevent overlapping */
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  overflow: visible; /* Let badge/image pop out */
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.5s ease;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+/* Alternate 3D translation & rotation for natural overlap */
+.hero-3d-card:nth-child(odd) {
+  transform: translateZ(20px) rotateY(-5deg);
+}
+
+.hero-3d-card:nth-child(even) {
+  transform: translateZ(50px) rotateY(5deg);
+}
+
+/* Highlight/pop state for front-most cards */
+.hero-3d-card.pop-front {
+  transform: translateZ(80px) rotateY(2deg);
+}
+
+.hero-3d-card:hover {
+  transform: translateZ(140px) rotateY(0deg) rotateX(0deg) scale(1.06) !important;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
+  z-index: 100 !important;
+}
+
+/* Image reflection & shadow styling */
+.hero-3d-card-img-container {
+  position: relative;
+  width: 100%;
+  height: 125px;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+  -webkit-box-reflect: below 2px linear-gradient(transparent, transparent 80%, rgba(255, 255, 255, 0.08));
+}
+
+.hero-3d-card-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-3d-card:hover .hero-3d-card-img-container img {
+  transform: scale(1.08);
+}
+
+/* Card details styling */
+.hero-3d-card-details {
+  padding: 10px 14px;
+}
+
+/* Custom badge sticking outside frame */
+.pop-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  transform: rotate(-2deg);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Custom Scrollbar for Horizontal scrolling */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.3) transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(16, 185, 129, 0.3);
+  border-radius: 20px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(16, 185, 129, 0.5);
+}
+
+/* Bank Logos Infinite Marquee */
+.marquee-container {
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+
+.marquee-left-inner {
+  display: flex;
+  width: max-content;
+  animation: marquee-slide-left 40s linear infinite;
+}
+
+.marquee-right-inner {
+  display: flex;
+  width: max-content;
+  animation: marquee-slide-right 40s linear infinite;
+}
+
+.marquee-left-inner:hover,
+.marquee-right-inner:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-slide-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-slide-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+
+
+

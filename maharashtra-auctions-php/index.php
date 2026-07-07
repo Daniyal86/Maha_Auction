@@ -3,7 +3,7 @@
 require_once 'config/db.php';
 
 // Fetch cities for map marker initialization
-$cities_stmt = $pdo->query("SELECT * FROM cities");
+$cities_stmt = $pdo->query("SELECT * FROM cities ORDER BY name ASC");
 $cities = $cities_stmt->fetchAll();
 
 // Fetch all properties to populate hover popups on the district map
@@ -16,41 +16,546 @@ $properties = array_slice($all_properties, 0, 3);
 require_once 'includes/header.php';
 ?>
 
-<!-- Hero Section -->
-<div class="relative bg-slate-900 text-white overflow-hidden py-10 sm:py-16 md:py-24">
-  <!-- Dynamic Grid Overlay -->
-  <div class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30"></div>
-  
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 sm:space-y-6">
-    <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-emerald-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
-      <i data-lucide="shield-check" class="h-3.5 w-3.5 sm:h-4 sm:w-4"></i>
-      <span>Bilingual Foreclosure Draftsman Integrated</span>
-    </div>
-    
-    <h1 class="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight max-w-4xl mx-auto leading-tight sm:leading-none">
-      Maharashtra Statutory Auction & <span class="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Heavy Deposit</span> Portal
-    </h1>
-    
-    <p class="text-slate-400 max-w-2xl mx-auto text-xs sm:text-base md:text-lg font-medium leading-relaxed">
-      Real-time verified listings compiled under SARFAESI foreclosure provisions. Fully client-driven draftsman tools and agent-assigned site inspectors.
-    </p>
+<!-- Hero Section (Luxury Real Estate + Auction theme with 3D Carousels) -->
+<div id="hero-section" class="relative bg-[#0F172A] text-white overflow-hidden py-8 md:py-14 lg:py-16 xl:py-20 min-h-[500px] lg:min-h-[600px] flex items-center">
+  <!-- Subtle low opacity grid overlay -->
+  <div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30 pointer-events-none"></div>
 
-    <div class="flex flex-col sm:flex-row justify-center items-center gap-3 pt-2 sm:pt-4">
-      <a href="search.php" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-premium-emerald to-teal-600 hover:from-premium-emeraldHover hover:to-teal-700 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-extrabold shadow-lg shadow-emerald-500/20 transition-all touch-target">
-        <i data-lucide="search" class="h-4 w-4 sm:h-5 sm:w-5"></i>
-        <span>Explore Foreclosures</span>
-      </a>
-      <button onclick="openTrialModal('Hero Section Alert')" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-extrabold backdrop-blur-md transition-all touch-target">
-        <i data-lucide="bell" class="h-4 w-4 sm:h-5 sm:w-5"></i>
-        <span>Setup Instant SMS Alerts</span>
-      </button>
+  <!-- Subtle abstract blurred emerald lighting (vignette + glow) -->
+  <div class="absolute -left-[10%] top-[10%] w-[40%] h-[60%] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="absolute -right-[10%] bottom-[10%] w-[40%] h-[60%] bg-teal-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-20">
+    <div class="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
+      
+      <!-- Left Zone (3 columns out of 12) -->
+      <div class="hidden lg:block lg:col-span-3 h-[460px] relative hero-3d-scene" aria-hidden="true">
+        <div class="hero-track-container">
+          <div class="card-track card-track-left space-y-8 py-4">
+            <!-- Property 1 -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge">SARFAESI FORECLOSURE</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" alt="Worli Apartment" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Worli 3 BHK Sea Apartment</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Worli, Mumbai</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 4.50 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">RESIDENTIAL</span>
+                </div>
+              </div>
+            </div>
+            <!-- Property 2 -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0 pop-front">
+              <div class="pop-badge bg-gradient-to-r from-amber-500 to-amber-600">PREMIUM OFFICE</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="BKC Office" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Commercial Space in BKC</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">BKC, Mumbai</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 12.00 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">COMMERCIAL</span>
+                </div>
+              </div>
+            </div>
+            <!-- Property 3 -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge bg-gradient-to-r from-teal-500 to-emerald-600">LUXURY VILLA</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" alt="Koregaon Villa" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">4 BHK Koregaon Park Villa</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Koregaon Park, Pune</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 1.80 L / Mo</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">RENTAL</span>
+                </div>
+              </div>
+            </div>
+            <!-- Property 4 -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge">HIGH-RISE TOWERS</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" alt="Trump Penthouse" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Trump Towers Penthouse</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Kalyani Nagar, Pune</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 8.20 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">RESIDENTIAL</span>
+                </div>
+              </div>
+            </div>
+            <!-- Property 5 -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge">HIGH-END ESTATE</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80" alt="Hiranandani Flat" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Hiranandani Estate 3 BHK</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Ghodbunder Rd, Thane</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 2.10 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">RESIDENTIAL</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Duplicate for Infinite Loop -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge">SARFAESI FORECLOSURE</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" alt="Worli Apartment" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Worli 3 BHK Sea Apartment</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Worli, Mumbai</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 4.50 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">RESIDENTIAL</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-3d-card flex flex-col justify-between shrink-0 pop-front">
+              <div class="pop-badge bg-gradient-to-r from-amber-500 to-amber-600">PREMIUM OFFICE</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="BKC Office" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Commercial Space in BKC</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">BKC, Mumbai</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 12.00 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">COMMERCIAL</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge bg-gradient-to-r from-teal-500 to-emerald-600">LUXURY VILLA</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" alt="Koregaon Villa" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">4 BHK Koregaon Park Villa</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Koregaon Park, Pune</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 1.80 L / Mo</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">RENTAL</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge">HIGH-RISE TOWERS</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" alt="Trump Penthouse" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Trump Towers Penthouse</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Kalyani Nagar, Pune</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 8.20 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">RESIDENTIAL</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge">HIGH-END ESTATE</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80" alt="Hiranandani Flat" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Hiranandani Estate 3 BHK</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Ghodbunder Rd, Thane</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 2.10 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">RESIDENTIAL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Center Zone (6 columns out of 12 on desktop, 8 columns on tablet, 12 columns on mobile) -->
+      <div class="col-span-1 md:col-span-8 lg:col-span-6 text-center space-y-6 z-30 px-4 md:px-6">
+        <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-emerald-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider shadow-sm backdrop-blur-md">
+          <i data-lucide="map-pin" class="h-3.5 w-3.5 sm:h-4 sm:w-4"></i>
+          <span>Maharashtra District Council</span>
+        </div>
+        
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white">
+          Premium Statutory <br class="hidden sm:inline" />
+          Auction & <span class="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent whitespace-nowrap">Property Portal</span>
+        </h1>
+        
+        <p class="text-slate-350 max-w-2xl mx-auto text-xs sm:text-base font-medium leading-relaxed">
+          Explore vetted court auctions, private seller listings, monthly rentals, and high-value heavy deposit flats verified under ready reckoner valuations.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-3 pt-2 sm:pt-4 max-w-md mx-auto">
+          <a href="search.php" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-premium-emerald to-teal-600 hover:from-premium-emeraldHover hover:to-teal-700 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-sm font-extrabold shadow-lg shadow-emerald-500/20 transition-all touch-target">
+            <i data-lucide="search" class="h-5 w-5"></i>
+            <span>Explore Foreclosures</span>
+          </a>
+          <button onclick="openTrialModal('Hero Section Alert')" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-sm font-extrabold backdrop-blur-md transition-all touch-target">
+            <i data-lucide="bell" class="h-5 w-5"></i>
+            <span>Setup Instant SMS Alerts</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Right Zone (3 columns out of 12 on desktop, 4 columns on tablet, hidden on mobile) -->
+      <div class="hidden md:block md:col-span-4 lg:col-span-3 h-[460px] relative hero-3d-scene" aria-hidden="true">
+        <div class="hero-track-container">
+          <div class="card-track card-track-right space-y-8 py-4">
+            <!-- Property 6 -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge bg-gradient-to-r from-indigo-500 to-blue-600">AGRICULTURAL LAND</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1552594612-9c3f256a4276?auto=format&fit=crop&w=800&q=80" alt="Nashik Farmhouse" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Nashik Grape Vineyard</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Dindori, Nashik</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 3.20 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">AUCTION</span>
+                </div>
+              </div>
+            </div>
+            <!-- Property 7 -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0 pop-front">
+              <div class="pop-badge bg-gradient-to-r from-orange-500 to-red-600">INDUSTRIAL SHED</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1580982327559-c1202864eb05?auto=format&fit=crop&w=800&q=80" alt="Bhosari Shed" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">MIDC Bhosari Industrial Shed</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Bhosari MIDC, Pune</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 2.80 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">AUCTION</span>
+                </div>
+              </div>
+            </div>
+            <!-- Property 8 -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge">HEAVY DEPOSIT</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80" alt="Meadows Deposit" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">2 BHK Meadows Flat</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Hiranandani, Thane</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 25.00 Lakhs</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">DEPOSIT</span>
+                </div>
+              </div>
+            </div>
+            <!-- Property 9 -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge bg-gradient-to-r from-emerald-500 to-cyan-600">LUXURY ESTATE</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80" alt="Lonavala Villa" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Lonavala Valley View Villa</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Gold Valley, Lonavala</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 6.50 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">AUCTION</span>
+                </div>
+              </div>
+            </div>
+            <!-- Property 10 -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge">RETAIL SHOWROOM</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=800&q=80" alt="Viman Retail" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Retail Showroom space</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Viman Nagar, Pune</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 4.10 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">COMMERCIAL</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Duplicate for Infinite Loop -->
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge bg-gradient-to-r from-indigo-500 to-blue-600">AGRICULTURAL LAND</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1552594612-9c3f256a4276?auto=format&fit=crop&w=800&q=80" alt="Nashik Farmhouse" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Nashik Grape Vineyard</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Dindori, Nashik</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 3.20 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">AUCTION</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-3d-card flex flex-col justify-between shrink-0 pop-front">
+              <div class="pop-badge bg-gradient-to-r from-orange-500 to-red-600">INDUSTRIAL SHED</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1580982327559-c1202864eb05?auto=format&fit=crop&w=800&q=80" alt="Bhosari Shed" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">MIDC Bhosari Industrial Shed</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Bhosari MIDC, Pune</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 2.80 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">AUCTION</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge">HEAVY DEPOSIT</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80" alt="Meadows Deposit" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">2 BHK Meadows Flat</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Hiranandani, Thane</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 25.00 Lakhs</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">DEPOSIT</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge bg-gradient-to-r from-emerald-500 to-cyan-600">LUXURY ESTATE</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80" alt="Lonavala Villa" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Lonavala Valley View Villa</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Gold Valley, Lonavala</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 6.50 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">AUCTION</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-3d-card flex flex-col justify-between shrink-0">
+              <div class="pop-badge">RETAIL SHOWROOM</div>
+              <div class="hero-3d-card-img-container">
+                <img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=800&q=80" alt="Viman Retail" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
+              </div>
+              <div class="hero-3d-card-details flex-grow flex flex-col justify-between">
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-black text-white truncate">Retail Showroom space</h4>
+                  <p class="text-[9px] font-bold text-slate-400 flex items-center space-x-0.5">
+                    <i data-lucide="map-pin" class="h-2.5 w-2.5 text-emerald-400 shrink-0"></i>
+                    <span class="truncate">Viman Nagar, Pune</span>
+                  </p>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1 text-[10px]">
+                  <span class="font-extrabold text-emerald-400">₹ 4.10 Cr</span>
+                  <span class="bg-white/10 px-1.5 py-0.5 rounded text-[8px] font-black text-slate-300 uppercase tracking-wider">COMMERCIAL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
+<!-- Bank Partners Marquee Section -->
+<?php
+$marquee_banks = [
+    ['name' => 'State Bank of India', 'logo' => 'sbi.svg'],
+    ['name' => 'Bank of Baroda', 'logo' => 'bob.svg'],
+    ['name' => 'Punjab National Bank', 'logo' => 'pnb.svg'],
+    ['name' => 'Axis Bank', 'logo' => 'axis_bank.svg'],
+    ['name' => 'Union Bank of India', 'logo' => 'ubi.svg'],
+    ['name' => 'Indian Bank', 'logo' => 'indian.svg'],
+    ['name' => 'Saraswat Bank', 'logo' => 'saraswat.png'],
+    ['name' => 'Punjab & Sind Bank', 'logo' => 'psb.svg'],
+    ['name' => 'Axis Finance', 'logo' => 'axis_finance.svg'],
+    ['name' => 'Ujjivan Small Finance', 'logo' => 'ujjivan.svg'],
+];
+?>
+<div class="w-full bg-slate-50/50 border-y border-slate-200/80 py-8 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+    <div class="text-center">
+      <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest">Our Banking & Statutory Partners</p>
+      <h3 class="text-sm sm:text-base font-black text-slate-700 mt-0.5">Properties Auctioned Directly by Leading Financial Institutions</h3>
+    </div>
+  </div>
+
+  <div class="relative w-full space-y-4">
+    <!-- Row 1: Flowing Left -->
+    <div class="marquee-container overflow-hidden w-full relative flex">
+      <div class="marquee-left-inner flex gap-8 whitespace-nowrap">
+        <!-- Loop 1 -->
+        <?php foreach ($marquee_banks as $mb): ?>
+          <div class="inline-flex items-center justify-center bg-white border border-slate-100/90 px-5 py-3 rounded-2xl shadow-xs shrink-0 select-none h-14 sm:h-16 w-32 sm:w-40">
+            <img src="assets/bank-logos/<?php echo $mb['logo']; ?>" alt="<?php echo $mb['name']; ?>" class="h-8 sm:h-9 max-w-full object-contain transition-transform duration-300 hover:scale-105">
+          </div>
+        <?php endforeach; ?>
+        <!-- Loop 2 (Duplicate for seamless loop) -->
+        <?php foreach ($marquee_banks as $mb): ?>
+          <div class="inline-flex items-center justify-center bg-white border border-slate-100/90 px-5 py-3 rounded-2xl shadow-xs shrink-0 select-none h-14 sm:h-16 w-32 sm:w-40">
+            <img src="assets/bank-logos/<?php echo $mb['logo']; ?>" alt="<?php echo $mb['name']; ?>" class="h-8 sm:h-9 max-w-full object-contain transition-transform duration-300 hover:scale-105">
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
+
+    <!-- Row 2: Flowing Right -->
+    <div class="marquee-container overflow-hidden w-full relative flex">
+      <div class="marquee-right-inner flex gap-8 whitespace-nowrap">
+        <!-- Loop 1 -->
+        <?php foreach ($marquee_banks as $mb): ?>
+          <div class="inline-flex items-center justify-center bg-white border border-slate-100/90 px-5 py-3 rounded-2xl shadow-xs shrink-0 select-none h-14 sm:h-16 w-32 sm:w-40">
+            <img src="assets/bank-logos/<?php echo $mb['logo']; ?>" alt="<?php echo $mb['name']; ?>" class="h-8 sm:h-9 max-w-full object-contain transition-transform duration-300 hover:scale-105">
+          </div>
+        <?php endforeach; ?>
+        <!-- Loop 2 (Duplicate for seamless loop) -->
+        <?php foreach ($marquee_banks as $mb): ?>
+          <div class="inline-flex items-center justify-center bg-white border border-slate-100/90 px-5 py-3 rounded-2xl shadow-xs shrink-0 select-none h-14 sm:h-16 w-32 sm:w-40">
+            <img src="assets/bank-logos/<?php echo $mb['logo']; ?>" alt="<?php echo $mb['name']; ?>" class="h-8 sm:h-9 max-w-full object-contain transition-transform duration-300 hover:scale-105">
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Interactive Leaflet Map Section (Mobile Edge-to-Edge with 12-16px outer padding) -->
-<div class="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 pb-2 sm:py-12">
-  <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-lg overflow-hidden p-3 sm:p-6 space-y-3 sm:space-y-6">
+<div class="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pt-4 pb-2 sm:py-12">
+  <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-lg overflow-hidden p-2 sm:p-6 space-y-3 sm:space-y-6">
     
     <!-- Cleaner Header (📍 Maharashtra Command Center) -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 pb-1 sm:pb-3 border-b border-slate-100">
@@ -59,7 +564,12 @@ require_once 'includes/header.php';
           <i data-lucide="map-pin" class="h-5 w-5 sm:h-6 sm:w-6 text-premium-emerald shrink-0"></i>
           <span>Maharashtra Command Center</span>
         </h2>
-        <p class="text-[11px] sm:text-xs text-slate-500 font-semibold mt-0.5">Live property database by district</p>
+        <div class="flex flex-wrap items-center gap-2 mt-1">
+          <p class="text-[11px] sm:text-xs text-slate-500 font-semibold">Live property database by district</p>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200/50 uppercase tracking-wider animate-pulse select-none">
+            Other States Coming Soon
+          </span>
+        </div>
       </div>
       <div class="hidden sm:flex items-center space-x-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 text-[10px] sm:text-xs font-bold text-slate-600">
         <div class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></div>
@@ -67,21 +577,174 @@ require_once 'includes/header.php';
       </div>
     </div>
 
-    <!-- Horizontally Scrollable District Statistics Chips -->
-    <div class="flex items-center space-x-2 overflow-x-auto scrollbar-hide py-1 text-xs font-bold -mx-1 px-1">
-      <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider shrink-0 mr-1">Active:</span>
-      <?php foreach ($cities as $c): if($c['property_count'] > 0): ?>
-        <button type="button" onclick="focusDistrict('<?php echo urlencode($c['name']); ?>')" class="inline-flex items-center space-x-1.5 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 px-2.5 py-1 rounded-full border border-slate-200/80 shrink-0 transition-colors text-[11px] sm:text-xs">
-          <span><?php echo htmlspecialchars($c['name']); ?></span>
-          <span class="bg-emerald-500 text-white font-extrabold px-1.5 py-0.2 rounded-full text-[9px]"><?php echo $c['property_count']; ?></span>
-        </button>
-      <?php endif; endforeach; ?>
+    <!-- Luxury District Filter Control Panel -->
+    <?php
+    $city_division_map = [
+        'Amravati' => ['div' => 'अमरावती विभाग', 'color' => '#f87171'],
+        'Akola' => ['div' => 'अमरावती विभाग', 'color' => '#f87171'],
+        'Buldana' => ['div' => 'अमरावती विभाग', 'color' => '#f87171'],
+        'Washim' => ['div' => 'अमरावती विभाग', 'color' => '#f87171'],
+        'Yavatmal' => ['div' => 'अमरावती विभाग', 'color' => '#f87171'],
+        'Aurangabad' => ['div' => 'छत्रपती संभाजीनगर विभाग', 'color' => '#818cf8'],
+        'Jalna' => ['div' => 'छत्रपती संभाजीनगर विभाग', 'color' => '#818cf8'],
+        'Parbhani' => ['div' => 'छत्रपती संभाजीनगर विभाग', 'color' => '#818cf8'],
+        'Hingoli' => ['div' => 'छत्रपती संभाजीनगर विभाग', 'color' => '#818cf8'],
+        'Bid' => ['div' => 'छत्रपती संभाजीनगर विभाग', 'color' => '#818cf8'],
+        'Nanded' => ['div' => 'छत्रपती संभाजीनगर विभाग', 'color' => '#818cf8'],
+        'Latur' => ['div' => 'छत्रपती संभाजीनगर विभाग', 'color' => '#818cf8'],
+        'Osmanabad' => ['div' => 'छत्रपती संभाजीनगर विभाग', 'color' => '#818cf8'],
+        'Mumbai' => ['div' => 'कोकण विभाग', 'color' => '#9ca3af'],
+        'Mumbai Suburban' => ['div' => 'कोकण विभाग', 'color' => '#9ca3af'],
+        'Thane' => ['div' => 'कोकण विभाग', 'color' => '#9ca3af'],
+        'Raigarh' => ['div' => 'कोकण विभाग', 'color' => '#9ca3af'],
+        'Ratnagiri' => ['div' => 'कोकण विभाग', 'color' => '#9ca3af'],
+        'Sindhudurg' => ['div' => 'कोकण विभाग', 'color' => '#9ca3af'],
+        'Nagpur' => ['div' => 'नागपूर विभाग', 'color' => '#e5a970'],
+        'Wardha' => ['div' => 'नागपूर विभाग', 'color' => '#e5a970'],
+        'Bhandara' => ['div' => 'नागपूर विभाग', 'color' => '#e5a970'],
+        'Gondiya' => ['div' => 'नागपूर विभाग', 'color' => '#e5a970'],
+        'Chandrapur' => ['div' => 'नागपूर विभाग', 'color' => '#e5a970'],
+        'Garhchiroli' => ['div' => 'नागपूर विभाग', 'color' => '#e5a970'],
+        'Nashik' => ['div' => 'नाशिक विभाग', 'color' => '#eab308'],
+        'Nandurbar' => ['div' => 'नाशिक विभाग', 'color' => '#eab308'],
+        'Dhule' => ['div' => 'नाशिक विभाग', 'color' => '#eab308'],
+        'Jalgaon' => ['div' => 'नाशिक विभाग', 'color' => '#eab308'],
+        'Ahmadnagar' => ['div' => 'नाशिक विभाग', 'color' => '#eab308'],
+        'Pune' => ['div' => 'पुणे विभाग', 'color' => '#4ade80'],
+        'Satara' => ['div' => 'पुणे विभाग', 'color' => '#4ade80'],
+        'Solapur' => ['div' => 'पुणे विभाग', 'color' => '#4ade80'],
+        'Sangli' => ['div' => 'पुणे विभाग', 'color' => '#4ade80'],
+        'Kolhapur' => ['div' => 'पुणे विभाग', 'color' => '#4ade80'],
+    ];
+    ?>
+    <div class="bg-slate-50/70 border border-slate-200/65 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+      <!-- First Row: Search Box & Dropdown Filters Side-by-Side -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        
+        <!-- Left: Search Box -->
+        <div class="relative w-full lg:w-72 group shrink-0">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+            <i class="h-4 w-4 text-slate-400 group-focus-within:text-premium-emerald transition-colors" data-lucide="search"></i>
+          </span>
+          <input type="text" id="city-search-input" oninput="filterDistricts()" placeholder="Search district by name..." class="w-full pl-10 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-750 placeholder-slate-450 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs">
+          <button onclick="clearSearch()" id="search-clear-btn" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 hidden">
+            <i class="h-4 w-4" data-lucide="x-circle"></i>
+          </button>
+        </div>
+
+        <!-- Right: Dropdown Filters (including Division, Category, Type, Activity) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 w-full flex-1">
+          <!-- Administrative Division Filter -->
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <i class="h-3.5 w-3.5 text-slate-400" data-lucide="map-pin"></i>
+            </span>
+            <select id="filter-division" onchange="filterDistricts()" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
+              <option value="all">All Divisions</option>
+              <option value="कोकण विभाग">Konkan</option>
+              <option value="पुणे विभाग">Pune</option>
+              <option value="नाशिक विभाग">Nashik</option>
+              <option value="छत्रपती संभाजीनगर विभाग">Aurangabad</option>
+              <option value="अमरावती विभाग">Amravati</option>
+              <option value="नागपूर विभाग">Nagpur</option>
+            </select>
+            <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <i class="h-3 w-3 text-slate-400" data-lucide="chevron-down"></i>
+            </span>
+          </div>
+
+          <!-- Property Category Filter -->
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <i class="h-3.5 w-3.5 text-slate-400" data-lucide="tag"></i>
+            </span>
+            <select id="filter-category" onchange="filterDistricts()" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
+              <option value="all">All Categories</option>
+              <option value="Auction">Auction listings only</option>
+              <option value="Rental">Rental listings only</option>
+              <option value="Heavy Deposit">Heavy Deposit listings only</option>
+              <option value="Seller Listed">Seller Listed only</option>
+            </select>
+            <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <i class="h-3 w-3 text-slate-400" data-lucide="chevron-down"></i>
+            </span>
+          </div>
+
+          <!-- Property Type Filter -->
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <i class="h-3.5 w-3.5 text-slate-400" data-lucide="home"></i>
+            </span>
+            <select id="filter-type" onchange="filterDistricts()" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
+              <option value="all">All Property Types</option>
+              <option value="Residential">Residential properties</option>
+              <option value="Commercial">Commercial properties</option>
+              <option value="Industrial">Industrial properties</option>
+              <option value="Agricultural">Agricultural properties</option>
+            </select>
+            <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <i class="h-3 w-3 text-slate-400" data-lucide="chevron-down"></i>
+            </span>
+          </div>
+
+          <!-- Activity Filter -->
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <i class="h-3.5 w-3.5 text-slate-400" data-lucide="activity"></i>
+            </span>
+            <select id="filter-activity" onchange="filterDistricts()" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
+              <option value="all">All Districts (Include Empty)</option>
+              <option value="active">Active Districts Only</option>
+            </select>
+            <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <i class="h-3 w-3 text-slate-400" data-lucide="chevron-down"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- District Chips horizontal scroll container by default -->
+      <div id="cities-chip-container" class="flex flex-row flex-nowrap overflow-x-auto pb-3 gap-2 pt-2 custom-scrollbar transition-all">
+        <?php foreach ($cities as $c): 
+          $name_key = $c['name'];
+          $div_info = isset($city_division_map[$name_key]) ? $city_division_map[$name_key] : ['div' => 'इतर', 'color' => '#cbd5e1'];
+        ?>
+          <button type="button" 
+                  data-city-name="<?php echo htmlspecialchars(strtolower($c['name'])); ?>"
+                  data-division="<?php echo htmlspecialchars($div_info['div']); ?>"
+                  data-active="<?php echo $c['property_count']; ?>"
+                  onclick="focusDistrict('<?php echo urlencode($c['name']); ?>')" 
+                  class="city-chip inline-flex items-center space-x-2 px-3 py-2 bg-white hover:bg-slate-50 text-slate-800 border <?php echo ($c['property_count'] > 0) ? 'border-emerald-300 bg-emerald-50/20' : 'border-slate-200'; ?> rounded-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md cursor-pointer text-xs font-bold shrink-0">
+            <span class="w-2 h-2 rounded-full shrink-0 shadow-inner" style="background-color: <?php echo $div_info['color']; ?>;"></span>
+            <span class="font-extrabold text-slate-705 city-name-label"><?php echo htmlspecialchars($c['name']); ?></span>
+            <span class="city-count-badge bg-emerald-500/10 text-premium-emerald font-black px-2 py-0.5 rounded-lg text-[9px] <?php echo ($c['property_count'] > 0) ? '' : 'hidden'; ?>">
+              <?php echo $c['property_count']; ?>
+            </span>
+          </button>
+        <?php endforeach; ?>
+        <div id="city-no-match-msg" class="hidden text-slate-400 text-xs font-medium py-2 px-1">No matching districts found for selected filter</div>
+      </div>
+
+      <!-- Footer Statistics -->
+      <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold border-t border-slate-200/50 pt-3 mt-1">
+        <div id="filter-results-stats">Showing 35 of 35 districts</div>
+        <div class="flex items-center space-x-2">
+          <!-- Toggle View Button -->
+          <button type="button" id="toggle-expand-btn" onclick="toggleChipsView()" class="px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg transition-all flex items-center space-x-1 cursor-pointer text-[10px] select-none touch-target">
+            <i class="h-3.5 w-3.5 text-slate-400" data-lucide="grid"></i>
+            <span id="toggle-expand-text">Show All Grid</span>
+          </button>
+          <div class="h-3 w-[1px] bg-slate-250"></div>
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>Click a district chip to highlight on map</span>
+        </div>
+      </div>
     </div>
 
     <!-- Map & Legend Wrapper -->
     <div class="relative w-full rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
-      <!-- Leaflet Mount Div (340px on mobile) -->
-      <div id="leaflet-landing-map" class="h-[340px] sm:h-[420px] md:h-[580px] w-full z-10"></div>
+      <!-- Leaflet Mount Div (Fluid responsive aspect-ratio) -->
+      <div id="leaflet-landing-map" class="w-full z-10"></div>
 
       <!-- Division Color Legend overlay (Collapsible floating panel on mobile) -->
       <div class="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 z-[400] bg-white/95 backdrop-blur-md p-2 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/90 shadow-xl text-[9px] sm:text-xs space-y-1 sm:space-y-2 max-w-[140px] sm:max-w-[240px]">
@@ -225,8 +888,161 @@ require_once 'includes/header.php';
     </div>
   </div>
 </div>
-
 <script>
+  // Filter and search logic for districts
+  let currentDivisionFilter = 'all';
+  let isChipsExpanded = false;
+
+  function toggleChipsView() {
+    const container = document.getElementById('cities-chip-container');
+    const btn = document.getElementById('toggle-expand-btn');
+    const textSpan = document.getElementById('toggle-expand-text');
+    const icon = btn ? btn.querySelector('i') : null;
+
+    if (!container) return;
+
+    if (!isChipsExpanded) {
+      // Switch to Grid View
+      container.classList.remove('flex-row', 'flex-nowrap', 'overflow-x-auto', 'pb-3');
+      container.classList.add('flex-wrap');
+      if (textSpan) textSpan.textContent = 'Collapse to Scrollbar';
+      isChipsExpanded = true;
+      if (icon) {
+        icon.setAttribute('data-lucide', 'arrow-left-right');
+      }
+    } else {
+      // Switch back to Scroll View
+      container.classList.remove('flex-wrap');
+      container.classList.add('flex-row', 'flex-nowrap', 'overflow-x-auto', 'pb-3');
+      if (textSpan) textSpan.textContent = 'Show All Grid';
+      isChipsExpanded = false;
+      if (icon) {
+        icon.setAttribute('data-lucide', 'grid');
+      }
+    }
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  }
+
+  function setDivisionFilter(divName) {
+    const select = document.getElementById('filter-division');
+    if (select) {
+      select.value = divName;
+    }
+    filterDistricts();
+  }
+  window.setDivisionFilter = setDivisionFilter;
+
+  function clearSearch() {
+    const searchInput = document.getElementById('city-search-input');
+    if (searchInput) {
+      searchInput.value = '';
+    }
+    filterDistricts();
+  }
+
+  function filterDistricts() {
+    const searchInput = document.getElementById('city-search-input');
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    
+    // Get filter values
+    const selectedDivision = document.getElementById('filter-division') ? document.getElementById('filter-division').value : 'all';
+    const selectedCategory = document.getElementById('filter-category').value;
+    const selectedType = document.getElementById('filter-type').value;
+    const selectedActivity = document.getElementById('filter-activity').value;
+
+    const clearBtn = document.getElementById('search-clear-btn');
+    if (clearBtn) {
+      if (query.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+    }
+
+    const chips = document.querySelectorAll('.city-chip');
+    let visibleCount = 0;
+    let activeCount = 0;
+
+    chips.forEach(chip => {
+      const cityName = chip.querySelector('.city-name-label').textContent.trim();
+      const division = chip.getAttribute('data-division') || '';
+
+      // Recalculate count of properties in this city that match active category and type filters
+      const cityMatchingProps = dbAllProperties.filter(p => {
+        const matchesCity = p.city_name.toLowerCase().includes(cityName.toLowerCase()) || 
+                            cityName.toLowerCase().includes(p.city_name.toLowerCase());
+        const matchesCategory = (selectedCategory === 'all' || p.category === selectedCategory);
+        const matchesType = (selectedType === 'all' || p.type === selectedType);
+        return matchesCity && matchesCategory && matchesType;
+      });
+
+      const currentCount = cityMatchingProps.length;
+
+      // Update badge text and visibility
+      const badge = chip.querySelector('.city-count-badge');
+      if (badge) {
+        badge.textContent = currentCount;
+        if (currentCount > 0) {
+          badge.classList.remove('hidden');
+          chip.classList.remove('border-slate-200');
+          chip.classList.add('border-emerald-300', 'bg-emerald-50/20');
+        } else {
+          badge.classList.add('hidden');
+          chip.classList.remove('border-emerald-300', 'bg-emerald-50/20');
+          chip.classList.add('border-slate-200');
+        }
+      }
+
+      // Check search match
+      const matchesSearch = cityName.toLowerCase().includes(query);
+
+      // Check division match
+      let matchesDivision = false;
+      if (selectedDivision === 'all') {
+        matchesDivision = true;
+      } else {
+        matchesDivision = (division === selectedDivision);
+      }
+
+      // Check activity match
+      let matchesActivity = true;
+      if (selectedActivity === 'active') {
+        matchesActivity = (currentCount > 0);
+      }
+
+      if (matchesSearch && matchesDivision && matchesActivity) {
+        chip.classList.remove('hidden');
+        chip.style.opacity = '1';
+        chip.style.transform = 'scale(1)';
+        visibleCount++;
+        if (currentCount > 0) {
+          activeCount++;
+        }
+      } else {
+        chip.classList.add('hidden');
+        chip.style.opacity = '0';
+        chip.style.transform = 'scale(0.9)';
+      }
+    });
+
+    const noMatchMsg = document.getElementById('city-no-match-msg');
+    if (noMatchMsg) {
+      if (visibleCount > 0) {
+        noMatchMsg.classList.add('hidden');
+      } else {
+        noMatchMsg.classList.remove('hidden');
+      }
+    }
+
+    // Update stats text
+    const statsText = document.getElementById('filter-results-stats');
+    if (statsText) {
+      statsText.textContent = `Showing ${visibleCount} of ${chips.length} districts (${activeCount} active)`;
+    }
+  }
+
   // Initialize Leaflet map with database cities and properties
   const dbCities = <?php echo json_encode($cities); ?>;
   const dbAllProperties = <?php echo json_encode($all_properties); ?>;
@@ -336,7 +1152,7 @@ require_once 'includes/header.php';
       if (geoLayer) {
         map.invalidateSize();
         map.fitBounds(geoLayer.getBounds(), {
-          padding: isMobileView() ? [20, 20] : [30, 30],
+          padding: isMobileView() ? [10, 10] : [20, 20],
           animate: false
         });
       }
@@ -392,68 +1208,71 @@ require_once 'includes/header.php';
             const distName = feature.properties.district;
             const info = districtDivisionMap[distName] || { divName: 'महाराष्ट्र', color: '#10b981', marathi: distName, cityId: distName.toLowerCase() };
             
-            // Find registered properties for this city/district
-            const matchingProps = dbAllProperties.filter(p => 
-              p.city_name.toLowerCase().includes(distName.toLowerCase()) || 
-              distName.toLowerCase().includes(p.city_name.toLowerCase())
-            );
+            // Helper function to get filtered tooltip content dynamically
+            const getDynamicTooltipContent = () => {
+              const selectedCategory = document.getElementById('filter-category').value;
+              const selectedType = document.getElementById('filter-type').value;
 
-            // Find city total count record
-            const cityRecord = dbCities.find(c => 
-              c.name.toLowerCase().includes(distName.toLowerCase()) || 
-              distName.toLowerCase().includes(c.name.toLowerCase())
-            );
-            const totalCount = cityRecord ? cityRecord.property_count : matchingProps.length;
+              const filteredProps = dbAllProperties.filter(p => {
+                const matchesCity = p.city_name.toLowerCase().includes(distName.toLowerCase()) || 
+                                    distName.toLowerCase().includes(p.city_name.toLowerCase());
+                const matchesCategory = (selectedCategory === 'all' || p.category === selectedCategory);
+                const matchesType = (selectedType === 'all' || p.type === selectedType);
+                return matchesCity && matchesCategory && matchesType;
+              });
 
-            // Generate property preview HTML inside hover card
-            let propsListHtml = '';
-            if (matchingProps.length > 0) {
-              propsListHtml = `
-                <div class="mt-2 space-y-1.5 border-t border-slate-100 pt-2 text-left">
-                  <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">Featured Listings:</span>
-                  ${matchingProps.slice(0, 2).map(p => `
-                    <div class="bg-slate-50 p-2 rounded-xl border border-slate-100 text-xs shadow-sm">
-                      <div class="font-black text-slate-800 truncate">${p.title}</div>
-                      <div class="flex justify-between items-center mt-1 text-[11px]">
-                        <span class="font-bold text-emerald-600">${p.reserve_price}</span>
-                        <span class="text-[9px] bg-slate-200 text-slate-700 font-bold px-1.5 py-0.5 rounded uppercase">${p.category}</span>
+              const totalCount = filteredProps.length;
+
+              let propsListHtml = '';
+              if (totalCount > 0) {
+                propsListHtml = `
+                  <div class="mt-2 space-y-1.5 border-t border-slate-100 pt-2 text-left">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">Matching Listings:</span>
+                    ${filteredProps.slice(0, 2).map(p => `
+                      <div class="bg-slate-50 p-2 rounded-xl border border-slate-100 text-xs shadow-sm">
+                        <div class="font-black text-slate-800 truncate">${p.title}</div>
+                        <div class="flex justify-between items-center mt-1 text-[11px]">
+                          <span class="font-bold text-emerald-600">${p.reserve_price}</span>
+                          <span class="text-[9px] bg-slate-200 text-slate-700 font-bold px-1.5 py-0.5 rounded uppercase">${p.category}</span>
+                        </div>
                       </div>
-                    </div>
-                  `).join('')}
-                </div>
-              `;
-            } else {
-              propsListHtml = `
-                <div class="mt-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center text-xs font-semibold text-slate-500">
-                  <span>${totalCount} active verified database auctions in this district.</span>
-                </div>
-              `;
-            }
+                    `).join('')}
+                  </div>
+                `;
+              } else {
+                propsListHtml = `
+                  <div class="mt-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center text-xs font-semibold text-slate-500">
+                    <span>0 matching properties under selected filters.</span>
+                  </div>
+                `;
+              }
 
-            const tooltipContent = `
-              <div class="p-4 w-72 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200 shadow-2xl text-slate-800 font-sans">
-                <div class="flex justify-between items-start border-b border-slate-100 pb-2 mb-2">
-                  <div>
-                    <h4 class="font-black text-slate-900 text-base leading-tight">${distName} <span class="text-xs text-slate-500 font-bold">(${info.marathi})</span></h4>
-                    <span class="inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md text-white mt-1" style="background-color: ${info.color}">
-                      ${info.divName}
+              return `
+                <div class="p-4 w-72 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200 shadow-2xl text-slate-800 font-sans">
+                  <div class="flex justify-between items-start border-b border-slate-100 pb-2 mb-2">
+                    <div>
+                      <h4 class="font-black text-slate-900 text-base leading-tight">${distName} <span class="text-xs text-slate-500 font-bold">(${info.marathi})</span></h4>
+                      <span class="inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md text-white mt-1" style="background-color: ${info.color}">
+                        ${info.divName}
+                      </span>
+                    </div>
+                    <div class="text-right">
+                      <span class="text-sm font-black text-emerald-600 block">${totalCount}</span>
+                      <span class="text-[9px] text-slate-400 uppercase font-bold">Properties</span>
+                    </div>
+                  </div>
+                  ${propsListHtml}
+                  <div class="mt-3 pt-2 border-t border-slate-100 text-center">
+                    <span class="text-xs font-extrabold text-emerald-600 hover:text-emerald-700 inline-flex items-center space-x-1">
+                      <span>Click to View All Auctions</span> &rarr;
                     </span>
                   </div>
-                  <div class="text-right">
-                    <span class="text-sm font-black text-emerald-600 block">${totalCount}</span>
-                    <span class="text-[9px] text-slate-400 uppercase font-bold">Properties</span>
-                  </div>
                 </div>
-                ${propsListHtml}
-                <div class="mt-3 pt-2 border-t border-slate-100 text-center">
-                  <span class="text-xs font-extrabold text-emerald-600 hover:text-emerald-700 inline-flex items-center space-x-1">
-                    <span>Click to View All Auctions</span> &rarr;
-                  </span>
-                </div>
-              </div>
-            `;
+              `;
+            };
 
-            layer.bindTooltip(tooltipContent, {
+            // Bind initial tooltip content
+            layer.bindTooltip(getDynamicTooltipContent(), {
               sticky: true,
               direction: 'auto',
               opacity: 1,
@@ -464,8 +1283,12 @@ require_once 'includes/header.php';
             // Hover & Touch interactions
             layer.on({
               mouseover: (e) => {
+                const l = e.target;
+                
+                // Dynamically update tooltip content on hover
+                l.setTooltipContent(getDynamicTooltipContent());
+
                 if (window.innerWidth >= 768) {
-                  const l = e.target;
                   if (hoveredFeature && hoveredFeature !== l) {
                     geoLayer.resetStyle(hoveredFeature);
                   }
@@ -492,8 +1315,20 @@ require_once 'includes/header.php';
               },
               click: () => {
                 const targetId = info.cityId || 'mumbai';
+                
+                const selectedCategory = document.getElementById('filter-category').value;
+                const selectedType = document.getElementById('filter-type').value;
+
+                const filteredProps = dbAllProperties.filter(p => {
+                  const matchesCity = p.city_name.toLowerCase().includes(distName.toLowerCase()) || 
+                                      distName.toLowerCase().includes(p.city_name.toLowerCase());
+                  const matchesCategory = (selectedCategory === 'all' || p.category === selectedCategory);
+                  const matchesType = (selectedType === 'all' || p.type === selectedType);
+                  return matchesCity && matchesCategory && matchesType;
+                });
+
                 if (window.innerWidth < 768) {
-                  showBottomSheet(distName, info, totalCount, matchingProps, targetId);
+                  showBottomSheet(distName, info, filteredProps.length, filteredProps, targetId);
                 } else {
                   window.location.href = `city.php?id=${targetId}`;
                 }
@@ -581,12 +1416,14 @@ require_once 'includes/header.php';
     document.getElementById('district-bottom-sheet-backdrop').classList.add('hidden');
     document.getElementById('district-bottom-sheet').classList.add('translate-y-full');
   }
+  window.closeBottomSheet = closeBottomSheet;
 
   function focusDistrict(dName) {
     const info = districtDivisionMap[dName] || { cityId: 'mumbai' };
     const targetId = info.cityId || 'mumbai';
     window.location.href = `city.php?id=${targetId}`;
   }
+  window.focusDistrict = focusDistrict;
 
   // Campaign Lead Submission
   function handleCampaignSubmit(e) {
@@ -631,6 +1468,31 @@ require_once 'includes/header.php';
     .catch(() => {
       errorEl.textContent = 'Server communications failed.';
       errorEl.classList.remove('hidden');
+    });
+  }
+
+  // 3D Parallax effect on mouse movement for the hero section
+  const heroSection = document.getElementById('hero-section');
+  if (heroSection) {
+    let tick = false;
+    heroSection.addEventListener('mousemove', (e) => {
+      if (!tick) {
+        window.requestAnimationFrame(() => {
+          const rect = heroSection.getBoundingClientRect();
+          const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2); // -1 to 1
+          const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2); // -1 to 1
+          heroSection.style.setProperty('--mouse-x', x.toFixed(3));
+          heroSection.style.setProperty('--mouse-y', y.toFixed(3));
+          tick = false;
+        });
+        tick = true;
+      }
+    });
+
+    // Reset rotation on mouse leave
+    heroSection.addEventListener('mouseleave', () => {
+      heroSection.style.setProperty('--mouse-x', '0');
+      heroSection.style.setProperty('--mouse-y', '0');
     });
   }
 </script>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 220" width="1080" height="220">
+  <!-- "A" letter -->
+  <text x="30" y="195" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="200" fill="#555555">A</text>
+  
+  <!-- Green checkmark over/near X position -->
+  <!-- The checkmark replaces the X visually -->
+  <polyline 
+    points="183,30  228,130  310,15" 
+    fill="none" stroke="#4CAF50" stroke-width="28" 
+    stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- "IS" after the X -->
+  <text x="310" y="195" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="200" fill="#555555">IS</text>
+  
+  <!-- space + FINANCE -->
+  <text x="540" y="195" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="200" fill="#555555">FINANCE</text>
+</svg>
