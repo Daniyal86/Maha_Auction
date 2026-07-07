@@ -685,7 +685,7 @@ $other_banks = [
               <i class="h-3.5 w-3.5 text-slate-400" data-lucide="home"></i>
             </span>
             <select id="filter-type" onchange="filterDistricts()" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
-              <option value="all">All Property Types</option>
+              <option value="all">All Types</option>
               <option value="Residential">Residential properties</option>
               <option value="Commercial">Commercial properties</option>
               <option value="Industrial">Industrial properties</option>
@@ -702,8 +702,8 @@ $other_banks = [
               <i class="h-3.5 w-3.5 text-slate-400" data-lucide="activity"></i>
             </span>
             <select id="filter-activity" onchange="filterDistricts()" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
-              <option value="all">All Districts (Include Empty)</option>
-              <option value="active">Active Districts Only</option>
+              <option value="all">All Districts</option>
+              <option value="active">Active Only</option>
             </select>
             <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <i class="h-3 w-3 text-slate-400" data-lucide="chevron-down"></i>
