@@ -9,7 +9,7 @@ $advocates_data = [
         'rating' => '5.00',
         'experience' => '20 Yrs Exp',
         'specialty' => 'SARFAESI Appellate Litigations, Land Title Searches & DRT Counsel',
-        'image' => 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=300&q=80',
+        'image' => './assets/COfounder/for%20legal.png',
         'founding' => true,
         'bio' => 'Adv. Sajid Kureshi is the founding visionary behind MahaAuctions Legal Advisory. With over two decades of extensive courtroom experience, he has pioneered specialized litigation strategies for SARFAESI and DRT cases across Maharashtra. His precise interpretation of the law has resulted in numerous landmark judgments favoring real estate buyers and investors.',
         'history' => [

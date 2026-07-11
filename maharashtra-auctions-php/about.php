@@ -183,6 +183,66 @@ require_once 'includes/header.php';
     </div>
   </div>
 
+  <!-- Co-founders Section -->
+  <div class="space-y-10">
+    <div class="text-center space-y-2">
+      <div class="inline-flex items-center space-x-2 text-premium-emerald text-xs font-bold uppercase tracking-widest">
+        <i data-lucide="users" class="h-4 w-4"></i>
+        <span>Leadership & Vision</span>
+      </div>
+      <h2 class="text-3xl font-black text-slate-800">Meet Our Co-founders</h2>
+      <p class="text-slate-500 text-sm font-medium max-w-xl mx-auto">The legal expertise and technological innovation behind Maharashtra's leading statutory auction portal.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      
+      <!-- Advocate Sajid Kureshi -->
+      <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-emerald-100 transition-all duration-300 flex flex-col items-center text-center group">
+        <!-- Image Container with decorative background -->
+        <div class="relative w-56 h-64 mb-6 flex items-end justify-center overflow-hidden rounded-2xl bg-gradient-to-t from-emerald-500/10 to-teal-500/5 border border-slate-100 group-hover:border-emerald-200/50 transition-colors">
+          <!-- Background Glow Circle -->
+          <div class="absolute bottom-4 w-44 h-44 rounded-full bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 blur-md opacity-70 group-hover:scale-110 transition-transform duration-500"></div>
+          <!-- cutout image -->
+          <img src="./assets/COfounder/forabout.png" alt="Adv. Sajid Kureshi" class="relative z-10 h-60 object-contain group-hover:scale-105 transition-transform duration-500">
+        </div>
+        <h3 class="text-lg font-black text-slate-800">Adv. Sajid Kureshi</h3>
+        <p class="text-emerald-600 text-xs font-bold uppercase tracking-wider mt-1">Co-founder & Principal Arbitrator</p>
+        <p class="text-slate-500 text-xs mt-3 leading-relaxed font-medium">
+          Over 20 years of legal expertise in property litigations, SARFAESI appeals, and DRT counsels across Maharashtra.
+        </p>
+        <div class="flex items-center space-x-2.5 mt-4">
+          <a href="advisory.php" class="inline-flex items-center space-x-1 text-xs font-bold text-slate-500 hover:text-emerald-600 transition-colors">
+            <i data-lucide="scale" class="w-3.5 h-3.5"></i>
+            <span>Consult Profile</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Developer Daniyal Shaikh -->
+      <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-emerald-100 transition-all duration-300 flex flex-col items-center text-center group">
+        <!-- Image Container with decorative background -->
+        <div class="relative w-56 h-64 mb-6 flex items-end justify-center overflow-hidden rounded-2xl bg-gradient-to-t from-emerald-500/10 to-teal-500/5 border border-slate-100 group-hover:border-emerald-200/50 transition-colors">
+          <!-- Background Glow Circle -->
+          <div class="absolute bottom-4 w-44 h-44 rounded-full bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 blur-md opacity-70 group-hover:scale-110 transition-transform duration-500"></div>
+          <!-- cutout image -->
+          <img src="./assets/COfounder/Developer%20and%20Cofounder.png" alt="Developer Daniyal Shaikh" class="relative z-10 h-60 object-contain group-hover:scale-105 transition-transform duration-500">
+        </div>
+        <h3 class="text-lg font-black text-slate-800">Daniyal Shaikh</h3>
+        <p class="text-emerald-600 text-xs font-bold uppercase tracking-wider mt-1">Co-founder & Chief Technology Officer</p>
+        <p class="text-slate-500 text-xs mt-3 leading-relaxed font-medium">
+          Architect of the MahaAuctions statutory database. Expert in scalable systems, geographic mapping, and secure portal development.
+        </p>
+        <div class="flex items-center space-x-2.5 mt-4">
+          <span class="inline-flex items-center space-x-1 text-xs font-bold text-slate-400">
+            <i data-lucide="code" class="w-3.5 h-3.5"></i>
+            <span>Systems Architect</span>
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- CTA -->
   <div class="bg-gradient-to-r from-premium-emerald to-teal-600 rounded-3xl p-8 md:p-12 text-white text-center space-y-5 shadow-xl shadow-emerald-200/50 relative overflow-hidden">
     <div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:2rem_2rem]"></div>
