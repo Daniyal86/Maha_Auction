@@ -26,14 +26,37 @@ require_once 'includes/header.php';
     
     <!-- Advocate Grid -->
     <div class="lg:col-span-2 space-y-6">
-      <?php foreach ($advocates as $adv): ?>
-        <?php 
+      <?php 
+        $rank_counter = 0;
+        foreach ($advocates as $adv): 
           $is_founding = isset($adv['founding']) && $adv['founding'];
           $is_sponsored = isset($adv['sponsored']) && $adv['sponsored'];
           
+          if (!$is_founding) {
+              $rank_counter++;
+          }
+          
           $card_class = "bg-white rounded-3xl border border-slate-200 p-6 shadow-md hover:shadow-lg transition-shadow flex flex-col sm:flex-row items-center sm:items-start gap-6 relative overflow-hidden";
+          $image_border = "border-slate-100";
+          $rank_label_class = "";
+          
           if ($is_founding) {
               $card_class = "bg-gradient-to-br from-white via-white to-amber-50/20 rounded-3xl border-2 border-amber-400 p-6 shadow-lg hover:shadow-xl transition-shadow flex flex-col sm:flex-row items-center sm:items-start gap-6 relative overflow-hidden";
+              $image_border = "border-amber-300";
+          } else {
+              if ($rank_counter >= 1 && $rank_counter <= 5) {
+                  $card_class = "bg-gradient-to-br from-white via-white to-amber-50/10 rounded-3xl border-2 border-amber-400 p-6 shadow-lg hover:shadow-xl transition-shadow flex flex-col sm:flex-row items-center sm:items-start gap-6 relative overflow-hidden";
+                  $image_border = "border-amber-300";
+                  $rank_label_class = "text-amber-700 bg-amber-100/85 border border-amber-200/50";
+              } elseif ($rank_counter >= 6 && $rank_counter <= 10) {
+                  $card_class = "bg-gradient-to-br from-white via-white to-slate-50/30 rounded-3xl border-2 border-slate-300 p-6 shadow-md hover:shadow-lg transition-shadow flex flex-col sm:flex-row items-center sm:items-start gap-6 relative overflow-hidden";
+                  $image_border = "border-slate-350";
+                  $rank_label_class = "text-slate-700 bg-slate-100/85 border border-slate-200/50";
+              } elseif ($rank_counter >= 11 && $rank_counter <= 15) {
+                  $card_class = "bg-gradient-to-br from-white via-white to-orange-50/5 rounded-3xl border-2 border-orange-300 p-6 shadow-md hover:shadow-lg transition-shadow flex flex-col sm:flex-row items-center sm:items-start gap-6 relative overflow-hidden";
+                  $image_border = "border-orange-350";
+                  $rank_label_class = "text-orange-700 bg-orange-100/85 border border-orange-200/50";
+              }
           }
         ?>
         <div onclick="window.location.href='advocate.php?id=<?php echo urlencode($adv['id']); ?>'" class="block group cursor-pointer hover:-translate-y-1 transition-all duration-300 <?php echo $card_class; ?>">
@@ -44,14 +67,31 @@ require_once 'includes/header.php';
               <span>Founding Member</span>
             </div>
           <?php elseif ($is_sponsored): ?>
-            <!-- Sponsored rank badge -->
-            <div class="absolute top-0 right-0 bg-slate-900 text-white text-[8px] font-extrabold px-3 py-1 rounded-bl-xl uppercase tracking-wider flex items-center space-x-1">
-              <i data-lucide="zap" class="h-2.5 w-2.5 text-premium-gold shrink-0"></i>
-              <span>Sponsored Rank</span>
-            </div>
+            <!-- Sponsored rank badge based on range -->
+            <?php if ($rank_counter >= 1 && $rank_counter <= 5): ?>
+              <div class="absolute top-0 right-0 bg-gradient-to-l from-amber-500 via-yellow-400 to-amber-600 text-slate-950 text-[9px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow flex items-center space-x-1">
+                <i data-lucide="crown" class="h-3 w-3 fill-slate-950 shrink-0"></i>
+                <span>Rank #<?php echo $rank_counter; ?> Gold</span>
+              </div>
+            <?php elseif ($rank_counter >= 6 && $rank_counter <= 10): ?>
+              <div class="absolute top-0 right-0 bg-gradient-to-l from-slate-400 via-slate-350 to-slate-500 text-slate-800 text-[9px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow flex items-center space-x-1">
+                <i data-lucide="award" class="h-3 w-3 fill-slate-700 shrink-0"></i>
+                <span>Rank #<?php echo $rank_counter; ?> Silver</span>
+              </div>
+            <?php elseif ($rank_counter >= 11 && $rank_counter <= 15): ?>
+              <div class="absolute top-0 right-0 bg-gradient-to-l from-orange-400 via-orange-300 to-orange-500 text-white text-[9px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow flex items-center space-x-1">
+                <i data-lucide="award" class="h-3 w-3 fill-orange-200 shrink-0"></i>
+                <span>Rank #<?php echo $rank_counter; ?> Bronze</span>
+              </div>
+            <?php else: ?>
+              <div class="absolute top-0 right-0 bg-slate-900 text-white text-[8px] font-extrabold px-3 py-1 rounded-bl-xl uppercase tracking-wider flex items-center space-x-1">
+                <i data-lucide="zap" class="h-2.5 w-2.5 text-premium-gold shrink-0"></i>
+                <span>Sponsored Rank</span>
+              </div>
+            <?php endif; ?>
           <?php endif; ?>
 
-          <img src="<?php echo htmlspecialchars($adv['image']); ?>" alt="Advocate avatar" class="h-24 w-24 rounded-2xl object-cover border <?php echo $is_founding ? 'border-amber-300' : 'border-slate-100'; ?> shrink-0">
+          <img src="<?php echo htmlspecialchars($adv['image']); ?>" alt="Advocate avatar" class="h-24 w-24 rounded-2xl object-cover border <?php echo $image_border; ?> shrink-0">
           
           <div class="space-y-3 flex-grow text-center sm:text-left">
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
@@ -60,6 +100,8 @@ require_once 'includes/header.php';
                   <span><?php echo htmlspecialchars($adv['name']); ?></span>
                   <?php if ($is_founding): ?>
                     <i data-lucide="shield-check" class="h-4 w-4 text-amber-500 fill-amber-500/20 shrink-0"></i>
+                  <?php elseif ($rank_counter > 0): ?>
+                    <span class="text-[9px] font-black px-2 py-0.5 rounded-md <?php echo $rank_label_class; ?>">RANK #<?php echo $rank_counter; ?></span>
                   <?php endif; ?>
                 </h3>
                 <span class="text-xs font-bold <?php echo $is_founding ? 'text-amber-700 bg-amber-100/80' : 'text-premium-emerald bg-emerald-50'; ?> px-2.5 py-0.5 rounded-full mt-1 inline-block"><?php echo htmlspecialchars($adv['role']); ?></span>

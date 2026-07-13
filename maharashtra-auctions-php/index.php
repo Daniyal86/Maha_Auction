@@ -499,6 +499,12 @@ $national_banks = [
     ['name' => 'Union Bank of India', 'logo' => 'ubi.svg'],
     ['name' => 'Indian Bank', 'logo' => 'indian.svg'],
     ['name' => 'Punjab & Sind Bank', 'logo' => 'psb.svg'],
+    ['name' => 'Bank of India', 'logo' => 'bkid.svg'],
+    ['name' => 'Canara Bank', 'logo' => 'cnrb.svg'],
+    ['name' => 'Central Bank of India', 'logo' => 'cbin.svg'],
+    ['name' => 'UCO Bank', 'logo' => 'ucba.svg'],
+    ['name' => 'Indian Overseas Bank', 'logo' => 'ioba.svg'],
+    ['name' => 'Bank of Maharashtra', 'logo' => 'mahb.svg'],
 ];
 
 $other_banks = [
@@ -614,11 +620,11 @@ $other_banks = [
         'Gondiya' => ['div' => 'नागपूर विभाग', 'color' => '#e5a970'],
         'Chandrapur' => ['div' => 'नागपूर विभाग', 'color' => '#e5a970'],
         'Garhchiroli' => ['div' => 'नागपूर विभाग', 'color' => '#e5a970'],
-        'Nashik' => ['div' => 'नाशिक विभाग', 'color' => '#eab308'],
-        'Nandurbar' => ['div' => 'नाशिक विभाग', 'color' => '#eab308'],
-        'Dhule' => ['div' => 'नाशिक विभाग', 'color' => '#eab308'],
-        'Jalgaon' => ['div' => 'नाशिक विभाग', 'color' => '#eab308'],
-        'Ahmadnagar' => ['div' => 'नाशिक विभाग', 'color' => '#eab308'],
+        'Nashik' => ['div' => 'नाशिक विभाग', 'color' => '#fde047'],
+        'Nandurbar' => ['div' => 'नाशिक विभाग', 'color' => '#fde047'],
+        'Dhule' => ['div' => 'नाशिक विभाग', 'color' => '#fde047'],
+        'Jalgaon' => ['div' => 'नाशिक विभाग', 'color' => '#fde047'],
+        'Ahmadnagar' => ['div' => 'नाशिक विभाग', 'color' => '#fde047'],
         'Pune' => ['div' => 'पुणे विभाग', 'color' => '#4ade80'],
         'Satara' => ['div' => 'पुणे विभाग', 'color' => '#4ade80'],
         'Solapur' => ['div' => 'पुणे विभाग', 'color' => '#4ade80'],
@@ -766,7 +772,7 @@ $other_banks = [
           <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-sm shrink-0 shadow-sm" style="background-color: #818cf8;"></span><span class="truncate">संभाजीनगर</span></div>
           <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-sm shrink-0 shadow-sm" style="background-color: #9ca3af;"></span><span class="truncate">कोकण</span></div>
           <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-sm shrink-0 shadow-sm" style="background-color: #e5a970;"></span><span class="truncate">नागपूर</span></div>
-          <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-sm shrink-0 shadow-sm" style="background-color: #eab308;"></span><span class="truncate">नाशिक</span></div>
+          <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-sm shrink-0 shadow-sm" style="background-color: #fde047;"></span><span class="truncate">नाशिक</span></div>
           <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-sm shrink-0 shadow-sm" style="background-color: #4ade80;"></span><span class="truncate">पुणे</span></div>
         </div>
       </div>
@@ -1087,11 +1093,11 @@ $other_banks = [
     'Chandrapur': { divName: 'नागपूर विभाग', color: '#e5a970', marathi: 'चंद्रपूर', cityId: 'chandrapur' },
     'Garhchiroli': { divName: 'नागपूर विभाग', color: '#e5a970', marathi: 'गडचिरोली', cityId: 'garhchiroli' },
 
-    'Nashik': { divName: 'नाशिक विभाग', color: '#eab308', marathi: 'नाशिक', cityId: 'nashik' },
-    'Nandurbar': { divName: 'नाशिक विभाग', color: '#eab308', marathi: 'नंदुरबार', cityId: 'nandurbar' },
-    'Dhule': { divName: 'नाशिक विभाग', color: '#eab308', marathi: 'धुळे', cityId: 'dhule' },
-    'Jalgaon': { divName: 'नाशिक विभाग', color: '#eab308', marathi: 'जळगाव', cityId: 'jalgaon' },
-    'Ahmadnagar': { divName: 'नाशिक विभाग', color: '#eab308', marathi: 'अहिल्यानगर', cityId: 'ahmadnagar' },
+    'Nashik': { divName: 'नाशिक विभाग', color: '#fde047', marathi: 'नाशिक', cityId: 'nashik' },
+    'Nandurbar': { divName: 'नाशिक विभाग', color: '#fde047', marathi: 'नंदुरबार', cityId: 'nandurbar' },
+    'Dhule': { divName: 'नाशिक विभाग', color: '#fde047', marathi: 'धुळे', cityId: 'dhule' },
+    'Jalgaon': { divName: 'नाशिक विभाग', color: '#fde047', marathi: 'जळगाव', cityId: 'jalgaon' },
+    'Ahmadnagar': { divName: 'नाशिक विभाग', color: '#fde047', marathi: 'अहिल्यानगर', cityId: 'ahmadnagar' },
 
     'Pune': { divName: 'पुणे विभाग', color: '#4ade80', marathi: 'पुणे', cityId: 'pune' },
     'Satara': { divName: 'पुणे विभाग', color: '#4ade80', marathi: 'सातारा', cityId: 'satara' },
@@ -1375,7 +1381,7 @@ $other_banks = [
         // Render permanent high-visibility Marathi text labels for all 35 districts directly from computed centroids
         Object.keys(districtCentroids).forEach(dName => {
           const info = districtDivisionMap[dName] || { marathi: dName };
-          const coords = districtCentroids[dName];
+          const coords = districtCentroids[dName]; 
           
           // Custom CSS div icon with crisp text halo
           const textIcon = L.divIcon({

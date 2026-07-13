@@ -141,11 +141,11 @@
           <ul class="space-y-4 text-sm text-slate-400 pt-2">
             <li class="flex items-start space-x-3 group">
               <i data-lucide="map-pin" class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5 group-hover:scale-110 transition-transform"></i>
-              <span>Bandra Kurla Complex (BKC), Mumbai, MH 400051</span>
+              <span>Office No. 8, First Floor, Charudataa Chambers, Kanhere Wadi, Near C.B.S. Signal, Nashik, Maharashtra, India - 422001</span>
             </li>
             <li class="flex items-center space-x-3 group">
               <i data-lucide="phone" class="w-4.5 h-4.5 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform"></i>
-              <span>+91 22 2262 0262</span>
+              <span>+91 96044 96521</span>
             </li>
             <li class="flex items-center space-x-3 group">
               <i data-lucide="mail" class="w-4.5 h-4.5 text-emerald-500 shrink-0 group-hover:scale-110 transition-transform"></i>

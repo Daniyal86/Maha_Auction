@@ -14,6 +14,18 @@ $adv = $advocates_data[$advocate_id];
 $is_founding = isset($adv['founding']) && $adv['founding'];
 $is_sponsored = isset($adv['sponsored']) && $adv['sponsored'];
 
+$rank_counter = 0;
+$my_rank = 0;
+foreach ($advocates_data as $key => $val) {
+    if (!isset($val['founding']) || !$val['founding']) {
+        $rank_counter++;
+        if ($key === $advocate_id) {
+            $my_rank = $rank_counter;
+            break;
+        }
+    }
+}
+
 require_once 'includes/header.php';
 ?>
 
@@ -48,10 +60,27 @@ require_once 'includes/header.php';
             <span>Founding Member</span>
           </div>
         <?php elseif ($is_sponsored): ?>
-          <div class="absolute top-0 right-0 bg-slate-900/90 border-b border-l border-emerald-500/40 text-emerald-400 text-[10px] sm:text-[11px] font-extrabold px-4 py-1.5 rounded-bl-2xl rounded-tr-3xl uppercase tracking-wider shadow-md flex items-center space-x-1.5 z-10">
-            <i data-lucide="zap" class="h-3.5 w-3.5 text-emerald-400 shrink-0"></i>
-            <span>Verified Panelist</span>
-          </div>
+          <?php if ($my_rank >= 1 && $my_rank <= 5): ?>
+            <div class="absolute top-0 right-0 bg-gradient-to-l from-amber-500 via-yellow-400 to-amber-600 text-slate-950 text-[10px] sm:text-[11px] font-black px-4 py-1.5 rounded-bl-2xl rounded-tr-3xl uppercase tracking-wider shadow-lg flex items-center space-x-1.5 z-10">
+              <i data-lucide="crown" class="h-3.5 w-3.5 fill-slate-950 shrink-0"></i>
+              <span>Rank #<?php echo $my_rank; ?> Gold Panelist</span>
+            </div>
+          <?php elseif ($my_rank >= 6 && $my_rank <= 10): ?>
+            <div class="absolute top-0 right-0 bg-gradient-to-l from-slate-400 via-slate-350 to-slate-500 text-slate-800 text-[10px] sm:text-[11px] font-black px-4 py-1.5 rounded-bl-2xl rounded-tr-3xl uppercase tracking-wider shadow-md flex items-center space-x-1.5 z-10">
+              <i data-lucide="award" class="h-3.5 w-3.5 fill-slate-700 shrink-0"></i>
+              <span>Rank #<?php echo $my_rank; ?> Silver Panelist</span>
+            </div>
+          <?php elseif ($my_rank >= 11 && $my_rank <= 15): ?>
+            <div class="absolute top-0 right-0 bg-gradient-to-l from-orange-400 via-orange-300 to-orange-500 text-white text-[10px] sm:text-[11px] font-black px-4 py-1.5 rounded-bl-2xl rounded-tr-3xl uppercase tracking-wider shadow-md flex items-center space-x-1.5 z-10">
+              <i data-lucide="award" class="h-3.5 w-3.5 fill-orange-200 shrink-0"></i>
+              <span>Rank #<?php echo $my_rank; ?> Bronze Panelist</span>
+            </div>
+          <?php else: ?>
+            <div class="absolute top-0 right-0 bg-slate-900/90 border-b border-l border-emerald-500/40 text-emerald-400 text-[10px] sm:text-[11px] font-extrabold px-4 py-1.5 rounded-bl-2xl rounded-tr-3xl uppercase tracking-wider shadow-md flex items-center space-x-1.5 z-10">
+              <i data-lucide="zap" class="h-3.5 w-3.5 text-emerald-400 shrink-0"></i>
+              <span>Verified Panelist</span>
+            </div>
+          <?php endif; ?>
         <?php endif; ?>
 
         <div class="relative flex flex-col sm:flex-row items-center sm:items-start gap-3.5 sm:gap-6 text-center sm:text-left mt-1 sm:mt-0">
@@ -73,6 +102,25 @@ require_once 'includes/header.php';
                 <span class="text-[11px] sm:text-xs font-extrabold px-3 py-0.5 rounded-full bg-white/10 text-emerald-300 border border-white/10 inline-block">
                   <?php echo htmlspecialchars($adv['role']); ?>
                 </span>
+                <?php if ($my_rank > 0): ?>
+                  <?php 
+                    $label_color = "text-emerald-300 bg-white/10 border-white/10";
+                    $label_text = "Rank #$my_rank";
+                    if ($my_rank >= 1 && $my_rank <= 5) {
+                        $label_color = "text-yellow-400 bg-yellow-500/10 border-yellow-500/30";
+                        $label_text = "Gold Rank #$my_rank";
+                    } elseif ($my_rank >= 6 && $my_rank <= 10) {
+                        $label_color = "text-slate-350 bg-slate-500/10 border-slate-500/30";
+                        $label_text = "Silver Rank #$my_rank";
+                    } elseif ($my_rank >= 11 && $my_rank <= 15) {
+                        $label_color = "text-orange-400 bg-orange-500/10 border-orange-500/30";
+                        $label_text = "Bronze Rank #$my_rank";
+                    }
+                  ?>
+                  <span class="text-[11px] sm:text-xs font-extrabold px-3 py-0.5 rounded-full <?php echo $label_color; ?> border inline-block">
+                    <?php echo $label_text; ?>
+                  </span>
+                <?php endif; ?>
                 <span class="inline-flex items-center space-x-1 text-[10px] font-extrabold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
                   <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                   <span>Available Today for Consultation</span>
