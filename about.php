@@ -206,9 +206,9 @@ require_once 'includes/header.php';
           <img src="./assets/COfounder/forabout.png" alt="Adv. Sajid Kureshi" class="relative z-10 h-60 object-contain group-hover:scale-105 transition-transform duration-500">
         </div>
         <h3 class="text-lg font-black text-slate-800">Adv. Sajid Kureshi</h3>
-        <p class="text-emerald-600 text-xs font-bold uppercase tracking-wider mt-1">Co-founder & Principal Arbitrator</p>
+        <p class="text-emerald-600 text-xs font-bold uppercase tracking-wider mt-1">Founder & Advocate</p>
         <p class="text-slate-500 text-xs mt-3 leading-relaxed font-medium">
-          Over 20 years of legal expertise in property litigations, SARFAESI appeals, and DRT counsels across Maharashtra.
+          Over 7 years of legal expertise in property litigations, SARFAESI appeals, and DRT counsels across Maharashtra.
         </p>
         <div class="flex items-center space-x-2.5 mt-4">
           <a href="advisory.php" class="inline-flex items-center space-x-1 text-xs font-bold text-slate-500 hover:text-emerald-600 transition-colors">
@@ -228,7 +228,7 @@ require_once 'includes/header.php';
           <img src="./assets/COfounder/Developer%20and%20Cofounder.png" alt="Developer Daniyal Shaikh" class="relative z-10 h-60 object-contain group-hover:scale-105 transition-transform duration-500">
         </div>
         <h3 class="text-lg font-black text-slate-800">Daniyal Shaikh</h3>
-        <p class="text-emerald-600 text-xs font-bold uppercase tracking-wider mt-1">Co-founder & Chief Technology Officer</p>
+        <p class="text-emerald-600 text-xs font-bold uppercase tracking-wider mt-1">Developer</p>
         <p class="text-slate-500 text-xs mt-3 leading-relaxed font-medium">
           Architect of the MahaAuctions statutory database. Expert in scalable systems, geographic mapping, and secure portal development.
         </p>
