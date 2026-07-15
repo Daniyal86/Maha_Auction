@@ -2,10 +2,10 @@
 // config/db.php
 
 // Database configuration constants (modify for production server as needed)
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'maharashtra_auctions');
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
+define('DB_NAME', getenv('DB_NAME') ?: 'maharashtra_auctions');
 
 try {
     $pdo = new PDO(
