@@ -60,12 +60,24 @@ require_once 'includes/header.php';
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
   <!-- Breadcrumb -->
-  <div class="flex items-center space-x-2 text-xs font-bold text-slate-400">
+  <div class="flex items-center space-x-2 text-xs font-bold text-slate-400 overflow-x-auto whitespace-nowrap scrollbar-hide py-1">
     <a href="index.php" class="hover:text-premium-emerald transition-colors">Home</a>
-    <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+    <i data-lucide="chevron-right" class="h-3.5 w-3.5 shrink-0"></i>
     <a href="search.php" class="hover:text-premium-emerald transition-colors">Search</a>
-    <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
-    <span class="text-slate-600"><?php echo htmlspecialchars($prop['title']); ?></span>
+    <?php if (!empty($prop['state'])): ?>
+      <i data-lucide="chevron-right" class="h-3.5 w-3.5 shrink-0"></i>
+      <a href="search.php?state=<?php echo urlencode($prop['state']); ?>" class="hover:text-premium-emerald transition-colors"><?php echo htmlspecialchars($prop['state']); ?></a>
+    <?php endif; ?>
+    <?php if (!empty($prop['district'])): ?>
+      <i data-lucide="chevron-right" class="h-3.5 w-3.5 shrink-0"></i>
+      <a href="search.php?state=<?php echo urlencode($prop['state']); ?>&district=<?php echo urlencode($prop['district']); ?>" class="hover:text-premium-emerald transition-colors"><?php echo htmlspecialchars($prop['district']); ?></a>
+    <?php endif; ?>
+    <?php if (!empty($prop['taluka'])): ?>
+      <i data-lucide="chevron-right" class="h-3.5 w-3.5 shrink-0"></i>
+      <a href="search.php?state=<?php echo urlencode($prop['state']); ?>&district=<?php echo urlencode($prop['district']); ?>&taluka=<?php echo urlencode($prop['taluka']); ?>" class="hover:text-premium-emerald transition-colors"><?php echo htmlspecialchars($prop['taluka']); ?></a>
+    <?php endif; ?>
+    <i data-lucide="chevron-right" class="h-3.5 w-3.5 shrink-0"></i>
+    <span class="text-slate-600 truncate max-w-[200px]"><?php echo htmlspecialchars($prop['title']); ?></span>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -91,7 +103,22 @@ require_once 'includes/header.php';
           <h1 class="text-3xl font-black text-slate-800 leading-tight tracking-tight"><?php echo htmlspecialchars($prop['title']); ?></h1>
           <p class="text-sm font-bold text-slate-500 flex items-center space-x-1.5">
             <i data-lucide="map-pin" class="h-4 w-4 text-premium-emerald shrink-0"></i>
-            <span><?php echo htmlspecialchars($prop['address']); ?></span>
+            <span>
+              <?php echo htmlspecialchars($prop['address']); ?>
+              <?php if (!empty($prop['village']) || !empty($prop['taluka']) || !empty($prop['district']) || !empty($prop['state'])): ?>
+                <br>
+                <span class="text-xs text-slate-400 font-semibold block mt-1">
+                  <?php 
+                    $loc_parts = [];
+                    if (!empty($prop['village'])) $loc_parts[] = 'Village: ' . htmlspecialchars($prop['village']);
+                    if (!empty($prop['taluka'])) $loc_parts[] = 'Taluka: ' . htmlspecialchars($prop['taluka']);
+                    if (!empty($prop['district'])) $loc_parts[] = 'District: ' . htmlspecialchars($prop['district']);
+                    if (!empty($prop['state'])) $loc_parts[] = 'State: ' . htmlspecialchars($prop['state']);
+                    echo implode(' | ', $loc_parts);
+                  ?>
+                </span>
+              <?php endif; ?>
+            </span>
           </p>
           
           <!-- Area and Square Foot (Always visible details) -->

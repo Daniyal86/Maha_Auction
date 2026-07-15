@@ -10,6 +10,13 @@ $cities = $cities_stmt->fetchAll();
 $all_prop_stmt = $pdo->query("SELECT p.*, c.name as city_name FROM properties p JOIN cities c ON p.city_id = c.id ORDER BY p.created_at DESC");
 $all_properties = $all_prop_stmt->fetchAll();
 
+// Fetch unique states from database
+$states_stmt = $pdo->query("SELECT DISTINCT state FROM properties WHERE state IS NOT NULL AND state != '' ORDER BY state ASC");
+$states = $states_stmt->fetchAll(PDO::FETCH_COLUMN);
+if (empty($states)) {
+    $states = ['Maharashtra'];
+}
+
 // Featured properties (limit 3 for recent listings grid)
 $properties = array_slice($all_properties, 0, 3);
 
@@ -641,75 +648,63 @@ $other_banks = [
           <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
             <i class="h-4 w-4 text-slate-400 group-focus-within:text-premium-emerald transition-colors" data-lucide="search"></i>
           </span>
-          <input type="text" id="city-search-input" oninput="filterDistricts()" placeholder="Search district by name..." class="w-full pl-10 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-750 placeholder-slate-450 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs">
+          <input type="text" id="city-search-input" oninput="filterPropertiesByLocation()" placeholder="Search district by name..." class="w-full pl-10 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-750 placeholder-slate-450 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs">
           <button onclick="clearSearch()" id="search-clear-btn" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 hidden">
             <i class="h-4 w-4" data-lucide="x-circle"></i>
           </button>
         </div>
 
-        <!-- Right: Dropdown Filters (including Division, Category, Type, Activity) -->
+        <!-- Right: Dropdown Filters (including State, District, Taluka, Village) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 w-full flex-1">
-          <!-- Administrative Division Filter -->
+          <!-- State Filter -->
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <i class="h-3.5 w-3.5 text-slate-400" data-lucide="map-pin"></i>
             </span>
-            <select id="filter-division" onchange="filterDistricts()" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
-              <option value="all">All Divisions</option>
-              <option value="कोकण विभाग">Konkan</option>
-              <option value="पुणे विभाग">Pune</option>
-              <option value="नाशिक विभाग">Nashik</option>
-              <option value="छत्रपती संभाजीनगर विभाग">Aurangabad</option>
-              <option value="अमरावती विभाग">Amravati</option>
-              <option value="नागपूर विभाग">Nagpur</option>
+            <select id="filter-state" onchange="updateDistricts(); filterPropertiesByLocation();" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
+              <option value="">All States</option>
+              <?php foreach ($states as $st): ?>
+                <option value="<?php echo htmlspecialchars($st); ?>"><?php echo htmlspecialchars($st); ?></option>
+              <?php endforeach; ?>
             </select>
             <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <i class="h-3 w-3 text-slate-400" data-lucide="chevron-down"></i>
             </span>
           </div>
 
-          <!-- Property Category Filter -->
+          <!-- District Filter -->
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <i class="h-3.5 w-3.5 text-slate-400" data-lucide="tag"></i>
+              <i class="h-3.5 w-3.5 text-slate-400" data-lucide="map"></i>
             </span>
-            <select id="filter-category" onchange="filterDistricts()" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
-              <option value="all">All Categories</option>
-              <option value="Auction">Auction listings only</option>
-              <option value="Rental">Rental listings only</option>
-              <option value="Heavy Deposit">Heavy Deposit listings only</option>
-              <option value="Seller Listed">Seller Listed only</option>
+            <select id="filter-district" onchange="updateTalukas(); filterPropertiesByLocation();" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
+              <option value="">All Districts</option>
             </select>
             <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <i class="h-3 w-3 text-slate-400" data-lucide="chevron-down"></i>
             </span>
           </div>
 
-          <!-- Property Type Filter -->
+          <!-- Taluka Filter -->
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <i class="h-3.5 w-3.5 text-slate-400" data-lucide="navigation"></i>
+            </span>
+            <select id="filter-taluka" onchange="updateVillages(); filterPropertiesByLocation();" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
+              <option value="">All Talukas</option>
+            </select>
+            <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <i class="h-3 w-3 text-slate-400" data-lucide="chevron-down"></i>
+            </span>
+          </div>
+
+          <!-- Village Filter -->
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <i class="h-3.5 w-3.5 text-slate-400" data-lucide="home"></i>
             </span>
-            <select id="filter-type" onchange="filterDistricts()" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
-              <option value="all">All Types</option>
-              <option value="Residential">Residential properties</option>
-              <option value="Commercial">Commercial properties</option>
-              <option value="Industrial">Industrial properties</option>
-              <option value="Agricultural">Agricultural properties</option>
-            </select>
-            <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-              <i class="h-3 w-3 text-slate-400" data-lucide="chevron-down"></i>
-            </span>
-          </div>
-
-          <!-- Activity Filter -->
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <i class="h-3.5 w-3.5 text-slate-400" data-lucide="activity"></i>
-            </span>
-            <select id="filter-activity" onchange="filterDistricts()" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
-              <option value="all">All Districts</option>
-              <option value="active">Active Only</option>
+            <select id="filter-village" onchange="filterPropertiesByLocation();" class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-premium-emerald transition-all shadow-xs appearance-none cursor-pointer">
+              <option value="">All Villages</option>
             </select>
             <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <i class="h-3 w-3 text-slate-400" data-lucide="chevron-down"></i>
@@ -940,32 +935,94 @@ $other_banks = [
     }
   }
 
-  function setDivisionFilter(divName) {
-    const select = document.getElementById('filter-division');
-    if (select) {
-      select.value = divName;
-    }
-    filterDistricts();
+  function updateDistricts() {
+    const stateSel = document.getElementById('filter-state');
+    const distSel = document.getElementById('filter-district');
+    const talSel = document.getElementById('filter-taluka');
+    const vilSel = document.getElementById('filter-village');
+
+    if (!distSel) return;
+    distSel.innerHTML = '<option value="">All Districts</option>';
+    if (talSel) talSel.innerHTML = '<option value="">All Talukas</option>';
+    if (vilSel) vilSel.innerHTML = '<option value="">All Villages</option>';
+
+    const state = stateSel ? stateSel.value : '';
+    if (!state) return;
+
+    fetch(`search.php?ajax_location=1&type=districts&state=${encodeURIComponent(state)}`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.textContent = d;
+          distSel.appendChild(opt);
+        });
+      });
   }
-  window.setDivisionFilter = setDivisionFilter;
+
+  function updateTalukas() {
+    const distSel = document.getElementById('filter-district');
+    const talSel = document.getElementById('filter-taluka');
+    const vilSel = document.getElementById('filter-village');
+
+    if (!talSel) return;
+    talSel.innerHTML = '<option value="">All Talukas</option>';
+    if (vilSel) vilSel.innerHTML = '<option value="">All Villages</option>';
+
+    const district = distSel ? distSel.value : '';
+    if (!district) return;
+
+    fetch(`search.php?ajax_location=1&type=talukas&district=${encodeURIComponent(district)}`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t;
+          opt.textContent = t;
+          talSel.appendChild(opt);
+        });
+      });
+  }
+
+  function updateVillages() {
+    const talSel = document.getElementById('filter-taluka');
+    const vilSel = document.getElementById('filter-village');
+
+    if (!vilSel) return;
+    vilSel.innerHTML = '<option value="">All Villages</option>';
+
+    const taluka = talSel ? talSel.value : '';
+    if (!taluka) return;
+
+    fetch(`search.php?ajax_location=1&type=villages&taluka=${encodeURIComponent(taluka)}`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(v => {
+          const opt = document.createElement('option');
+          opt.value = v;
+          opt.textContent = v;
+          vilSel.appendChild(opt);
+        });
+      });
+  }
 
   function clearSearch() {
     const searchInput = document.getElementById('city-search-input');
     if (searchInput) {
       searchInput.value = '';
     }
-    filterDistricts();
+    filterPropertiesByLocation();
   }
 
-  function filterDistricts() {
+  function filterPropertiesByLocation() {
+    const selectedState = document.getElementById('filter-state').value;
+    const selectedDistrict = document.getElementById('filter-district').value;
+    const selectedTaluka = document.getElementById('filter-taluka').value;
+    const selectedVillage = document.getElementById('filter-village').value;
+    
     const searchInput = document.getElementById('city-search-input');
     const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
-    
-    // Get filter values
-    const selectedDivision = document.getElementById('filter-division') ? document.getElementById('filter-division').value : 'all';
-    const selectedCategory = document.getElementById('filter-category').value;
-    const selectedType = document.getElementById('filter-type').value;
-    const selectedActivity = document.getElementById('filter-activity').value;
 
     const clearBtn = document.getElementById('search-clear-btn');
     if (clearBtn) {
@@ -984,18 +1041,21 @@ $other_banks = [
       const cityName = chip.querySelector('.city-name-label').textContent.trim();
       const division = chip.getAttribute('data-division') || '';
 
-      // Recalculate count of properties in this city that match active category and type filters
       const cityMatchingProps = dbAllProperties.filter(p => {
         const matchesCity = p.city_name.toLowerCase().includes(cityName.toLowerCase()) || 
-                            cityName.toLowerCase().includes(p.city_name.toLowerCase());
-        const matchesCategory = (selectedCategory === 'all' || p.category === selectedCategory);
-        const matchesType = (selectedType === 'all' || p.type === selectedType);
-        return matchesCity && matchesCategory && matchesType;
+                            cityName.toLowerCase().includes(p.city_name.toLowerCase()) ||
+                            (p.district && (p.district.toLowerCase().includes(cityName.toLowerCase()) || cityName.toLowerCase().includes(p.district.toLowerCase())));
+        
+        const matchesState = !selectedState || p.state === selectedState;
+        const matchesDistrict = !selectedDistrict || p.district === selectedDistrict;
+        const matchesTaluka = !selectedTaluka || p.taluka === selectedTaluka;
+        const matchesVillage = !selectedVillage || p.village === selectedVillage;
+
+        return matchesCity && matchesState && matchesDistrict && matchesTaluka && matchesVillage;
       });
 
       const currentCount = cityMatchingProps.length;
 
-      // Update badge text and visibility
       const badge = chip.querySelector('.city-count-badge');
       if (badge) {
         badge.textContent = currentCount;
@@ -1010,24 +1070,14 @@ $other_banks = [
         }
       }
 
-      // Check search match
       const matchesSearch = cityName.toLowerCase().includes(query);
 
-      // Check division match
-      let matchesDivision = false;
-      if (selectedDivision === 'all') {
-        matchesDivision = true;
-      } else {
-        matchesDivision = (division === selectedDivision);
+      let matchesLocationFilter = true;
+      if (selectedDistrict) {
+        matchesLocationFilter = cityName.toLowerCase() === selectedDistrict.toLowerCase();
       }
 
-      // Check activity match
-      let matchesActivity = true;
-      if (selectedActivity === 'active') {
-        matchesActivity = (currentCount > 0);
-      }
-
-      if (matchesSearch && matchesDivision && matchesActivity) {
+      if (matchesSearch && matchesLocationFilter) {
         chip.classList.remove('hidden');
         chip.style.opacity = '1';
         chip.style.transform = 'scale(1)';
@@ -1051,10 +1101,13 @@ $other_banks = [
       }
     }
 
-    // Update stats text
     const statsText = document.getElementById('filter-results-stats');
     if (statsText) {
       statsText.textContent = `Showing ${visibleCount} of ${chips.length} districts (${activeCount} active)`;
+    }
+
+    if (window.updateMapTooltips) {
+      window.updateMapTooltips(selectedState, selectedDistrict, selectedTaluka, selectedVillage);
     }
   }
 
@@ -1225,15 +1278,21 @@ $other_banks = [
             
             // Helper function to get filtered tooltip content dynamically
             const getDynamicTooltipContent = () => {
-              const selectedCategory = document.getElementById('filter-category').value;
-              const selectedType = document.getElementById('filter-type').value;
+              const selectedState = document.getElementById('filter-state').value;
+              const selectedDistrict = document.getElementById('filter-district').value;
+              const selectedTaluka = document.getElementById('filter-taluka').value;
+              const selectedVillage = document.getElementById('filter-village').value;
 
               const filteredProps = dbAllProperties.filter(p => {
                 const matchesCity = p.city_name.toLowerCase().includes(distName.toLowerCase()) || 
-                                    distName.toLowerCase().includes(p.city_name.toLowerCase());
-                const matchesCategory = (selectedCategory === 'all' || p.category === selectedCategory);
-                const matchesType = (selectedType === 'all' || p.type === selectedType);
-                return matchesCity && matchesCategory && matchesType;
+                                    distName.toLowerCase().includes(p.city_name.toLowerCase()) ||
+                                    (p.district && (p.district.toLowerCase().includes(distName.toLowerCase()) || distName.toLowerCase().includes(p.district.toLowerCase())));
+                
+                const matchesState = !selectedState || p.state === selectedState;
+                const matchesDistrict = !selectedDistrict || p.district === selectedDistrict;
+                const matchesTaluka = !selectedTaluka || p.taluka === selectedTaluka;
+                const matchesVillage = !selectedVillage || p.village === selectedVillage;
+                return matchesCity && matchesState && matchesDistrict && matchesTaluka && matchesVillage;
               });
 
               const totalCount = filteredProps.length;
@@ -1329,28 +1388,109 @@ $other_banks = [
                 }
               },
               click: () => {
-                const targetId = info.cityId || 'mumbai';
-                
-                const selectedCategory = document.getElementById('filter-category').value;
-                const selectedType = document.getElementById('filter-type').value;
+                const selectedState = document.getElementById('filter-state').value;
+                const selectedDistrict = document.getElementById('filter-district').value || distName;
+                const selectedTaluka = document.getElementById('filter-taluka').value;
+                const selectedVillage = document.getElementById('filter-village').value;
+
+                let url = `search.php?state=${encodeURIComponent(selectedState)}&district=${encodeURIComponent(selectedDistrict)}`;
+                if (selectedTaluka) url += `&taluka=${encodeURIComponent(selectedTaluka)}`;
+                if (selectedVillage) url += `&village=${encodeURIComponent(selectedVillage)}`;
 
                 const filteredProps = dbAllProperties.filter(p => {
                   const matchesCity = p.city_name.toLowerCase().includes(distName.toLowerCase()) || 
-                                      distName.toLowerCase().includes(p.city_name.toLowerCase());
-                  const matchesCategory = (selectedCategory === 'all' || p.category === selectedCategory);
-                  const matchesType = (selectedType === 'all' || p.type === selectedType);
-                  return matchesCity && matchesCategory && matchesType;
+                                      distName.toLowerCase().includes(p.city_name.toLowerCase()) ||
+                                      (p.district && (p.district.toLowerCase().includes(distName.toLowerCase()) || distName.toLowerCase().includes(p.district.toLowerCase())));
+                  
+                  const matchesState = !selectedState || p.state === selectedState;
+                  const matchesDistrict = !selectedDistrict || p.district === selectedDistrict;
+                  const matchesTaluka = !selectedTaluka || p.taluka === selectedTaluka;
+                  const matchesVillage = !selectedVillage || p.village === selectedVillage;
+                  return matchesCity && matchesState && matchesDistrict && matchesTaluka && matchesVillage;
                 });
 
                 if (window.innerWidth < 768) {
-                  showBottomSheet(distName, info, filteredProps.length, filteredProps, targetId);
+                  showBottomSheet(distName, info, filteredProps.length, filteredProps, url);
                 } else {
-                  window.location.href = `city.php?id=${targetId}`;
+                  window.location.href = url;
                 }
               }
             });
           }
         }).addTo(map);
+
+        window.updateMapTooltips = (selectedState, selectedDistrict, selectedTaluka, selectedVillage) => {
+          if (!geoLayer) return;
+          geoLayer.eachLayer(layer => {
+            const distName = layer.feature.properties.district;
+            const info = districtDivisionMap[distName] || { divName: 'महाराष्ट्र', color: '#10b981', marathi: distName, cityId: distName.toLowerCase() };
+            
+            const getDynamicTooltipContent = () => {
+              const filteredProps = dbAllProperties.filter(p => {
+                const matchesCity = p.city_name.toLowerCase().includes(distName.toLowerCase()) || 
+                                    distName.toLowerCase().includes(p.city_name.toLowerCase()) ||
+                                    (p.district && (p.district.toLowerCase().includes(distName.toLowerCase()) || distName.toLowerCase().includes(p.district.toLowerCase())));
+                
+                const matchesState = !selectedState || p.state === selectedState;
+                const matchesDistrict = !selectedDistrict || p.district === selectedDistrict;
+                const matchesTaluka = !selectedTaluka || p.taluka === selectedTaluka;
+                const matchesVillage = !selectedVillage || p.village === selectedVillage;
+                return matchesCity && matchesState && matchesDistrict && matchesTaluka && matchesVillage;
+              });
+
+              const totalCount = filteredProps.length;
+
+              let propsListHtml = '';
+              if (totalCount > 0) {
+                propsListHtml = `
+                  <div class="mt-2 space-y-1.5 border-t border-slate-100 pt-2 text-left">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">Matching Listings:</span>
+                    ${filteredProps.slice(0, 2).map(p => `
+                      <div class="bg-slate-50 p-2 rounded-xl border border-slate-100 text-xs shadow-sm">
+                        <div class="font-black text-slate-800 truncate">${p.title}</div>
+                        <div class="flex justify-between items-center mt-1 text-[11px]">
+                          <span class="font-bold text-emerald-600">${p.reserve_price}</span>
+                          <span class="text-[9px] bg-slate-200 text-slate-700 font-bold px-1.5 py-0.5 rounded uppercase">${p.category}</span>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                `;
+              } else {
+                propsListHtml = `
+                  <div class="mt-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center text-xs font-semibold text-slate-500">
+                    <span>0 matching properties under selected filters.</span>
+                  </div>
+                `;
+              }
+
+              return `
+                <div class="p-4 w-72 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200 shadow-2xl text-slate-800 font-sans">
+                  <div class="flex justify-between items-start border-b border-slate-100 pb-2 mb-2">
+                    <div>
+                      <h4 class="font-black text-slate-900 text-base leading-tight">${distName} <span class="text-xs text-slate-500 font-bold">(${info.marathi})</span></h4>
+                      <span class="inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md text-white mt-1" style="background-color: ${info.color}">
+                        ${info.divName}
+                      </span>
+                    </div>
+                    <div class="text-right">
+                      <span class="text-sm font-black text-emerald-600 block">${totalCount}</span>
+                      <span class="text-[9px] text-slate-400 uppercase font-bold">Properties</span>
+                    </div>
+                  </div>
+                  ${propsListHtml}
+                  <div class="mt-3 pt-2 border-t border-slate-100 text-center">
+                    <span class="text-xs font-extrabold text-emerald-600 hover:text-emerald-700 inline-flex items-center space-x-1">
+                      <span>Click to View All Auctions</span> &rarr;
+                    </span>
+                  </div>
+                </div>
+              `;
+            };
+
+            layer.setTooltipContent(getDynamicTooltipContent());
+          });
+        };
 
         // Auto-fit bounds of GeoJSON to center the state perfectly on all devices
         fitMapToState();
@@ -1397,13 +1537,13 @@ $other_banks = [
   });
 
   // Mobile Bottom Sheet Handlers
-  function showBottomSheet(distName, info, totalCount, matchingProps, targetId) {
+  function showBottomSheet(distName, info, totalCount, matchingProps, redirectUrl) {
     document.getElementById('sheet-district-title').innerText = `${distName} (${info.marathi})`;
     const badge = document.getElementById('sheet-division-badge');
     badge.innerText = info.divName;
     badge.style.backgroundColor = info.color;
     document.getElementById('sheet-prop-count').innerText = totalCount;
-    document.getElementById('sheet-view-btn').href = `city.php?id=${targetId}`;
+    document.getElementById('sheet-view-btn').href = redirectUrl;
 
     const propsContainer = document.getElementById('sheet-props-list');
     if (matchingProps.length > 0) {
@@ -1434,9 +1574,16 @@ $other_banks = [
   window.closeBottomSheet = closeBottomSheet;
 
   function focusDistrict(dName) {
-    const info = districtDivisionMap[dName] || { cityId: 'mumbai' };
-    const targetId = info.cityId || 'mumbai';
-    window.location.href = `city.php?id=${targetId}`;
+    const selectedState = document.getElementById('filter-state').value;
+    const selectedDistrict = dName;
+    const selectedTaluka = document.getElementById('filter-taluka').value;
+    const selectedVillage = document.getElementById('filter-village').value;
+
+    let url = `search.php?state=${encodeURIComponent(selectedState)}&district=${encodeURIComponent(selectedDistrict)}`;
+    if (selectedTaluka) url += `&taluka=${encodeURIComponent(selectedTaluka)}`;
+    if (selectedVillage) url += `&village=${encodeURIComponent(selectedVillage)}`;
+
+    window.location.href = url;
   }
   window.focusDistrict = focusDistrict;
 

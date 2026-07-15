@@ -137,7 +137,10 @@ if ($is_admin) {
         if (isset($_POST['submit_property'])) {
             $title = trim($_POST['title']);
             $address = trim($_POST['address']);
-            $city_id = trim($_POST['city_id']);
+            $state = trim($_POST['state']) ?: 'Maharashtra';
+            $district = trim($_POST['district']);
+            $taluka = trim($_POST['taluka']);
+            $village = trim($_POST['village']);
             $type = trim($_POST['type']);
             $category = trim($_POST['category']);
             $price = trim($_POST['price']);
@@ -145,7 +148,13 @@ if ($is_admin) {
             $gov_val = trim($_POST['gov_val']);
             $details = trim($_POST['details']);
 
-            if (empty($title) || empty($address) || empty($city_id) || empty($price) || empty($details)) {
+            // Find city_id from district
+            $city_stmt = $pdo->prepare("SELECT id FROM cities WHERE name = ? LIMIT 1");
+            $city_stmt->execute([$district]);
+            $city_row = $city_stmt->fetch();
+            $city_id = $city_row ? $city_row['id'] : strtolower(str_replace(' ', '-', $district));
+
+            if (empty($title) || empty($address) || empty($district) || empty($price) || empty($details)) {
                 $error_msg = 'Please complete all required fields.';
             } else {
                 try {
@@ -157,14 +166,14 @@ if ($is_admin) {
                         INSERT INTO properties (
                             listing_id, seller_id, title, address, city_id, type, category, 
                             reserve_price, numeric_price, emd, government_valuation, 
-                            numeric_gov_valuation, details
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            numeric_gov_valuation, details, state, district, taluka, village
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ");
                     $stmt->execute([
                         $listing_id, $_SESSION['user']['id'], $title, $address, $city_id, $type, $category, 
                         $price, $numeric_price, $emd ?: 'N/A', 
                         $gov_val ? "₹ {$gov_val}" : "₹ " . ($numeric_gov_val / 10000000) . " Cr", 
-                        $numeric_gov_val, $details
+                        $numeric_gov_val, $details, $state, $district, $taluka, $village
                     ]);
 
                     // Update city property count
@@ -840,13 +849,31 @@ require_once 'includes/header.php';
 
           <div class="grid grid-cols-2 gap-3.5">
             <div>
-              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">City Location</label>
-              <select name="city_id" required class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">State</label>
+              <input type="text" name="state" required value="Maharashtra" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">District</label>
+              <select name="district" required class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
                 <?php foreach ($cities as $c): ?>
-                  <option value="<?php echo htmlspecialchars($c['id']); ?>"><?php echo htmlspecialchars($c['name']); ?></option>
+                  <option value="<?php echo htmlspecialchars($c['name']); ?>"><?php echo htmlspecialchars($c['name']); ?></option>
                 <?php endforeach; ?>
               </select>
             </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3.5">
+            <div>
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Taluka</label>
+              <input type="text" name="taluka" required placeholder="e.g. Haveli" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Village</label>
+              <input type="text" name="village" required placeholder="e.g. Bhosari" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1">
             <div>
               <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Property Type</label>
               <select name="type" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">

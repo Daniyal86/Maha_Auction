@@ -2,13 +2,43 @@
 // search.php
 require_once 'config/db.php';
 
-// Fetch cities for filters
-$cities_stmt = $pdo->query("SELECT * FROM cities ORDER BY name ASC");
-$cities = $cities_stmt->fetchAll();
+// Handle AJAX location requests
+if (isset($_GET['ajax_location'])) {
+    header('Content-Type: application/json');
+    $type = $_GET['type'] ?? '';
+    
+    if ($type === 'districts') {
+        $state = $_GET['state'] ?? '';
+        $stmt = $pdo->prepare("SELECT DISTINCT district FROM properties WHERE state = ? AND district IS NOT NULL AND district != '' ORDER BY district ASC");
+        $stmt->execute([$state]);
+        echo json_encode($stmt->fetchAll(PDO::FETCH_COLUMN));
+    } elseif ($type === 'talukas') {
+        $district = $_GET['district'] ?? '';
+        $stmt = $pdo->prepare("SELECT DISTINCT taluka FROM properties WHERE district = ? AND taluka IS NOT NULL AND taluka != '' ORDER BY taluka ASC");
+        $stmt->execute([$district]);
+        echo json_encode($stmt->fetchAll(PDO::FETCH_COLUMN));
+    } elseif ($type === 'villages') {
+        $taluka = $_GET['taluka'] ?? '';
+        $stmt = $pdo->prepare("SELECT DISTINCT village FROM properties WHERE taluka = ? AND village IS NOT NULL AND village != '' ORDER BY village ASC");
+        $stmt->execute([$taluka]);
+        echo json_encode($stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+    exit;
+}
+
+// Fetch unique states from database
+$states_stmt = $pdo->query("SELECT DISTINCT state FROM properties WHERE state IS NOT NULL AND state != '' ORDER BY state ASC");
+$states = $states_stmt->fetchAll(PDO::FETCH_COLUMN);
+if (empty($states)) {
+    $states = ['Maharashtra'];
+}
 
 // Retrieve search filters
 $q = isset($_GET['q']) ? trim($_GET['q']) : '';
-$city_filter = isset($_GET['city']) ? trim($_GET['city']) : '';
+$state_filter = isset($_GET['state']) ? trim($_GET['state']) : '';
+$district_filter = isset($_GET['district']) ? trim($_GET['district']) : '';
+$taluka_filter = isset($_GET['taluka']) ? trim($_GET['taluka']) : '';
+$village_filter = isset($_GET['village']) ? trim($_GET['village']) : '';
 $category_filter = isset($_GET['category']) ? trim($_GET['category']) : '';
 $type_filter = isset($_GET['type']) ? trim($_GET['type']) : '';
 $sort = isset($_GET['sort']) ? trim($_GET['sort']) : '';
@@ -21,9 +51,21 @@ if (!empty($q)) {
     $query .= " AND (p.title LIKE :q OR p.address LIKE :q OR p.bank LIKE :q OR p.borrower LIKE :q)";
     $params['q'] = '%' . $q . '%';
 }
-if (!empty($city_filter)) {
-    $query .= " AND p.city_id = :city";
-    $params['city'] = $city_filter;
+if (!empty($state_filter)) {
+    $query .= " AND p.state = :state";
+    $params['state'] = $state_filter;
+}
+if (!empty($district_filter)) {
+    $query .= " AND p.district = :district";
+    $params['district'] = $district_filter;
+}
+if (!empty($taluka_filter)) {
+    $query .= " AND p.taluka = :taluka";
+    $params['taluka'] = $taluka_filter;
+}
+if (!empty($village_filter)) {
+    $query .= " AND p.village = :village";
+    $params['village'] = $village_filter;
 }
 if (!empty($category_filter)) {
     $query .= " AND p.category = :category";
@@ -67,7 +109,7 @@ require_once 'includes/header.php';
           <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
             <?php echo count($properties); ?> SECURED ASSETS
           </span>
-          <?php if (!empty($q) || !empty($city_filter) || !empty($category_filter) || !empty($type_filter)): ?>
+          <?php if (!empty($q) || !empty($state_filter) || !empty($district_filter) || !empty($taluka_filter) || !empty($village_filter) || !empty($category_filter) || !empty($type_filter)): ?>
             <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md truncate max-w-[150px] sm:max-w-xs">
               Filtered
             </span>
@@ -114,16 +156,73 @@ require_once 'includes/header.php';
           </div>
         </div>
 
-        <!-- City Dropdown -->
+        <!-- State Dropdown -->
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">City Location</label>
-          <select name="city" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald font-semibold text-slate-700">
-            <option value="">All Maharashtra</option>
-            <?php foreach ($cities as $city): ?>
-              <option value="<?php echo htmlspecialchars($city['id']); ?>" <?php echo $city_filter === $city['id'] ? 'selected' : ''; ?>>
-                <?php echo htmlspecialchars($city['name']); ?>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">State</label>
+          <select id="filter-state" name="state" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald font-semibold text-slate-700">
+            <option value="">All States</option>
+            <?php foreach ($states as $s): ?>
+              <option value="<?php echo htmlspecialchars($s); ?>" <?php echo $state_filter === $s ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($s); ?>
               </option>
             <?php endforeach; ?>
+          </select>
+        </div>
+
+        <!-- District Dropdown -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">District</label>
+          <select id="filter-district" name="district" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald font-semibold text-slate-700">
+            <option value="">All Districts</option>
+            <?php
+            if (!empty($state_filter)) {
+                $dist_stmt = $pdo->prepare("SELECT DISTINCT district FROM properties WHERE state = ? AND district IS NOT NULL AND district != '' ORDER BY district ASC");
+                $dist_stmt->execute([$state_filter]);
+                $districts = $dist_stmt->fetchAll(PDO::FETCH_COLUMN);
+                foreach ($districts as $d) {
+                    $selected = $district_filter === $d ? 'selected' : '';
+                    echo "<option value=\"" . htmlspecialchars($d) . "\" {$selected}>" . htmlspecialchars($d) . "</option>";
+                }
+            }
+            ?>
+          </select>
+        </div>
+
+        <!-- Taluka Dropdown -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Taluka</label>
+          <select id="filter-taluka" name="taluka" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald font-semibold text-slate-700">
+            <option value="">All Talukas</option>
+            <?php
+            if (!empty($district_filter)) {
+                $tal_stmt = $pdo->prepare("SELECT DISTINCT taluka FROM properties WHERE district = ? AND taluka IS NOT NULL AND taluka != '' ORDER BY taluka ASC");
+                $tal_stmt->execute([$district_filter]);
+                $talukas = $tal_stmt->fetchAll(PDO::FETCH_COLUMN);
+                foreach ($talukas as $t) {
+                    $selected = $taluka_filter === $t ? 'selected' : '';
+                    echo "<option value=\"" . htmlspecialchars($t) . "\" {$selected}>" . htmlspecialchars($t) . "</option>";
+                }
+            }
+            ?>
+          </select>
+        </div>
+
+        <!-- Village Dropdown -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Village</label>
+          <select id="filter-village" name="village" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald font-semibold text-slate-700">
+            <option value="">All Villages</option>
+            <?php
+            if (!empty($taluka_filter)) {
+                $vil_stmt = $pdo->prepare("SELECT DISTINCT village FROM properties WHERE taluka = ? AND village IS NOT NULL AND village != '' ORDER BY village ASC");
+                $vil_stmt->execute([$taluka_filter]);
+                $villages = $vil_stmt->fetchAll(PDO::FETCH_COLUMN);
+                foreach ($villages as $v) {
+                    $selected = $village_filter === $v ? 'selected' : '';
+                    echo "<option value=\"" . htmlspecialchars($v) . "\" {$selected}>" . htmlspecialchars($v) . "</option>";
+                }
+            }
+            ?>
           </select>
         </div>
 
@@ -538,6 +637,74 @@ require_once 'includes/header.php';
     document.getElementById('compare-modal').classList.add('hidden');
     document.body.classList.remove('modal-open');
   }
+
+  // Chained Location dropdowns
+  document.addEventListener('DOMContentLoaded', function() {
+    const stateSel = document.getElementById('filter-state');
+    const distSel = document.getElementById('filter-district');
+    const talSel = document.getElementById('filter-taluka');
+    const vilSel = document.getElementById('filter-village');
+
+    if (stateSel) {
+      stateSel.addEventListener('change', function() {
+        const val = this.value;
+        distSel.innerHTML = '<option value="">All Districts</option>';
+        talSel.innerHTML = '<option value="">All Talukas</option>';
+        vilSel.innerHTML = '<option value="">All Villages</option>';
+        if (!val) return;
+
+        fetch(`search.php?ajax_location=1&type=districts&state=${encodeURIComponent(val)}`)
+          .then(res => res.json())
+          .then(data => {
+            data.forEach(d => {
+              const opt = document.createElement('option');
+              opt.value = d;
+              opt.textContent = d;
+              distSel.appendChild(opt);
+            });
+          });
+      });
+    }
+
+    if (distSel) {
+      distSel.addEventListener('change', function() {
+        const val = this.value;
+        talSel.innerHTML = '<option value="">All Talukas</option>';
+        vilSel.innerHTML = '<option value="">All Villages</option>';
+        if (!val) return;
+
+        fetch(`search.php?ajax_location=1&type=talukas&district=${encodeURIComponent(val)}`)
+          .then(res => res.json())
+          .then(data => {
+            data.forEach(t => {
+              const opt = document.createElement('option');
+              opt.value = t;
+              opt.textContent = t;
+              talSel.appendChild(opt);
+            });
+          });
+      });
+    }
+
+    if (talSel) {
+      talSel.addEventListener('change', function() {
+        const val = this.value;
+        vilSel.innerHTML = '<option value="">All Villages</option>';
+        if (!val) return;
+
+        fetch(`search.php?ajax_location=1&type=villages&taluka=${encodeURIComponent(val)}`)
+          .then(res => res.json())
+          .then(data => {
+            data.forEach(v => {
+              const opt = document.createElement('option');
+              opt.value = v;
+              opt.textContent = v;
+              vilSel.appendChild(opt);
+            });
+          });
+      });
+    }
+  });
 </script>
 
 <!-- Floating Comparison Bar -->

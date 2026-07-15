@@ -60,7 +60,10 @@ if ($is_authorized && $_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $title = trim($_POST['title']);
         $address = trim($_POST['address']);
-        $city_id = trim($_POST['city_id']);
+        $state = trim($_POST['state']) ?: 'Maharashtra';
+        $district = trim($_POST['district']);
+        $taluka = trim($_POST['taluka']);
+        $village = trim($_POST['village']);
         $type = trim($_POST['type']);
         $category = trim($_POST['category']);
         $price = trim($_POST['price']);
@@ -69,11 +72,17 @@ if ($is_authorized && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $details = trim($_POST['details']);
         $image = trim($_POST['image']);
 
+        // Find city_id from district
+        $city_stmt = $pdo->prepare("SELECT id FROM cities WHERE name = ? LIMIT 1");
+        $city_stmt->execute([$district]);
+        $city_row = $city_stmt->fetch();
+        $city_id = $city_row ? $city_row['id'] : strtolower(str_replace(' ', '-', $district));
+
         if (empty($image)) {
             $image = 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80';
         }
 
-        if (empty($title) || empty($address) || empty($city_id) || empty($price) || empty($details)) {
+        if (empty($title) || empty($address) || empty($district) || empty($price) || empty($details)) {
             $error_msg = 'Please complete all required fields.';
         } else {
             try {
@@ -86,11 +95,11 @@ if ($is_authorized && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 $notice_mr = "थेट विक्री नोटीस: ही मालमत्ता महालिलाव पोर्टलवर थेट मालकाद्वारे विक्रीसाठी उपलब्ध आहे. राखीव किंमत: रु. {$price}.";
 
                 $stmt = $pdo->prepare("
-                    INSERT INTO properties (id, listing_id, city_id, title, type, category, address, reserve_price, numeric_price, emd, government_valuation, numeric_gov_valuation, agent_id, image, details, notice_english, notice_marathi, seller_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO properties (id, listing_id, city_id, title, type, category, address, reserve_price, numeric_price, emd, government_valuation, numeric_gov_valuation, agent_id, image, details, notice_english, notice_marathi, seller_id, state, district, taluka, village)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ");
                 $stmt->execute([
-                    $id, $listing_id, $city_id, $title, $type, $category, $address, $price, $numeric_price, $emd ?: 'N/A', $gov_val ? "₹ {$gov_val}" : "₹ " . ($numeric_gov_val / 10000000) . " Cr", $numeric_gov_val, 'agt-1', $image, $details, $notice_en, $notice_mr, $seller_id
+                    $id, $listing_id, $city_id, $title, $type, $category, $address, $price, $numeric_price, $emd ?: 'N/A', $gov_val ? "₹ {$gov_val}" : "₹ " . ($numeric_gov_val / 10000000) . " Cr", $numeric_gov_val, 'agt-1', $image, $details, $notice_en, $notice_mr, $seller_id, $state, $district, $taluka, $village
                 ]);
 
                 // Update city count
@@ -109,7 +118,10 @@ if ($is_authorized && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $property_id = trim($_POST['property_id']);
         $title = trim($_POST['title']);
         $address = trim($_POST['address']);
-        $city_id = trim($_POST['city_id']);
+        $state = trim($_POST['state']) ?: 'Maharashtra';
+        $district = trim($_POST['district']);
+        $taluka = trim($_POST['taluka']);
+        $village = trim($_POST['village']);
         $type = trim($_POST['type']);
         $category = trim($_POST['category']);
         $price = trim($_POST['price']);
@@ -118,7 +130,13 @@ if ($is_authorized && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $details = trim($_POST['details']);
         $image = trim($_POST['image']);
 
-        if (empty($title) || empty($address) || empty($city_id) || empty($price) || empty($details)) {
+        // Find city_id from district
+        $city_stmt = $pdo->prepare("SELECT id FROM cities WHERE name = ? LIMIT 1");
+        $city_stmt->execute([$district]);
+        $city_row = $city_stmt->fetch();
+        $city_id = $city_row ? $city_row['id'] : strtolower(str_replace(' ', '-', $district));
+
+        if (empty($title) || empty($address) || empty($district) || empty($price) || empty($details)) {
             $error_msg = 'Please complete all required fields for editing.';
         } else {
             try {
@@ -136,7 +154,7 @@ if ($is_authorized && $_SERVER['REQUEST_METHOD'] === 'POST') {
                             title = ?, address = ?, city_id = ?, type = ?, category = ?, 
                             reserve_price = ?, numeric_price = ?, emd = ?, 
                             government_valuation = ?, numeric_gov_valuation = ?, 
-                            image = ?, details = ?
+                            image = ?, details = ?, state = ?, district = ?, taluka = ?, village = ?
                         WHERE id = ? AND seller_id = ?
                     ");
                     $stmt->execute([
@@ -144,6 +162,7 @@ if ($is_authorized && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         $price, $numeric_price, $emd ?: 'N/A', 
                         $gov_val ? "₹ {$gov_val}" : "₹ " . ($numeric_gov_val / 10000000) . " Cr", $numeric_gov_val, 
                         $image ?: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80', $details,
+                        $state, $district, $taluka, $village,
                         $property_id, $seller_id
                     ]);
 
@@ -391,13 +410,31 @@ require_once 'includes/header.php';
 
             <div class="grid grid-cols-2 gap-3.5">
               <div>
-                <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">City Location</label>
-                <select name="city_id" required class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
+                <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">State</label>
+                <input type="text" name="state" required value="Maharashtra" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+              </div>
+              <div>
+                <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">District</label>
+                <select name="district" required class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
                   <?php foreach ($cities as $c): ?>
-                    <option value="<?php echo htmlspecialchars($c['id']); ?>"><?php echo htmlspecialchars($c['name']); ?></option>
+                    <option value="<?php echo htmlspecialchars($c['name']); ?>"><?php echo htmlspecialchars($c['name']); ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Taluka</label>
+                <input type="text" name="taluka" required placeholder="e.g. Haveli" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+              </div>
+              <div>
+                <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Village</label>
+                <input type="text" name="village" required placeholder="e.g. Bhosari" class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold text-slate-800">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1">
               <div>
                 <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">Property Type</label>
                 <select name="type" required class="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
@@ -724,13 +761,31 @@ require_once 'includes/header.php';
 
       <div class="grid grid-cols-2 gap-3.5">
         <div>
-          <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">City Location</label>
-          <select id="edit-city-id" name="city_id" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
+          <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">State</label>
+          <input type="text" id="edit-state" name="state" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold">
+        </div>
+        <div>
+          <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">District</label>
+          <select id="edit-district" name="district" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
             <?php foreach ($cities as $c): ?>
-              <option value="<?php echo htmlspecialchars($c['id']); ?>"><?php echo htmlspecialchars($c['name']); ?></option>
+              <option value="<?php echo htmlspecialchars($c['name']); ?>"><?php echo htmlspecialchars($c['name']); ?></option>
             <?php endforeach; ?>
           </select>
         </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3.5">
+        <div>
+          <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">Taluka</label>
+          <input type="text" id="edit-taluka" name="taluka" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold">
+        </div>
+        <div>
+          <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">Village</label>
+          <input type="text" id="edit-village" name="village" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-semibold">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1">
         <div>
           <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1">Property Type</label>
           <select id="edit-type" name="type" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-premium-emerald focus:bg-white transition-all font-bold text-slate-600">
@@ -792,7 +847,10 @@ require_once 'includes/header.php';
     document.getElementById('edit-prop-id').value = prop.id;
     document.getElementById('edit-title').value = prop.title;
     document.getElementById('edit-address').value = prop.address;
-    document.getElementById('edit-city-id').value = prop.city_id;
+    document.getElementById('edit-state').value = prop.state || 'Maharashtra';
+    document.getElementById('edit-district').value = prop.district || '';
+    document.getElementById('edit-taluka').value = prop.taluka || '';
+    document.getElementById('edit-village').value = prop.village || '';
     document.getElementById('edit-type').value = prop.type;
     document.getElementById('edit-category').value = prop.category;
     
